@@ -241,7 +241,7 @@ public class CustomerForm extends javax.swing.JFrame {
             ){
             
            
-            
+            //changes made 
           pst=con.prepareStatement(sql);
            pst.setString(1, null); 
           pst.setString(2, null);  //add date
