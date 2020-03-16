@@ -1,3 +1,13 @@
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,7 +19,9 @@
  * @author dhruv
  */
 public class AgencyDetails extends javax.swing.JFrame {
-
+    PreparedStatement pst= null; 
+    ResultSet rs=null; 
+    Connection con=null; 
     /**
      * Creates new form agencyDetails
      */
@@ -178,6 +190,29 @@ public class AgencyDetails extends javax.swing.JFrame {
 
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
         // TODO add your handling code here:
+   
+      
+       
+        try (//Get connection to the database
+            Connection con = DbCon.getConnection();
+            ){
+            
+          String Value1= addressTextbox.getText();
+            String Value2=nameTextbox.getText();
+            String sql= "update AgencyDetails set address='" +Value1+"', name ='" +Value2+"'  ";
+            pst=con.prepareStatement(sql);
+            pst.execute();
+           JOptionPane.showMessageDialog(null,"Details Updated");
+            dispose();
+        
+        
+            
+        }
+        catch (Exception e) {
+        JOptionPane.showMessageDialog(null,"error");
+        }
+        
+      
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
 
     /**

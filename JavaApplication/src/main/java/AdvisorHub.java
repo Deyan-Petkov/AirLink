@@ -32,7 +32,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         logoutButton = new javax.swing.JButton();
         returnTicketButton = new javax.swing.JButton();
         logsButton = new javax.swing.JButton();
-        createCustomerButton = new javax.swing.JButton();
+        CustomerButton = new javax.swing.JButton();
         exchangeRateButton = new javax.swing.JButton();
         makeATSComboBox = new javax.swing.JComboBox<>();
         sellTicketComboBox = new javax.swing.JComboBox<>();
@@ -96,11 +96,11 @@ public class AdvisorHub extends javax.swing.JFrame {
             }
         });
 
-        createCustomerButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        createCustomerButton.setText("CREATE CUSTOMER");
-        createCustomerButton.addActionListener(new java.awt.event.ActionListener() {
+        CustomerButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        CustomerButton.setText(" CUSTOMER");
+        CustomerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                createCustomerButtonActionPerformed(evt);
+                CustomerButtonActionPerformed(evt);
             }
         });
 
@@ -135,10 +135,10 @@ public class AdvisorHub extends javax.swing.JFrame {
             .addComponent(advisorBlueBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(advisorBackgroundLayout.createSequentialGroup()
                 .addGap(44, 44, 44)
-                .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(createCustomerButton)
+                .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(logsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(makeATSComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(makeATSComboBox, 0, 353, Short.MAX_VALUE)
+                    .addComponent(CustomerButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,12 +157,12 @@ public class AdvisorHub extends javax.swing.JFrame {
                         .addComponent(returnTicketButton))
                     .addGroup(advisorBackgroundLayout.createSequentialGroup()
                         .addGap(99, 99, 99)
-                        .addComponent(createCustomerButton)))
+                        .addComponent(CustomerButton)))
                 .addGap(110, 110, 110)
                 .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(makeATSComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
                     .addComponent(sellTicketComboBox))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
                 .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorBackgroundLayout.createSequentialGroup()
                         .addComponent(logsButton)
@@ -180,7 +180,10 @@ public class AdvisorHub extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(advisorBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 901, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(advisorBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 881, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -196,11 +199,11 @@ public class AdvisorHub extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_logsButtonActionPerformed
 
-    private void createCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createCustomerButtonActionPerformed
-        CreateCustomerForm s = new CreateCustomerForm();
+    private void CustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CustomerButtonActionPerformed
+        CustomerForm s = new CustomerForm();
         s.setVisible(true);
         s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
-    }//GEN-LAST:event_createCustomerButtonActionPerformed
+    }//GEN-LAST:event_CustomerButtonActionPerformed
 
     private void exchangeRateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exchangeRateButtonActionPerformed
         // TODO add your handling code here:
@@ -265,10 +268,10 @@ public class AdvisorHub extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton CustomerButton;
     private javax.swing.JPanel advisorBackground;
     private javax.swing.JPanel advisorBlueBackground;
     private javax.swing.JLabel advisorTitle;
-    private javax.swing.JButton createCustomerButton;
     private javax.swing.JButton exchangeRateButton;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton logsButton;

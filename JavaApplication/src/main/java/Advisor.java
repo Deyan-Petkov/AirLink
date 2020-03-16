@@ -1,3 +1,12 @@
+
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,14 +18,32 @@
  * @author dhruv
  */
 public class Advisor extends javax.swing.JFrame {
-
+       PreparedStatement pst= null; 
+    ResultSet rs=null; 
     /**
      * Creates new form advisor
      */
     public Advisor() {
         initComponents();
     }
+  
+     public static final String encrypt(String md5) {
 
+        try {//This class provides the encrypting algorithm (MD5) 
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+            //encrypt the input and return it as a array of bytes
+            byte[] array = md.digest(md5.getBytes());
+            StringBuffer sb = new StringBuffer();
+            //convert the byte array to hex value
+            for (int i = 0; i < array.length; i++) {
+                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
+            }//return encrypted password
+            return sb.toString();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -31,18 +58,18 @@ public class Advisor extends javax.swing.JFrame {
         advisorTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
         passwordTextbox = new javax.swing.JTextField();
-        nameLabel = new javax.swing.JLabel();
+        surnameLabel = new javax.swing.JLabel();
         addressTextbox1 = new javax.swing.JTextField();
         addressLabel = new javax.swing.JLabel();
         phoneLabel = new javax.swing.JLabel();
         emailLabel = new javax.swing.JLabel();
         passwordLabel = new javax.swing.JLabel();
-        idLabel = new javax.swing.JLabel();
         phoneTextbox = new javax.swing.JTextField();
-        idTextbox = new javax.swing.JTextField();
         emailTextbox = new javax.swing.JTextField();
-        nameTextbox1 = new javax.swing.JTextField();
+        surnameTextbox1 = new javax.swing.JTextField();
         saveButton = new javax.swing.JButton();
+        nameLabel1 = new javax.swing.JLabel();
+        nameTextbox2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,7 +94,7 @@ public class Advisor extends javax.swing.JFrame {
         bluePanelLayout.setHorizontalGroup(
             bluePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bluePanelLayout.createSequentialGroup()
-                .addContainerGap(333, Short.MAX_VALUE)
+                .addContainerGap(335, Short.MAX_VALUE)
                 .addComponent(advisorTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(200, 200, 200)
                 .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -90,8 +117,8 @@ public class Advisor extends javax.swing.JFrame {
             }
         });
 
-        nameLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        nameLabel.setText("Name: ");
+        surnameLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        surnameLabel.setText("Surname:");
 
         addressTextbox1.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
         addressTextbox1.addActionListener(new java.awt.event.ActionListener() {
@@ -112,20 +139,10 @@ public class Advisor extends javax.swing.JFrame {
         passwordLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         passwordLabel.setText("Password:");
 
-        idLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        idLabel.setText("ID: ");
-
         phoneTextbox.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
         phoneTextbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 phoneTextboxActionPerformed(evt);
-            }
-        });
-
-        idTextbox.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
-        idTextbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                idTextboxActionPerformed(evt);
             }
         });
 
@@ -136,10 +153,10 @@ public class Advisor extends javax.swing.JFrame {
             }
         });
 
-        nameTextbox1.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
-        nameTextbox1.addActionListener(new java.awt.event.ActionListener() {
+        surnameTextbox1.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        surnameTextbox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameTextbox1ActionPerformed(evt);
+                surnameTextbox1ActionPerformed(evt);
             }
         });
 
@@ -151,92 +168,92 @@ public class Advisor extends javax.swing.JFrame {
             }
         });
 
+        nameLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        nameLabel1.setText("Name: ");
+
+        nameTextbox2.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        nameTextbox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameTextbox2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout advisorBackgroundLayout = new javax.swing.GroupLayout(advisorBackground);
         advisorBackground.setLayout(advisorBackgroundLayout);
         advisorBackgroundLayout.setHorizontalGroup(
             advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(bluePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorBackgroundLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(advisorBackgroundLayout.createSequentialGroup()
                 .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(advisorBackgroundLayout.createSequentialGroup()
-                            .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(460, 460, 460)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorBackgroundLayout.createSequentialGroup()
-                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(advisorBackgroundLayout.createSequentialGroup()
+                        .addGap(143, 143, 143)
+                        .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(surnameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(phoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nameLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(surnameTextbox1, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                            .addComponent(phoneTextbox))
+                        .addGap(57, 57, 57)
+                        .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(advisorBackgroundLayout.createSequentialGroup()
+                                .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorBackgroundLayout.createSequentialGroup()
+                                .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(60, 60, 60)))
+                        .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(passwordTextbox, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                            .addComponent(addressTextbox1)
+                            .addComponent(emailTextbox))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
             .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(advisorBackgroundLayout.createSequentialGroup()
-                    .addGap(147, 147, 147)
-                    .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(advisorBackgroundLayout.createSequentialGroup()
-                            .addComponent(phoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(phoneTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(advisorBackgroundLayout.createSequentialGroup()
-                            .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(nameTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(advisorBackgroundLayout.createSequentialGroup()
-                            .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(idTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, advisorBackgroundLayout.createSequentialGroup()
-                            .addGap(31, 31, 31)
-                            .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(addressTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(advisorBackgroundLayout.createSequentialGroup()
-                            .addGap(41, 41, 41)
-                            .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(emailTextbox, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
-                                .addComponent(passwordTextbox))))
-                    .addContainerGap(147, Short.MAX_VALUE)))
+                    .addGap(257, 257, 257)
+                    .addComponent(nameTextbox2, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(613, Short.MAX_VALUE)))
         );
         advisorBackgroundLayout.setVerticalGroup(
             advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(advisorBackgroundLayout.createSequentialGroup()
                 .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(83, 83, 83)
-                .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(76, 76, 76)
-                .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 339, Short.MAX_VALUE)
+                .addGap(77, 77, 77)
+                .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nameLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(passwordTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
+                .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(advisorBackgroundLayout.createSequentialGroup()
+                            .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(surnameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(12, 12, 12))
+                        .addComponent(surnameTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(emailTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(46, 46, 46)
+                .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(phoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addressTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(phoneTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 210, Short.MAX_VALUE)
                 .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(advisorBackgroundLayout.createSequentialGroup()
-                    .addGap(222, 222, 222)
-                    .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorBackgroundLayout.createSequentialGroup()
-                            .addComponent(idLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(76, 76, 76))
-                        .addGroup(advisorBackgroundLayout.createSequentialGroup()
-                            .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(idTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(emailTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(64, 64, 64)))
-                    .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(nameTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(passwordTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                    .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(advisorBackgroundLayout.createSequentialGroup()
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                            .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(addressTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(advisorBackgroundLayout.createSequentialGroup()
-                            .addGap(44, 44, 44)
-                            .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(phoneTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(phoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGap(223, 223, 223)))
+                    .addGap(226, 226, 226)
+                    .addComponent(nameTextbox2, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(517, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -270,21 +287,55 @@ public class Advisor extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_phoneTextboxActionPerformed
 
-    private void idTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idTextboxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_idTextboxActionPerformed
-
     private void emailTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailTextboxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_emailTextboxActionPerformed
 
-    private void nameTextbox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextbox1ActionPerformed
+    private void surnameTextbox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_surnameTextbox1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_nameTextbox1ActionPerformed
+    }//GEN-LAST:event_surnameTextbox1ActionPerformed
 
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
-        // TODO add your handling code here:
+        
+
+
+
+
+         // TODO add your handling code here:
+           String sql= "INSERT INTO Staff(ID, password, role, name, address,email,phoneNum) Values(?,?,?,?,?,?,?)";
+        try (//Get connection to the database
+            Connection con = DbCon.getConnection();
+            ){
+            
+           
+            
+          pst=con.prepareStatement(sql);
+          
+          pst.setString(1, null);
+          pst.setString(2, passwordTextbox.getText());
+          pst.setString(3, "advisor");
+          pst.setString(4,nameTextbox2.getText() );
+         pst.setString(5, addressTextbox1.getText() );
+        pst.setString(6, emailTextbox.getText() ); 
+          pst.setString(7, phoneTextbox.getText() );   
+        
+        
+        pst.execute();
+          JOptionPane.showMessageDialog(null,"inserted successfully" );
+          dispose();
+        
+        }
+        catch (Exception e) {
+        JOptionPane.showMessageDialog(null,"error");
+        }
+        
+        
+        
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
+
+    private void nameTextbox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextbox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nameTextbox2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -331,14 +382,15 @@ public class Advisor extends javax.swing.JFrame {
     private javax.swing.JPanel bluePanel;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JTextField emailTextbox;
-    private javax.swing.JLabel idLabel;
-    private javax.swing.JTextField idTextbox;
-    private javax.swing.JLabel nameLabel;
-    private javax.swing.JTextField nameTextbox1;
+    private javax.swing.JLabel nameLabel1;
+    private javax.swing.JTextField nameTextbox2;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JTextField passwordTextbox;
     private javax.swing.JLabel phoneLabel;
     private javax.swing.JTextField phoneTextbox;
     private javax.swing.JButton saveButton;
+    private javax.swing.JLabel surnameLabel;
+    private javax.swing.JTextField surnameTextbox1;
     // End of variables declaration//GEN-END:variables
 }
+

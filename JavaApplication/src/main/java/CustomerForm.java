@@ -1,3 +1,9 @@
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -8,12 +14,14 @@
  *
  * @author xahna
  */
-public class CreateCustomerForm extends javax.swing.JFrame {
-
+public class CustomerForm extends javax.swing.JFrame {
+      PreparedStatement pst= null; 
+    ResultSet rs=null; 
+   
     /**
      * Creates new form createCustomerForm
      */
-    public CreateCustomerForm() {
+    public CustomerForm() {
         initComponents();
     }
 
@@ -41,6 +49,8 @@ public class CreateCustomerForm extends javax.swing.JFrame {
         emailTextbox = new javax.swing.JTextField();
         addressTextbox = new javax.swing.JTextField();
         phoneNumberTextbox = new javax.swing.JTextField();
+        addButton1 = new javax.swing.JButton();
+        addButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -50,7 +60,7 @@ public class CreateCustomerForm extends javax.swing.JFrame {
         createCustomerBlueBackground.setBackground(new java.awt.Color(102, 255, 255));
 
         createCustomerTitle.setFont(new java.awt.Font("Tahoma", 0, 72)); // NOI18N
-        createCustomerTitle.setText("CREATE CUSTOMER");
+        createCustomerTitle.setText(" CUSTOMER");
 
         backButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         backButton.setText("BACK");
@@ -65,10 +75,10 @@ public class CreateCustomerForm extends javax.swing.JFrame {
         createCustomerBlueBackgroundLayout.setHorizontalGroup(
             createCustomerBlueBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, createCustomerBlueBackgroundLayout.createSequentialGroup()
-                .addContainerGap(228, Short.MAX_VALUE)
-                .addComponent(createCustomerTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 658, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(73, 73, 73)
-                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(createCustomerTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(163, 163, 163)
+                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         createCustomerBlueBackgroundLayout.setVerticalGroup(
@@ -76,13 +86,13 @@ public class CreateCustomerForm extends javax.swing.JFrame {
             .addGroup(createCustomerBlueBackgroundLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(createCustomerBlueBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(backButton)
                     .addComponent(createCustomerTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
         addButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        addButton.setText("ADD");
+        addButton.setText("FIND");
         addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addButtonActionPerformed(evt);
@@ -114,18 +124,31 @@ public class CreateCustomerForm extends javax.swing.JFrame {
 
         phoneNumberTextbox.setFont(new java.awt.Font("Tahoma", 0, 40)); // NOI18N
 
+        addButton1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        addButton1.setText("ADD");
+        addButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButton1ActionPerformed(evt);
+            }
+        });
+
+        addButton2.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        addButton2.setText("UPDATE");
+        addButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout createCustomerBackgroundLayout = new javax.swing.GroupLayout(createCustomerBackground);
         createCustomerBackground.setLayout(createCustomerBackgroundLayout);
         createCustomerBackgroundLayout.setHorizontalGroup(
             createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(createCustomerBlueBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(createCustomerBackgroundLayout.createSequentialGroup()
-                .addGap(208, 208, 208)
                 .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, createCustomerBackgroundLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(createCustomerBackgroundLayout.createSequentialGroup()
+                        .addGap(208, 208, 208)
                         .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(emailLabel)
                             .addComponent(firstNameLabel)
@@ -139,14 +162,23 @@ public class CreateCustomerForm extends javax.swing.JFrame {
                                     .addComponent(phoneNumberTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(emailTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(surnameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(addressTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 142, Short.MAX_VALUE)))
-                .addContainerGap())
+                                    .addComponent(addressTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(createCustomerBackgroundLayout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40)
+                        .addComponent(addButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(152, Short.MAX_VALUE))
             .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, createCustomerBackgroundLayout.createSequentialGroup()
                     .addContainerGap(530, Short.MAX_VALUE)
                     .addComponent(firstNameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(151, 151, 151)))
+            .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, createCustomerBackgroundLayout.createSequentialGroup()
+                    .addContainerGap(727, Short.MAX_VALUE)
+                    .addComponent(addButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(20, 20, 20)))
         );
         createCustomerBackgroundLayout.setVerticalGroup(
             createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,14 +202,21 @@ public class CreateCustomerForm extends javax.swing.JFrame {
                 .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(phoneNumberLabel)
                     .addComponent(phoneNumberTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
-                .addComponent(addButton)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addButton)
+                    .addComponent(addButton2))
+                .addGap(19, 19, 19))
             .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(createCustomerBackgroundLayout.createSequentialGroup()
                     .addGap(211, 211, 211)
                     .addComponent(firstNameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(431, Short.MAX_VALUE)))
+            .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, createCustomerBackgroundLayout.createSequentialGroup()
+                    .addContainerGap(627, Short.MAX_VALUE)
+                    .addComponent(addButton1)
+                    .addGap(20, 20, 20)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -195,13 +234,49 @@ public class CreateCustomerForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:#
+         String sql= "INSERT INTO Customer(ID, createdDate, firstName, lastName, phoneNum,email, type, discountType, discountRate, address) Values(?,?,?,?,?,?,?,?,?,?)";
+        try (//Get connection to the database
+            Connection con = DbCon.getConnection();
+            ){
+            
+           
+            
+          pst=con.prepareStatement(sql);
+           pst.setString(1, null); 
+          pst.setString(2, null);  //add date
+          pst.setString(3, firstNameTextbox.getText());
+          pst.setString(4, surnameTextbox.getText());
+         pst.setString(5, phoneNumberTextbox.getText());
+         pst.setString(6, emailTextbox.getText());
+          pst.setString(7, "regular");
+          pst.setString(8, null);
+         pst.setString(9, null);
+         pst.setString(10, addressTextbox.getText());
+        
+         
+          pst.execute();
+          JOptionPane.showMessageDialog(null,"inserted successfully" );
+          dispose();
+        
+        }
+        catch (Exception e) {
+        JOptionPane.showMessageDialog(null,"error");
+        }
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
         dispose(); 
     }//GEN-LAST:event_backButtonActionPerformed
+
+    private void addButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addButton1ActionPerformed
+
+    private void addButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -220,27 +295,31 @@ public class CreateCustomerForm extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CreateCustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CreateCustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CreateCustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CreateCustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CreateCustomerForm().setVisible(true);
+                new CustomerForm().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
+    private javax.swing.JButton addButton1;
+    private javax.swing.JButton addButton2;
     private javax.swing.JLabel addressLabel;
     private javax.swing.JTextField addressTextbox;
     private javax.swing.JButton backButton;

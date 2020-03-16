@@ -30,7 +30,6 @@ public class ReturnTicket extends javax.swing.JFrame {
         returnTicketBlueBackground = new javax.swing.JPanel();
         bookTicketTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
-        selectCustomerButton = new javax.swing.JButton();
         recordReturnLogButton = new javax.swing.JButton();
         ticketIDLabel = new javax.swing.JLabel();
         refundButton = new javax.swing.JButton();
@@ -75,14 +74,6 @@ public class ReturnTicket extends javax.swing.JFrame {
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
-        selectCustomerButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        selectCustomerButton.setText("Select Customer");
-        selectCustomerButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                selectCustomerButtonActionPerformed(evt);
-            }
-        });
-
         recordReturnLogButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         recordReturnLogButton.setText("Record return in log");
         recordReturnLogButton.addActionListener(new java.awt.event.ActionListener() {
@@ -112,9 +103,7 @@ public class ReturnTicket extends javax.swing.JFrame {
             .addGroup(returnTicketBackgroundLayout.createSequentialGroup()
                 .addGap(61, 61, 61)
                 .addComponent(recordReturnLogButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
-                .addComponent(selectCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(85, 85, 85)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(refundButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61))
             .addGroup(returnTicketBackgroundLayout.createSequentialGroup()
@@ -122,20 +111,19 @@ public class ReturnTicket extends javax.swing.JFrame {
                 .addComponent(ticketIDLabel)
                 .addGap(65, 65, 65)
                 .addComponent(ticketIDTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(243, Short.MAX_VALUE))
         );
         returnTicketBackgroundLayout.setVerticalGroup(
             returnTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(returnTicketBackgroundLayout.createSequentialGroup()
                 .addComponent(returnTicketBlueBackground, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 236, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 237, Short.MAX_VALUE)
                 .addGroup(returnTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ticketIDTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ticketIDLabel))
                 .addGap(259, 259, 259)
                 .addGroup(returnTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(recordReturnLogButton)
-                    .addComponent(selectCustomerButton)
                     .addComponent(refundButton))
                 .addGap(165, 165, 165))
         );
@@ -158,15 +146,6 @@ public class ReturnTicket extends javax.swing.JFrame {
         // TODO add your handling code here:
             dispose(); 
     }//GEN-LAST:event_backButtonActionPerformed
-
-    private void selectCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectCustomerButtonActionPerformed
-        // TODO add your handling code here:
-     
-     CustomerRecords s = new       CustomerRecords ();
-        s.setVisible(true);
-        
-        
-    }//GEN-LAST:event_selectCustomerButtonActionPerformed
 
     private void recordReturnLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordReturnLogButtonActionPerformed
         // TODO add your handling code here:
@@ -219,7 +198,6 @@ public class ReturnTicket extends javax.swing.JFrame {
     private javax.swing.JButton refundButton;
     private javax.swing.JPanel returnTicketBackground;
     private javax.swing.JPanel returnTicketBlueBackground;
-    private javax.swing.JButton selectCustomerButton;
     private javax.swing.JLabel ticketIDLabel;
     private javax.swing.JTextField ticketIDTextbox;
     // End of variables declaration//GEN-END:variables

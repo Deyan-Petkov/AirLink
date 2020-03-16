@@ -121,6 +121,11 @@ public class LoginForm extends javax.swing.JFrame {
         });
 
         passwordBox.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        passwordBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout loginBackgroundLayout = new javax.swing.GroupLayout(loginBackground);
         loginBackground.setLayout(loginBackgroundLayout);
@@ -131,8 +136,8 @@ public class LoginForm extends javax.swing.JFrame {
                 .addGap(87, 87, 87)
                 .addGroup(loginBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(passwordLabel))
-                .addGap(117, 117, 117)
+                    .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(102, 102, 102)
                 .addGroup(loginBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(usernameTextbox)
                     .addComponent(passwordBox, javax.swing.GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE))
@@ -234,6 +239,10 @@ public class LoginForm extends javax.swing.JFrame {
       
 
     }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void passwordBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passwordBoxActionPerformed
 
     /**
      * @param args the command line arguments
