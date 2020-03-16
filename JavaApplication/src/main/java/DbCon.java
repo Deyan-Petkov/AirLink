@@ -21,7 +21,8 @@ public class DbCon {
     
     public static Connection getConnection() throws ClassNotFoundException{
         try {
-            return DriverManager.getConnection(SQCONN);//Allocates the appropriate driver for the database and creates connection
+            return DriverManager.getConnection(SQCONN);//Allocates the appropriate driver for the database and creates connection.
+            //The connection libraries are resolved from the pom.xml file dependencies  
         } catch (SQLException ex) {
             Logger.getLogger(DbCon.class.getName()).log(Level.SEVERE, null, ex);
         }
