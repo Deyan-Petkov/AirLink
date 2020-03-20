@@ -235,7 +235,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // TODO add your handling code here:#
-         String sql= "INSERT INTO Customer(ID, createdDate, firstName, lastName, phoneNum,email, type, discountType, discountRate, address) Values(?,?,?,?,?,?,?,?,?,?)";
+         String sql= "INSERT INTO Customer(ID, firstName, lastName, phoneNum,email, type, discountType, discountRate, address) Values(?,?,?,?,?,?,?,?,?)";
         try (//Get connection to the database
             Connection con = DbCon.getConnection();
             ){
@@ -243,8 +243,7 @@ public class CustomerForm extends javax.swing.JFrame {
            
             //changes made 
           pst=con.prepareStatement(sql);
-           pst.setString(1, null); 
-          pst.setString(2, null);  //add date
+           pst.setString(1, null);
           pst.setString(3, firstNameTextbox.getText());
           pst.setString(4, surnameTextbox.getText());
          pst.setString(5, phoneNumberTextbox.getText());
