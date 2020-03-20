@@ -232,10 +232,6 @@ public class CustomerRecords extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_backButtonActionPerformed
 
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_deleteButtonActionPerformed
-
     private void findButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_findButtonActionPerformed
@@ -277,10 +273,20 @@ public class CustomerRecords extends javax.swing.JFrame {
                 
                 
     }//GEN-LAST:event_updateButtonActionPerformed
-
+     
     private void selectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectButtonActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_selectButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        try(Connection con = DbCon.getConnection()){
+            PreparedStatement pst = con.prepareStatement("delete from Customer where ID = '" + defTabMod.getValueAt(selectedRow, 0)+"'");
+            pst.execute();
+            
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     /**
      * @param args the command line arguments
