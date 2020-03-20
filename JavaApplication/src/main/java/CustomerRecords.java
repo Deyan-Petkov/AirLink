@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  * @author xahna
  */
 public class CustomerRecords extends javax.swing.JFrame {
-    
+
     private DefaultTableModel defTabMod;
     //holds the row number selected by the user
     private int selectedRow;
@@ -28,9 +28,9 @@ public class CustomerRecords extends javax.swing.JFrame {
         initComponents();
     }
 
-    public void initCustomerRecords() {
+    public void initCustomerRecords(String sqlStatement) {
         //populate the table with the data from tabale Customer 
-        try (PreparedStatement ps = DbCon.getConnection().prepareStatement("select * from Customer");){
+        try ( PreparedStatement ps = DbCon.getConnection().prepareStatement(sqlStatement);) {
             ResultSet rs = ps.executeQuery();
             ResultSetMetaData rsmd = rs.getMetaData();
 
@@ -76,11 +76,12 @@ public class CustomerRecords extends javax.swing.JFrame {
         customerRecordsTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
-        findButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         customerTable = new javax.swing.JTable();
         updateButton = new javax.swing.JButton();
-        selectButton = new javax.swing.JButton();
+        slctButton = new javax.swing.JButton();
+        findComboBox = new javax.swing.JComboBox<>();
+        findTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -129,14 +130,6 @@ public class CustomerRecords extends javax.swing.JFrame {
             }
         });
 
-        findButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        findButton.setText("FIND");
-        findButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                findButtonActionPerformed(evt);
-            }
-        });
-
         customerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -170,11 +163,32 @@ public class CustomerRecords extends javax.swing.JFrame {
             }
         });
 
-        selectButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        selectButton.setText("SELECT");
-        selectButton.addActionListener(new java.awt.event.ActionListener() {
+        slctButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        slctButton.setText("SELECT");
+        slctButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                selectButtonActionPerformed(evt);
+                slctButtonActionPerformed(evt);
+            }
+        });
+
+        findComboBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        findComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIND BY ID", "FIND BY NAME" }));
+        findComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                findComboBoxActionPerformed(evt);
+            }
+        });
+
+        findTextField.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        findTextField.setText("...");
+        findTextField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                findTextFieldMouseClicked(evt);
+            }
+        });
+        findTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                findTextFieldActionPerformed(evt);
             }
         });
 
@@ -184,13 +198,15 @@ public class CustomerRecords extends javax.swing.JFrame {
             customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(customerRecordsBlueBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerRecordsBackgroundLayout.createSequentialGroup()
-                .addContainerGap(81, Short.MAX_VALUE)
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1037, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
                         .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(findButton, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                            .addComponent(selectButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(slctButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(findComboBox, 0, 300, Short.MAX_VALUE))
+                        .addGap(69, 69, 69)
+                        .addComponent(findTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -201,28 +217,36 @@ public class CustomerRecords extends javax.swing.JFrame {
             customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
                 .addComponent(customerRecordsBlueBackground, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(97, 97, 97)
+                .addGap(76, 76, 76)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(33, 33, 33)
+                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerRecordsBackgroundLayout.createSequentialGroup()
+                        .addGap(59, 59, 59)
+                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(findTextField)
+                            .addComponent(findComboBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(26, 26, 26)
                 .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(findButton)
-                    .addComponent(deleteButton))
-                .addGap(61, 61, 61))
+                    .addComponent(deleteButton)
+                    .addComponent(slctButton))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(customerRecordsBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(customerRecordsBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 1140, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(customerRecordsBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+            .addComponent(customerRecordsBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
         );
 
         pack();
@@ -232,61 +256,84 @@ public class CustomerRecords extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_backButtonActionPerformed
 
-    private void findButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_findButtonActionPerformed
-
     private void customerTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customerTableMouseClicked
         //holds teh row number selected with the mouse
         selectedRow = customerTable.getSelectedRow();
-        
+
     }//GEN-LAST:event_customerTableMouseClicked
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         // Implements the updatate button updating the whole row chosen with the mouse.
         //By double clicking you can change the entry. After finishing click update.
-      try(Connection con = DbCon.getConnection()){
-          PreparedStatement pst = con.prepareStatement("update Customer set firstName = '" 
-                  + defTabMod.getValueAt(selectedRow, 1)+
-                  "', lastName = '" +
-                  defTabMod.getValueAt(selectedRow, 2)+
-                  "', phoneNum = '" +
-                  defTabMod.getValueAt(selectedRow, 3)+ 
-                  "', email = '" +
-                  defTabMod.getValueAt(selectedRow, 4)+ 
-                  "', type = '" +
-                  defTabMod.getValueAt(selectedRow, 5)+ 
-                  "', discountType = '" +
-                  defTabMod.getValueAt(selectedRow, 6)+ 
-                  "', discountRate = '" +
-                  defTabMod.getValueAt(selectedRow, 7)+ 
-                  "', address = '" +
-                  defTabMod.getValueAt(selectedRow, 8)+ 
-                  
-                  "' where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
-          pst.execute();
-          
-          
-      } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, ex);
-        }
-                
-                
-    }//GEN-LAST:event_updateButtonActionPerformed
-     
-    private void selectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectButtonActionPerformed
-        
-    }//GEN-LAST:event_selectButtonActionPerformed
-
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        try(Connection con = DbCon.getConnection()){
-            PreparedStatement pst = con.prepareStatement("delete from Customer where ID = '" + defTabMod.getValueAt(selectedRow, 0)+"'");
+        try ( Connection con = DbCon.getConnection()) {
+            PreparedStatement pst = con.prepareStatement("update Customer set firstName = '"
+                    + defTabMod.getValueAt(selectedRow, 1)
+                    + "', lastName = '"
+                    + defTabMod.getValueAt(selectedRow, 2)
+                    + "', phoneNum = '"
+                    + defTabMod.getValueAt(selectedRow, 3)
+                    + "', email = '"
+                    + defTabMod.getValueAt(selectedRow, 4)
+                    + "', type = '"
+                    + defTabMod.getValueAt(selectedRow, 5)
+                    + "', discountType = '"
+                    + defTabMod.getValueAt(selectedRow, 6)
+                    + "', discountRate = '"
+                    + defTabMod.getValueAt(selectedRow, 7)
+                    + "', address = '"
+                    + defTabMod.getValueAt(selectedRow, 8)
+                    + "' where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
             pst.execute();
-            
+
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+
+    }//GEN-LAST:event_updateButtonActionPerformed
+
+    private void slctButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_slctButtonActionPerformed
+
+        try ( Connection con = DbCon.getConnection()) {
+            PreparedStatement pst = null;
+            if (findTextField.getText().equals("")){
+                initCustomerRecords("select * from Customer");
+            }
+            else if (findComboBox.getSelectedItem().toString().equals("FIND BY ID")) {
+             //   pst = con.prepareStatement("select * from Customer where ID = '" + findTextField.getText() + "'");
+                initCustomerRecords("select * from Customer where ID = '" + findTextField.getText() + "'");
+            } else if (findComboBox.getSelectedItem().toString().equals("FIND BY NAME"))
+            {
+              //  pst = con.prepareStatement("select * from Customer where fistName = '" + findTextField.getText() + "'");
+                initCustomerRecords("select * from Customer where firstName = '" + findTextField.getText() + "'");
+            }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_slctButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        try ( Connection con = DbCon.getConnection()) {
+            PreparedStatement pst = con.prepareStatement("delete from Customer where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
+            pst.execute();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void findComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_findComboBoxActionPerformed
+
+    private void findTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_findTextFieldActionPerformed
+
+    private void findTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_findTextFieldMouseClicked
+        findTextField.setText(" ");
+    }//GEN-LAST:event_findTextFieldMouseClicked
 
     /**
      * @param args the command line arguments
@@ -331,9 +378,10 @@ public class CustomerRecords extends javax.swing.JFrame {
     private javax.swing.JLabel customerRecordsTitle;
     private javax.swing.JTable customerTable;
     private javax.swing.JButton deleteButton;
-    private javax.swing.JButton findButton;
+    private javax.swing.JComboBox<String> findComboBox;
+    private javax.swing.JTextField findTextField;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton selectButton;
+    private javax.swing.JButton slctButton;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }

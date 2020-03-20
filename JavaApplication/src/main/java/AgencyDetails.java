@@ -209,7 +209,7 @@ public class AgencyDetails extends javax.swing.JFrame {
             
         }
         catch (Exception e) {
-        JOptionPane.showMessageDialog(null,"error");
+        JOptionPane.showMessageDialog(null,"Agency Details Save button error");
         }
         
       
