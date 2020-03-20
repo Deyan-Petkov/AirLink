@@ -257,9 +257,9 @@ public class BookTicket extends javax.swing.JFrame {
 
     private void selectCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectCustomerButtonActionPerformed
         // TODO add your handling code here:
-        CustomerForm s = new CustomerForm();
-        s.setVisible(true);     
-        s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
+        CustomerRecords cr = new CustomerRecords();
+        cr.setVisible(true);     
+        cr.setDefaultCloseOperation(cr.DISPOSE_ON_CLOSE);
           
     }//GEN-LAST:event_selectCustomerButtonActionPerformed
 

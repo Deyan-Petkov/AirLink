@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  * @author xahna
  */
 public class CustomerRecords extends javax.swing.JFrame {
-
+    //Holds copy of the database during the current session
     private DefaultTableModel defTabMod;
     //holds the row number selected by the user
     private int selectedRow;
@@ -28,16 +28,34 @@ public class CustomerRecords extends javax.swing.JFrame {
         initComponents();
     }
 
+    //returns  number bigger with 1 from the current biggest ID
+    public static int nextID() {
+        int result = 0;
+        try ( Connection con = DbCon.getConnection()) {
+            //find the greatest ID in the database
+            PreparedStatement pst = con.prepareStatement("select max(ID) from Customer");
+            ResultSet rs = pst.executeQuery();//collecet the result
+            //move to the first and only row frow the result
+            rs.next();
+            result = rs.getInt("max(ID)");//asing the result so we can return it
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ++result;
+    }
+    //populates the customerTable table with the relevant data from tha databse
     public void initCustomerRecords(String sqlStatement) {
-        //populate the table with the data from tabale Customer 
+        //estabblish connection with the database
         try ( PreparedStatement ps = DbCon.getConnection().prepareStatement(sqlStatement);) {
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();//contains the data returned from the database quiery
             ResultSetMetaData rsmd = rs.getMetaData();
-
+            //controls the for loop for the assigning of values in the vector
             int column = rsmd.getColumnCount();
-
+            //initialize this form table according to the database structure
             defTabMod = (DefaultTableModel) customerTable.getModel();
             defTabMod.setRowCount(0);
+            //loops over each row of the database
             while (rs.next()) {
                 Vector v = new Vector();
 
@@ -51,9 +69,8 @@ public class CustomerRecords extends javax.swing.JFrame {
                     v.add(rs.getString("discountType"));
                     v.add(rs.getDouble("discountRate"));
                     v.add(rs.getString("address"));
-                }
+                }//inserts single row collected data from the databse into this form table
                 defTabMod.addRow(v);
-
             }
 
         } catch (SQLException | ClassNotFoundException e) {
@@ -87,6 +104,11 @@ public class CustomerRecords extends javax.swing.JFrame {
 
         customerRecordsBackground.setBackground(new java.awt.Color(255, 255, 255));
         customerRecordsBackground.setPreferredSize(new java.awt.Dimension(1200, 1539));
+        customerRecordsBackground.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                customerRecordsBackgroundMouseClicked(evt);
+            }
+        });
 
         customerRecordsBlueBackground.setBackground(new java.awt.Color(102, 255, 255));
 
@@ -261,29 +283,36 @@ public class CustomerRecords extends javax.swing.JFrame {
         selectedRow = customerTable.getSelectedRow();
 
     }//GEN-LAST:event_customerTableMouseClicked
-
+    //Update entry from the databse
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         // Implements the updatate button updating the whole row chosen with the mouse.
         //By double clicking you can change the entry. After finishing click update.
         try ( Connection con = DbCon.getConnection()) {
-            PreparedStatement pst = con.prepareStatement("update Customer set firstName = '"
-                    + defTabMod.getValueAt(selectedRow, 1)
-                    + "', lastName = '"
-                    + defTabMod.getValueAt(selectedRow, 2)
-                    + "', phoneNum = '"
-                    + defTabMod.getValueAt(selectedRow, 3)
-                    + "', email = '"
-                    + defTabMod.getValueAt(selectedRow, 4)
-                    + "', type = '"
-                    + defTabMod.getValueAt(selectedRow, 5)
-                    + "', discountType = '"
-                    + defTabMod.getValueAt(selectedRow, 6)
-                    + "', discountRate = '"
-                    + defTabMod.getValueAt(selectedRow, 7)
-                    + "', address = '"
-                    + defTabMod.getValueAt(selectedRow, 8)
-                    + "' where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
+            PreparedStatement pst = null;
+            if (selectedRow == -1) {
+                pst = con.prepareStatement("INSERT INTO Customer Values (?,'-','-','-','-','-','-','-','-')");
+                pst.setString(1, null);//creates new row initialising the ID and leaving rest of the columns to the user
+            } else {
+                pst = con.prepareStatement("update Customer set firstName = '"
+                        + defTabMod.getValueAt(selectedRow, 1)
+                        + "', lastName = '"
+                        + defTabMod.getValueAt(selectedRow, 2)
+                        + "', phoneNum = '"
+                        + defTabMod.getValueAt(selectedRow, 3)
+                        + "', email = '"
+                        + defTabMod.getValueAt(selectedRow, 4)
+                        + "', type = '"
+                        + defTabMod.getValueAt(selectedRow, 5)
+                        + "', discountType = '"
+                        + defTabMod.getValueAt(selectedRow, 6)
+                        + "', discountRate = '"
+                        + defTabMod.getValueAt(selectedRow, 7)
+                        + "', address = '"
+                        + defTabMod.getValueAt(selectedRow, 8)
+                        + "' where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
+            }
             pst.execute();
+            initCustomerRecords("select * from Customer");
 
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, ex);
@@ -291,20 +320,17 @@ public class CustomerRecords extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_updateButtonActionPerformed
-
+    //Triggers search related to the option chosen in findComboBox
     private void slctButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_slctButtonActionPerformed
-
+        
+        
         try ( Connection con = DbCon.getConnection()) {
             PreparedStatement pst = null;
-            if (findTextField.getText().equals("")){
-                initCustomerRecords("select * from Customer");
-            }
-            else if (findComboBox.getSelectedItem().toString().equals("FIND BY ID")) {
-             //   pst = con.prepareStatement("select * from Customer where ID = '" + findTextField.getText() + "'");
-                initCustomerRecords("select * from Customer where ID = '" + findTextField.getText() + "'");
-            } else if (findComboBox.getSelectedItem().toString().equals("FIND BY NAME"))
-            {
-              //  pst = con.prepareStatement("select * from Customer where fistName = '" + findTextField.getText() + "'");
+            if (findTextField.getText().equals("")) {//To see again all entryes from the database 
+                initCustomerRecords("select * from Customer");//just clear the findTextField and press SELECT again
+            } else if (findComboBox.getSelectedItem().toString().equals("FIND BY ID")) {//Triggers FIND BY ID 
+                initCustomerRecords("select * from Customer where ID = '" + findTextField.getText() + "'");//or FIND BY NAME search
+            } else if (findComboBox.getSelectedItem().toString().equals("FIND BY NAME")) {// taking the data from findTextField
                 initCustomerRecords("select * from Customer where firstName = '" + findTextField.getText() + "'");
             }
 
@@ -315,12 +341,16 @@ public class CustomerRecords extends javax.swing.JFrame {
     }//GEN-LAST:event_slctButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+       //Deletes a single row from the database. Needs to be selected with the mouse
         try ( Connection con = DbCon.getConnection()) {
-            PreparedStatement pst = con.prepareStatement("delete from Customer where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
+            PreparedStatement pst = con.prepareStatement("delete from Customer where ID = '" +
+                defTabMod.getValueAt(selectedRow, 0) + "'");
             pst.execute();
+
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, ex);
         }
+        initCustomerRecords("select * from Customer");
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void findComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findComboBoxActionPerformed
@@ -332,8 +362,15 @@ public class CustomerRecords extends javax.swing.JFrame {
     }//GEN-LAST:event_findTextFieldActionPerformed
 
     private void findTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_findTextFieldMouseClicked
-        findTextField.setText(" ");
+        findTextField.setText("");//clears the textField once you click on it
     }//GEN-LAST:event_findTextFieldMouseClicked
+
+    private void customerRecordsBackgroundMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customerRecordsBackgroundMouseClicked
+        selectedRow = -1;//sets selectedRow to -1 - needed for adding new row in the database
+        //whic after that can be populated and updated.
+        //Clickng outside of the table and buttons will set selectedRow to -1.
+        //After that clicking on UPDATE button will create the new empty row on the bottom of the table
+    }//GEN-LAST:event_customerRecordsBackgroundMouseClicked
 
     /**
      * @param args the command line arguments
