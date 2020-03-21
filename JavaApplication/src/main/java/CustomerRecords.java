@@ -33,11 +33,11 @@ public class CustomerRecords extends javax.swing.JFrame {
     }
 
     //returns  number bigger with 1 from the biggest current ID
-    public static int nextID() {
+    public static int nextID(String sqlString) {
         int result = 0;
         try ( Connection con = DbCon.getConnection()) {
             //find the greatest ID in the database
-            PreparedStatement pst = con.prepareStatement("select max(ID) from Customer");
+            PreparedStatement pst = con.prepareStatement("select max(ID) from '" + sqlString + "'");
             ResultSet rs = pst.executeQuery();//collecet the result
             //move to the first and only row frow the result
             rs.next();
@@ -221,7 +221,7 @@ public class CustomerRecords extends javax.swing.JFrame {
         });
 
         ticketButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        ticketButton.setText("Ticket");
+        ticketButton.setText("Tickets");
         ticketButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ticketButtonActionPerformed(evt);
@@ -241,17 +241,14 @@ public class CustomerRecords extends javax.swing.JFrame {
                         .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(findComboBox, 0, 300, Short.MAX_VALUE)
                             .addComponent(findTextField))
-                        .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(findButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(62, 62, 62)
-                                .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
-                                .addGap(67, 67, 67)
-                                .addComponent(ticketButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(ticketButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(findButton, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
+                        .addGap(62, 62, 62)
+                        .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(82, 82, 82))
         );
         customerRecordsBackgroundLayout.setVerticalGroup(
@@ -274,7 +271,7 @@ public class CustomerRecords extends javax.swing.JFrame {
                     .addComponent(findTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ticketButton))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -382,7 +379,7 @@ public class CustomerRecords extends javax.swing.JFrame {
         try ( Connection con = DbCon.getConnection()) {
 
             PreparedStatement pst = con.prepareStatement("INSERT INTO Customer Values (?,'-','-','-','-','-','-','-','-')");
-            pst.setInt(1, nextID());//set ID column
+            pst.setInt(1, nextID("Customer"));//set ID column
             pst.execute();
             initCustomerRecords("select * from Customer");
         } catch (ClassNotFoundException | SQLException ex) {

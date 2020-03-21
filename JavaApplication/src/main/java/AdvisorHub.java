@@ -226,9 +226,35 @@ public class AdvisorHub extends javax.swing.JFrame {
 
     private void sellTicketComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellTicketComboBoxActionPerformed
         // TODO add your handling code here:
-         BookTicket s = new BookTicket();
-        s.setVisible(true);     
-        s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
+         BookTicket bookTicket = new BookTicket();
+        bookTicket.setVisible(true);     
+        bookTicket.setDefaultCloseOperation(bookTicket.DISPOSE_ON_CLOSE);
+        
+        
+        switch(sellTicketComboBox.getSelectedItem().toString()){
+            case "444":
+                bookTicket.setComboBoxIndex(444);
+                break;
+            case "440":
+                bookTicket.setComboBoxIndex(440);
+                break;
+            case "420":
+                bookTicket.setComboBoxIndex(420);
+                break;
+            case "201":
+                bookTicket.setComboBoxIndex(201);
+                break;
+            case "101":
+                bookTicket.setComboBoxIndex(101);
+                break;
+            case "451":
+                bookTicket.setComboBoxIndex(451);
+                break;
+            case "452":
+                bookTicket.setComboBoxIndex(452);
+                break;
+            
+        }
     }//GEN-LAST:event_sellTicketComboBoxActionPerformed
 
     /**

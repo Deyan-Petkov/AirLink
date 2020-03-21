@@ -63,19 +63,15 @@
                               <Component id="findComboBox" pref="300" max="32767" attributes="0"/>
                               <Component id="findTextField" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="findButton" min="-2" pref="300" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
-                                  <Component id="updateButton" min="-2" pref="300" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
-                                  <Component id="ticketButton" min="-2" pref="300" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="addButton" min="-2" pref="300" max="-2" attributes="0"/>
-                              </Group>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="ticketButton" max="32767" attributes="0"/>
+                              <Component id="findButton" pref="300" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="62" pref="62" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="updateButton" alignment="0" min="-2" pref="300" max="-2" attributes="0"/>
+                              <Component id="addButton" alignment="1" min="-2" pref="300" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -108,7 +104,7 @@
                       <Component id="addButton" alignment="3" max="32767" attributes="0"/>
                       <Component id="ticketButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="40" max="32767" attributes="0"/>
+                  <EmptySpace pref="41" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -319,7 +315,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="36" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Ticket"/>
+            <Property name="text" type="java.lang.String" value="Tickets"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ticketButtonActionPerformed"/>
