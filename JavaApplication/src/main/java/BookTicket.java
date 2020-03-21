@@ -9,12 +9,16 @@
  * @author xahna
  */
 public class BookTicket extends javax.swing.JFrame {
-
-    /**
-     * Creates new form exchangeRate
-     */
+   //buyer ID is set when advisor clicks on entry of the CustomerRecords table
+   static int custID;
+   //returns true if BookTicket object was created.
+   static boolean isInstantiated;//When is false clicking on CustomerRecords table doesn't assign value to custID
+   
+   
     public BookTicket() {
         initComponents();
+        isInstantiated = true;
+       
     }
 
     /**
@@ -245,6 +249,7 @@ public class BookTicket extends javax.swing.JFrame {
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
             dispose(); 
+            isInstantiated = false;
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void saveToATSButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveToATSButtonActionPerformed
@@ -260,6 +265,8 @@ public class BookTicket extends javax.swing.JFrame {
         CustomerRecords cr = new CustomerRecords();
         cr.setVisible(true);     
         cr.setDefaultCloseOperation(cr.DISPOSE_ON_CLOSE);
+        
+        
           
     }//GEN-LAST:event_selectCustomerButtonActionPerformed
 

@@ -201,7 +201,6 @@ public class AdvisorHub extends javax.swing.JFrame {
 
     private void CustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CustomerButtonActionPerformed
         CustomerRecords customerRecords = new CustomerRecords();
-        customerRecords.initCustomerRecords("select * from Customer");
         customerRecords.setVisible(true);
         customerRecords.setDefaultCloseOperation(customerRecords.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_CustomerButtonActionPerformed
