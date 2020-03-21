@@ -43,7 +43,7 @@ public class BookTicket extends javax.swing.JFrame {
         placeItineraryLabel = new javax.swing.JLabel();
         paymentTypeLabel = new javax.swing.JLabel();
         amountLabel = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        typeComboBox = new javax.swing.JComboBox<>();
         amountTextbox = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -157,8 +157,13 @@ public class BookTicket extends javax.swing.JFrame {
         amountLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         amountLabel.setText("Amount:");
 
-        jComboBox2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Card", "Cash" }));
+        typeComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Card", "Cash" }));
+        typeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                typeComboBoxActionPerformed(evt);
+            }
+        });
 
         amountTextbox.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
         amountTextbox.addActionListener(new java.awt.event.ActionListener() {
@@ -182,7 +187,7 @@ public class BookTicket extends javax.swing.JFrame {
                 .addGap(129, 129, 129)
                 .addComponent(paymentTypeLabel)
                 .addGap(36, 36, 36)
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(322, 322, 322)
                 .addComponent(amountLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -221,7 +226,7 @@ public class BookTicket extends javax.swing.JFrame {
                         .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(paymentTypeLabel)
                             .addComponent(amountLabel)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(59, 59, 59))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
                         .addComponent(amountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -251,7 +256,10 @@ public class BookTicket extends javax.swing.JFrame {
             dispose(); 
             isInstantiated = false;
     }//GEN-LAST:event_backButtonActionPerformed
-
+private void typeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {                                                
+        // TODO add your handling code here:
+        
+    }       
     private void saveToATSButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveToATSButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_saveToATSButtonActionPerformed
@@ -325,13 +333,13 @@ public class BookTicket extends javax.swing.JFrame {
     private javax.swing.JPanel bookTicketBlueBackground;
     private javax.swing.JLabel bookTicketTitle;
     private javax.swing.JButton delayPaymentButton;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel paymentTypeLabel;
     private javax.swing.JLabel placeItineraryLabel;
     private javax.swing.JButton saveToATSButton;
     private javax.swing.JButton selectCustomerButton;
+    private javax.swing.JComboBox<String> typeComboBox;
     private javax.swing.JButton voidBlankButton;
     // End of variables declaration//GEN-END:variables
 }

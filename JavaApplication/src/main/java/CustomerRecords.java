@@ -104,6 +104,7 @@ public class CustomerRecords extends javax.swing.JFrame {
         findComboBox = new javax.swing.JComboBox<>();
         findTextField = new javax.swing.JTextField();
         addButton = new javax.swing.JButton();
+        ticketButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -219,6 +220,14 @@ public class CustomerRecords extends javax.swing.JFrame {
             }
         });
 
+        ticketButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        ticketButton.setText("Ticket");
+        ticketButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ticketButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout customerRecordsBackgroundLayout = new javax.swing.GroupLayout(customerRecordsBackground);
         customerRecordsBackground.setLayout(customerRecordsBackgroundLayout);
         customerRecordsBackgroundLayout.setHorizontalGroup(
@@ -232,13 +241,17 @@ public class CustomerRecords extends javax.swing.JFrame {
                         .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(findComboBox, 0, 300, Short.MAX_VALUE)
                             .addComponent(findTextField))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerRecordsBackgroundLayout.createSequentialGroup()
+                        .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(findButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(62, 62, 62)
                                 .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(addButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
+                                .addGap(67, 67, 67)
+                                .addComponent(ticketButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(82, 82, 82))
         );
         customerRecordsBackgroundLayout.setVerticalGroup(
@@ -259,8 +272,9 @@ public class CustomerRecords extends javax.swing.JFrame {
                 .addGap(25, 25, 25)
                 .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(findTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(42, Short.MAX_VALUE))
+                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ticketButton))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -376,6 +390,13 @@ public class CustomerRecords extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_addButtonActionPerformed
 
+    private void ticketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ticketButtonActionPerformed
+        // TODO add your handling code here:
+        salesRecord s = new salesRecord();
+        s.setVisible(true);     
+        s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
+    }//GEN-LAST:event_ticketButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -423,6 +444,7 @@ public class CustomerRecords extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> findComboBox;
     private javax.swing.JTextField findTextField;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton ticketButton;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }

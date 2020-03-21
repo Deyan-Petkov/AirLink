@@ -30,8 +30,8 @@ public class ManagerStock extends javax.swing.JFrame {
         customerRecordsBlueBackground = new javax.swing.JPanel();
         customerRecordsTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
-        deleteButton = new javax.swing.JButton();
-        viewButton = new javax.swing.JButton();
+        returnButton = new javax.swing.JButton();
+        assignButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
@@ -77,19 +77,19 @@ public class ManagerStock extends javax.swing.JFrame {
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        deleteButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        deleteButton.setText("DELETE");
-        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+        returnButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        returnButton.setText("RETURN");
+        returnButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteButtonActionPerformed(evt);
+                returnButtonActionPerformed(evt);
             }
         });
 
-        viewButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        viewButton.setText("SELECT");
-        viewButton.addActionListener(new java.awt.event.ActionListener() {
+        assignButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        assignButton.setText("ASSIGN");
+        assignButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewButtonActionPerformed(evt);
+                assignButtonActionPerformed(evt);
             }
         });
 
@@ -222,9 +222,9 @@ public class ManagerStock extends javax.swing.JFrame {
                 .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1069, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
-                        .addComponent(viewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(assignButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(returnButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(56, Short.MAX_VALUE))
         );
         customerRecordsBackgroundLayout.setVerticalGroup(
@@ -235,8 +235,8 @@ public class ManagerStock extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
                 .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(viewButton)
-                    .addComponent(deleteButton))
+                    .addComponent(assignButton)
+                    .addComponent(returnButton))
                 .addGap(61, 61, 61))
         );
 
@@ -259,14 +259,14 @@ public class ManagerStock extends javax.swing.JFrame {
             dispose(); 
     }//GEN-LAST:event_backButtonActionPerformed
 
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    private void returnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_deleteButtonActionPerformed
+    }//GEN-LAST:event_returnButtonActionPerformed
 
-    private void viewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewButtonActionPerformed
-        Blank s = new Blank();
-        s.setVisible(true);// TODO add your handling code here:
-    }//GEN-LAST:event_viewButtonActionPerformed
+    private void assignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignButtonActionPerformed
+        AdvisorsList advlist= new AdvisorsList();
+        advlist.setVisible(true);
+    }//GEN-LAST:event_assignButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -305,13 +305,13 @@ public class ManagerStock extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton assignButton;
     private javax.swing.JButton backButton;
     private javax.swing.JPanel customerRecordsBackground;
     private javax.swing.JPanel customerRecordsBlueBackground;
     private javax.swing.JLabel customerRecordsTitle;
-    private javax.swing.JButton deleteButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JButton viewButton;
+    private javax.swing.JButton returnButton;
     // End of variables declaration//GEN-END:variables
 }

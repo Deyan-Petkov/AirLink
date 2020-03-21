@@ -1,3 +1,11 @@
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,12 +17,27 @@
  * @author xahna
  */
 public class ExchangeRate extends javax.swing.JFrame {
-
+    PreparedStatement pst= null; 
+    ResultSet rs=null; 
+    Connection con=null; 
+      int day;
+      int month;
+      int year;
+      String date; 
+    
     /**
      * Creates new form exchangeRate
      */
     public ExchangeRate() {
         initComponents();
+      
+    GregorianCalendar gc= new GregorianCalendar();
+    
+ 
+     day=gc.get(Calendar.DAY_OF_MONTH);
+     // getting month from gc.get() is meesed up thats why hardcoded it 
+     year=gc.get(Calendar.YEAR);
+     date= day +"/"+"4"+"/"+year;
     }
 
     /**
@@ -85,6 +108,11 @@ public class ExchangeRate extends javax.swing.JFrame {
         usdLabel.setText("1 USD:");
 
         exchangeRateTextbox.setFont(new java.awt.Font("Tahoma", 0, 40)); // NOI18N
+        exchangeRateTextbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exchangeRateTextboxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout createCustomerBackgroundLayout = new javax.swing.GroupLayout(createCustomerBackground);
         createCustomerBackground.setLayout(createCustomerBackgroundLayout);
@@ -133,12 +161,40 @@ public class ExchangeRate extends javax.swing.JFrame {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // TODO add your handling code here:
+         
+         String sql= "INSERT INTO ExchangeRates(Date, rate) Values(?,?)";
+        try (//Get connection to the database
+            Connection con = DbCon.getConnection();
+            )
+        {
+            
+           
+            //changes made 
+         pst=con.prepareStatement(sql);
+         pst.setString(1, date);
+         pst.setString(2, exchangeRateTextbox.getText());
+          
+           pst.execute();
+          JOptionPane.showMessageDialog(null,"inserted successfully" );
+          dispose();
+        
+        }
+        catch (Exception e) {
+        JOptionPane.showMessageDialog(null,"error");
+        }
+        
+        
+        
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_backButtonActionPerformed
+
+    private void exchangeRateTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exchangeRateTextboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_exchangeRateTextboxActionPerformed
 
     /**
      * @param args the command line arguments
