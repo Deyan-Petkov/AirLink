@@ -174,7 +174,7 @@
                     <Column editable="true" title="BLANK NUMBER" type="java.lang.Integer"/>
                     <Column editable="true" title="OWNERS ID" type="java.lang.Integer"/>
                     <Column editable="true" title="BLANK TYPE" type="java.lang.String"/>
-                    <Column editable="true" title="SOLD" type="java.lang.Boolean"/>
+                    <Column editable="true" title="SOLD" type="java.lang.String"/>
                     <Column editable="true" title="AUDITORS COUPON" type="java.lang.Integer"/>
                     <Column editable="true" title="NUMBER OF COUPONS" type="java.lang.Integer"/>
                   </Table>
