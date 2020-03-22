@@ -31,6 +31,7 @@ public class SalesRecords extends javax.swing.JFrame {
         paymentTable = new javax.swing.JTable();
         ticketsPane = new javax.swing.JScrollPane();
         ticketsTable = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
         salesBlueBackground = new javax.swing.JPanel();
         salesRecordTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
@@ -89,6 +90,9 @@ public class SalesRecords extends javax.swing.JFrame {
         ticketsPane.setViewportView(ticketsTable);
         ticketsTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        jButton1.setText("EDIT SALE");
+
         javax.swing.GroupLayout salesRecordBackgroundLayout = new javax.swing.GroupLayout(salesRecordBackground);
         salesRecordBackground.setLayout(salesRecordBackgroundLayout);
         salesRecordBackgroundLayout.setHorizontalGroup(
@@ -99,6 +103,10 @@ public class SalesRecords extends javax.swing.JFrame {
                     .addComponent(paymentPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1037, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ticketsPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1037, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(66, 66, 66))
+            .addGroup(salesRecordBackgroundLayout.createSequentialGroup()
+                .addGap(438, 438, 438)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         salesRecordBackgroundLayout.setVerticalGroup(
             salesRecordBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,7 +115,9 @@ public class SalesRecords extends javax.swing.JFrame {
                 .addComponent(ticketsPane, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(120, 120, 120)
                 .addComponent(paymentPane, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(205, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         salesBlueBackground.setBackground(new java.awt.Color(102, 255, 255));
@@ -225,6 +235,7 @@ public class SalesRecords extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane paymentPane;
     private javax.swing.JTable paymentTable;
     private javax.swing.JPanel salesBlueBackground;
