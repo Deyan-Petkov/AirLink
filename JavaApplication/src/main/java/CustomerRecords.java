@@ -389,7 +389,7 @@ public class CustomerRecords extends javax.swing.JFrame {
 
     private void ticketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ticketButtonActionPerformed
         // TODO add your handling code here:
-        SalesRecord s = new SalesRecord();
+        salesRecord s = new salesRecord();
         s.setVisible(true);     
         s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_ticketButtonActionPerformed
