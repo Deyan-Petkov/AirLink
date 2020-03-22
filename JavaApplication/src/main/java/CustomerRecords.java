@@ -221,7 +221,7 @@ public class CustomerRecords extends javax.swing.JFrame {
         });
 
         ticketButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        ticketButton.setText("Tickets");
+        ticketButton.setText("TICKETS");
         ticketButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ticketButtonActionPerformed(evt);
@@ -389,7 +389,7 @@ public class CustomerRecords extends javax.swing.JFrame {
 
     private void ticketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ticketButtonActionPerformed
         // TODO add your handling code here:
-        salesRecord s = new salesRecord();
+        SalesRecords s = new SalesRecords();
         s.setVisible(true);     
         s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_ticketButtonActionPerformed
