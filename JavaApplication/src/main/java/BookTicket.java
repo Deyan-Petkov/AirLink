@@ -1,9 +1,16 @@
 
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -11,24 +18,73 @@ import javax.swing.table.DefaultTableModel;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author xahna
  */
 public class BookTicket extends javax.swing.JFrame {
-   //buyer ID is set when advisor clicks on entry of the CustomerRecords table
-   static int custID;
-   //returns true if BookTicket object was created.
-   static boolean isInstantiated;//When is false clicking on CustomerRecords table doesn't assign value to custID
-   private int comboBoxIndex;
-    DefaultTableModel dftTblMdl;
-   
-   
+
+    //buyer ID is set when advisor clicks on entry of the CustomerRecords table.
+    //The value is assigned in CustomerRecords
+    static int custID;
+    //returns true if BookTicket object was created.
+    static boolean isInstantiated;//When is false clicking on CustomerRecords table doesn't assign value to custID
+    private int comboBoxIndex;//howds the blank type number chosen from the combobox in Advisor class
+    private int blankAllowance;//how many legs can be added to the choosen blank
+    DefaultTableModel flightsDftTblMdl, itinerearyDftTblMdl;
+    int fTblSlctdRow;//when mouse clicked on flights table
+    int itnrRowCount;// current itinenrary row count
+    private long blankNo;//holds unsold blank number
+
     public BookTicket() {
         initComponents();
         isInstantiated = true;
-       
+        initFlightsTable();
+    }
+
+    private long findNextBlankNo() {
+        try ( Connection con = DbCon.getConnection()) {
+            PreparedStatement pst = con.prepareStatement("select min(blankNumber) from Blank where isSold = 'FALSE' and blankNumber like '"
+                    + comboBoxIndex + "%'");
+            ResultSet rs = pst.executeQuery();
+            rs.next();
+            blankNo = rs.getLong("min(blankNumber)");
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return blankNo;
+    }
+
+    private void initFlightsTable() {
+        try ( Connection con = DbCon.getConnection()) {
+            PreparedStatement pst = con.prepareStatement("select * from Flights");
+            ResultSet rs = pst.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+
+            int columnCount = rsmd.getColumnCount();
+
+            flightsDftTblMdl = (DefaultTableModel) flightsjTable.getModel();
+            flightsDftTblMdl.setRowCount(0);
+
+            while (rs.next()) {
+
+                Object[] a = new Object[5];
+
+                for (int i = 0; i < columnCount; i++) {
+                    a[0] = rs.getString("departure");
+                    a[1] = rs.getString("destination");
+                    a[2] = rs.getString("depTime");
+                    a[3] = rs.getString("arrTime");
+                    a[4] = rs.getInt("number");
+                }
+                flightsDftTblMdl.addRow(a);
+
+            }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -44,21 +100,28 @@ public class BookTicket extends javax.swing.JFrame {
         bookTicketBlueBackground = new javax.swing.JPanel();
         bookTicketTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
-        saveToATSButton = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
         voidBlankButton = new javax.swing.JButton();
         selectCustomerButton = new javax.swing.JButton();
         delayPaymentButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        ItineraryTable = new javax.swing.JTable();
-        placeItineraryLabel = new javax.swing.JLabel();
-        paymentTypeLabel = new javax.swing.JLabel();
-        amountLabel = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        itineraryTable = new javax.swing.JTable();
+        itineraryLabel = new javax.swing.JLabel();
+        paymentjComboBox = new javax.swing.JComboBox<>();
         amountTextbox = new javax.swing.JTextField();
-        currencyLabel = new javax.swing.JLabel();
         currencyComboBox = new javax.swing.JComboBox<>();
-        taxesComboBox = new javax.swing.JComboBox<>();
         taxesTextField = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        flightsjTable = new javax.swing.JTable();
+        flightsLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        otherTextField = new javax.swing.JTextField();
+        pricejTextField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        blankNojLabel = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -83,7 +146,7 @@ public class BookTicket extends javax.swing.JFrame {
         bookTicketBlueBackgroundLayout.setHorizontalGroup(
             bookTicketBlueBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBlueBackgroundLayout.createSequentialGroup()
-                .addContainerGap(393, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(bookTicketTitle)
                 .addGap(217, 217, 217)
                 .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -101,15 +164,15 @@ public class BookTicket extends javax.swing.JFrame {
                 .addGap(38, 38, 38))
         );
 
-        saveToATSButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        saveToATSButton.setText("SAVE TO ATS");
-        saveToATSButton.addActionListener(new java.awt.event.ActionListener() {
+        saveButton.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        saveButton.setText("SAVE");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveToATSButtonActionPerformed(evt);
+                saveButtonActionPerformed(evt);
             }
         });
 
-        voidBlankButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        voidBlankButton.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
         voidBlankButton.setText("VOID BLANK");
         voidBlankButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -125,7 +188,7 @@ public class BookTicket extends javax.swing.JFrame {
             }
         });
 
-        delayPaymentButton.setFont(new java.awt.Font("Tahoma", 0, 32)); // NOI18N
+        delayPaymentButton.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
         delayPaymentButton.setText("DELAY PAYMENT");
         delayPaymentButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,43 +196,34 @@ public class BookTicket extends javax.swing.JFrame {
             }
         });
 
-        ItineraryTable.setModel(new javax.swing.table.DefaultTableModel(
+        itineraryTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "Flight Departure", "Flight Destination", "Arrival Time", "Departure Time", "Flight Number"
+                "Flight Departure", "Flight Destination", "Arrival Time", "Departure Time", "Flight Number", "Customer"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
-        ItineraryTable.setColumnSelectionAllowed(true);
-        jScrollPane1.setViewportView(ItineraryTable);
-        ItineraryTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        itineraryTable.setColumnSelectionAllowed(true);
+        jScrollPane1.setViewportView(itineraryTable);
+        itineraryTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
-        placeItineraryLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        placeItineraryLabel.setText("Place Itinerary:");
+        itineraryLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        itineraryLabel.setText("ITINERARY");
 
-        paymentTypeLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        paymentTypeLabel.setText("Payment type:");
-
-        amountLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        amountLabel.setText("Amount:");
-
-        jComboBox2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Card", "Cash" }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+        paymentjComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        paymentjComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CASH", "CARD" }));
+        paymentjComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
+                paymentjComboBoxActionPerformed(evt);
             }
         });
 
@@ -180,14 +234,65 @@ public class BookTicket extends javax.swing.JFrame {
             }
         });
 
-        currencyLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        currencyLabel.setText("Currency type:");
-
         currencyComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        currencyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Local", "USD" }));
+        currencyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LOCAL", "USD" }));
+        currencyComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                currencyComboBoxActionPerformed(evt);
+            }
+        });
 
-        taxesComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        taxesComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Taxes", "Other" }));
+        flightsjTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Flight Departure", "Flight Destination", "Arrival TIme", "Departure Time", "Flight Number"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        flightsjTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                flightsjTableMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(flightsjTable);
+
+        flightsLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        flightsLabel.setText("AVAILABLE FLIGHTS");
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        jLabel1.setText("TAXES");
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        jLabel2.setText("OTHER");
+
+        otherTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                otherTextFieldActionPerformed(evt);
+            }
+        });
+
+        pricejTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pricejTextFieldActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        jLabel3.setText("PRICE");
+
+        blankNojLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel5.setText("Blank No:");
 
         javax.swing.GroupLayout bookTicketBackgroundLayout = new javax.swing.GroupLayout(bookTicketBackground);
         bookTicketBackground.setLayout(bookTicketBackgroundLayout);
@@ -195,85 +300,111 @@ public class BookTicket extends javax.swing.JFrame {
             bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(bookTicketBlueBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(101, Short.MAX_VALUE)
                 .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
-                        .addComponent(placeItineraryLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 914, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(102, 102, 102))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
-                        .addComponent(selectCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(delayPaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
                     .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                                .addComponent(paymentTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(49, 49, 49)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                                    .addComponent(currencyLabel)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(currencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(voidBlankButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(saveToATSButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
-                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(amountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(taxesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(2, 2, 2)
+                                .addComponent(itineraryLabel)
+                                .addGap(337, 337, 337)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(blankNojLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
                                 .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(amountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(taxesTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap())))
+                                    .addComponent(selectCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(flightsLabel)
+                                    .addComponent(voidBlankButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(delayPaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(141, 141, 141)
+                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(currencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(saveButton))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
+                                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
+                                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGap(34, 34, 34))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(taxesTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                                    .addComponent(otherTextField)
+                                    .addComponent(pricejTextField))))
+                        .addContainerGap(110, Short.MAX_VALUE))
+                    .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(amountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10))))
         );
         bookTicketBackgroundLayout.setVerticalGroup(
             bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
                 .addComponent(bookTicketBlueBackground, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(68, 68, 68)
-                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(delayPaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(68, 68, 68)
-                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(placeItineraryLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
+                .addGap(9, 9, 9)
                 .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(currencyLabel)
-                        .addComponent(currencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(taxesComboBox)
-                    .addComponent(taxesTextField))
+                        .addComponent(itineraryLabel)
+                        .addComponent(jLabel5))
+                    .addComponent(jLabel4)
+                    .addComponent(blankNojLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(flightsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                        .addGap(66, 66, 66)
-                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(paymentTypeLabel)
-                            .addComponent(amountLabel)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(59, 59, 59))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(amountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(55, 55, 55)))
-                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(voidBlankButton)
-                    .addComponent(saveToATSButton))
-                .addContainerGap())
+                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                                .addGap(39, 39, 39)
+                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel1)
+                                    .addComponent(currencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(taxesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(33, 33, 33)
+                        .addComponent(otherTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(pricejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(48, 48, 48)
+                        .addComponent(amountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(selectCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                                .addComponent(delayPaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(voidBlankButton)
+                                    .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2))
+                                .addGap(29, 29, 29)
+                                .addComponent(jLabel3))))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(bookTicketBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 1223, Short.MAX_VALUE)
+            .addComponent(bookTicketBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 1323, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,54 +415,121 @@ public class BookTicket extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
-        // TODO add your handling code here:
-            dispose(); 
-            isInstantiated = false;
+        custID = 0;
+        dispose();
+        isInstantiated = false;
     }//GEN-LAST:event_backButtonActionPerformed
 
-    private void saveToATSButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveToATSButtonActionPerformed
-        
-        dftTblMdl = (DefaultTableModel)ItineraryTable.getModel();
-       // dftTblMdl.
-        
-        try(Connection con = DbCon.getConnection()){
-          //  for 
-            PreparedStatement pst = con.prepareStatement("insert into Itinerary values(?,?,?,?,?,?,?,?)");
-            pst.setInt(1, CustomerRecords.nextID("select max(id)from Itinerary"));
-            //pst.setString(2, dftTblMdl.getValueAt(ERROR, NORMAL));
-            
-            
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+
+        //  dftTblMdl = (DefaultTableModel) itineraryTable.getModel();
+        // dftTblMdl.
+        try ( Connection con = DbCon.getConnection()) {
+            PreparedStatement pst;
+
+            while (itinerearyDftTblMdl.getRowCount() > 0) {
+                pst = con.prepareStatement("insert into Itinerary values(?,?,?,?,?,?,?,?)");
+                pst.setInt(1, CustomerRecords.nextID("Itinerary"));
+                pst.setString(2, (String) itinerearyDftTblMdl.getValueAt(0, 0));
+                pst.setString(3, (String) itinerearyDftTblMdl.getValueAt(0, 1));
+                pst.setString(4, (String) itinerearyDftTblMdl.getValueAt(0, 2));
+                pst.setString(5, (String) itinerearyDftTblMdl.getValueAt(0, 3));
+                pst.setInt(6, (int) itinerearyDftTblMdl.getValueAt(0, 4));
+                pst.setLong(7, blankNo);
+                pst.setInt(8, (int) itinerearyDftTblMdl.getValueAt(0, 5));
+
+                itinerearyDftTblMdl.removeRow(0);
+
+                pst.execute();
+
+            }
+
         } catch (ClassNotFoundException | SQLException ex) {
-           Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
-       }
-    }//GEN-LAST:event_saveToATSButtonActionPerformed
+            Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        custID = 0;
+    }//GEN-LAST:event_saveButtonActionPerformed
 
     private void voidBlankButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voidBlankButtonActionPerformed
-        // TODO add your handling code here:
+        if (voidBlankButton.getText().equals("VOID BLANK")) {
+            voidBlankButton.setText("VOIDED");
+            voidBlankButton.setBackground(Color.red);
+        } else if (voidBlankButton.getText().equals("VOIDED")) {
+            voidBlankButton.setText("VOID BLANK");
+            voidBlankButton.setBackground(selectCustomerButton.getBackground());
+        }
     }//GEN-LAST:event_voidBlankButtonActionPerformed
 
     private void selectCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectCustomerButtonActionPerformed
         // TODO add your handling code here:
         CustomerRecords cr = new CustomerRecords();
-        cr.setVisible(true);     
+        cr.setVisible(true);
         cr.setDefaultCloseOperation(cr.DISPOSE_ON_CLOSE);
-        
-        
-          
+        blankNojLabel.setText(Long.toString(findNextBlankNo()));
+
+
     }//GEN-LAST:event_selectCustomerButtonActionPerformed
 
     private void delayPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delayPaymentButtonActionPerformed
-        // TODO add your handling code here:
+        if (delayPaymentButton.getText().equals("DELAY PAYMENT")) {
+            delayPaymentButton.setText("DELAYED");
+            delayPaymentButton.setBackground(Color.red);
+        } else if (delayPaymentButton.getText().equals("DELAYED")) {
+            delayPaymentButton.setText("DELAY PAYMENT");
+            delayPaymentButton.setBackground(selectCustomerButton.getBackground());
+        }
+        findNextBlankNo();
     }//GEN-LAST:event_delayPaymentButtonActionPerformed
 
     private void amountTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountTextboxActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_amountTextboxActionPerformed
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+    private void paymentjComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentjComboBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2ActionPerformed
+    }//GEN-LAST:event_paymentjComboBoxActionPerformed
+
+    private void currencyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currencyComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_currencyComboBoxActionPerformed
+
+    private void otherTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_otherTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_otherTextFieldActionPerformed
+
+    private void pricejTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pricejTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pricejTextFieldActionPerformed
+
+    private void flightsjTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flightsjTableMouseClicked
+
+        if (itnrRowCount >= blankAllowance) {
+            JOptionPane.showMessageDialog(null,
+                    "Maximum allowed flights for this type of blank is " + blankAllowance,
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+        } else {
+            if (custID == 0) {
+                JOptionPane.showMessageDialog(null,
+                        "To add flights, please first \"SELECT CUSTOMER\"",
+                        "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                itinerearyDftTblMdl = (DefaultTableModel) itineraryTable.getModel();
+                fTblSlctdRow = flightsjTable.getSelectedRow();
+                itinerearyDftTblMdl.addRow(new Object[5]);
+                itnrRowCount = itineraryTable.getRowCount();
+                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 0), itnrRowCount - 1, 0);
+                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 1), itnrRowCount - 1, 1);
+                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 2), itnrRowCount - 1, 2);
+                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 3), itnrRowCount - 1, 3);
+                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 4), itnrRowCount - 1, 4);
+                itinerearyDftTblMdl.setValueAt(custID, itnrRowCount - 1, 5);
+            }
+        }
+
+    }//GEN-LAST:event_flightsjTableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -370,30 +568,42 @@ public class BookTicket extends javax.swing.JFrame {
             }
         });
     }
-    
-    public void setComboBoxIndex(int comboBoxIndex){
+
+    public void setComboBoxIndex(int comboBoxIndex, int blankAllowance) {
         this.comboBoxIndex = comboBoxIndex;
+        this.blankAllowance = blankAllowance;
     }
-   
+
+    public int getComboboxIndex() {
+        return comboBoxIndex;
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable ItineraryTable;
-    private javax.swing.JLabel amountLabel;
     private javax.swing.JTextField amountTextbox;
     private javax.swing.JButton backButton;
+    private javax.swing.JLabel blankNojLabel;
     private javax.swing.JPanel bookTicketBackground;
     private javax.swing.JPanel bookTicketBlueBackground;
     private javax.swing.JLabel bookTicketTitle;
     private javax.swing.JComboBox<String> currencyComboBox;
-    private javax.swing.JLabel currencyLabel;
     private javax.swing.JButton delayPaymentButton;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JLabel flightsLabel;
+    private javax.swing.JTable flightsjTable;
+    private javax.swing.JLabel itineraryLabel;
+    private javax.swing.JTable itineraryTable;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel paymentTypeLabel;
-    private javax.swing.JLabel placeItineraryLabel;
-    private javax.swing.JButton saveToATSButton;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField otherTextField;
+    private javax.swing.JComboBox<String> paymentjComboBox;
+    private javax.swing.JTextField pricejTextField;
+    private javax.swing.JButton saveButton;
     private javax.swing.JButton selectCustomerButton;
-    private javax.swing.JComboBox<String> taxesComboBox;
     private javax.swing.JTextField taxesTextField;
     private javax.swing.JButton voidBlankButton;
     // End of variables declaration//GEN-END:variables

@@ -1,3 +1,6 @@
+
+import java.util.Arrays;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -113,7 +116,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         });
 
         makeATSComboBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        makeATSComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MAKE ATS", "International", "Domestic" }));
+        makeATSComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MAKE ATS", "Interline - USD Rate", "Domestic" }));
         makeATSComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 makeATSComboBoxActionPerformed(evt);
@@ -121,7 +124,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         });
 
         sellTicketComboBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        sellTicketComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELL TICKET", "444\t", "440", "420", "201", "101", "451", "452" }));
+        sellTicketComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELL TICKET", "444", "420", "201", "101", "451", "452" }));
         sellTicketComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 sellTicketComboBoxActionPerformed(evt);
@@ -191,7 +194,7 @@ public class AdvisorHub extends javax.swing.JFrame {
 
     private void returnTicketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnTicketButtonActionPerformed
         ReturnTicket s = new ReturnTicket();
-        s.setVisible(true);     
+        s.setVisible(true);
         s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);// TODO add your handling code here:
     }//GEN-LAST:event_returnTicketButtonActionPerformed
 
@@ -214,7 +217,7 @@ public class AdvisorHub extends javax.swing.JFrame {
 
     private void makeATSComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeATSComboBoxActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_makeATSComboBoxActionPerformed
 
     private void logoutButtonlogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonlogoutActionPerformed
@@ -225,36 +228,32 @@ public class AdvisorHub extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutButtonlogoutActionPerformed
 
     private void sellTicketComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellTicketComboBoxActionPerformed
-        // TODO add your handling code here:
-         BookTicket bookTicket = new BookTicket();
-        bookTicket.setVisible(true);     
-        bookTicket.setDefaultCloseOperation(bookTicket.DISPOSE_ON_CLOSE);
+       
         
-        
-        switch(sellTicketComboBox.getSelectedItem().toString()){
-            case "444":
-                bookTicket.setComboBoxIndex(444);
-                break;
-            case "440":
-                bookTicket.setComboBoxIndex(440);
-                break;
-            case "420":
-                bookTicket.setComboBoxIndex(420);
-                break;
-            case "201":
-                bookTicket.setComboBoxIndex(201);
-                break;
-            case "101":
-                bookTicket.setComboBoxIndex(101);
-                break;
-            case "451":
-                bookTicket.setComboBoxIndex(451);
-                break;
-            case "452":
-                bookTicket.setComboBoxIndex(452);
-                break;
-            
+        if (Arrays.asList("444","420","201","101").contains(sellTicketComboBox.getSelectedItem().toString())) {
+             BookTicket bookTicket = new BookTicket();
+            bookTicket.setVisible(true);
+            bookTicket.setDefaultCloseOperation(bookTicket.DISPOSE_ON_CLOSE);
+
+            switch (sellTicketComboBox.getSelectedItem().toString()) {
+                case "444":
+                    bookTicket.setComboBoxIndex(444, 4);
+                    break;
+                case "420":
+                    bookTicket.setComboBoxIndex(420, 2);
+                    break;
+                case "201":
+                    bookTicket.setComboBoxIndex(201, 2);
+                    break;
+                case "101":
+                    bookTicket.setComboBoxIndex(101, 1);
+                    break;
+            }
+        }else{
+            // add code for blanks 451, 452
         }
+
+
     }//GEN-LAST:event_sellTicketComboBoxActionPerformed
 
     /**
