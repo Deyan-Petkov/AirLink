@@ -303,6 +303,7 @@ public class CustomerRecords extends javax.swing.JFrame {
          if(BookTicket.isInstantiated){
              //Set custID in BookTicket according to the mouse selected row ID
              BookTicket.custID = (int) defTabMod.getValueAt(selectedRow, 0);
+             this.dispose();
          }
 
     }//GEN-LAST:event_customerTableMouseClicked

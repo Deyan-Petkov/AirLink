@@ -1,10 +1,13 @@
 
 import java.awt.Color;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,23 +32,31 @@ public class BookTicket extends javax.swing.JFrame {
     static int custID;
     //returns true if BookTicket object was created.
     static boolean isInstantiated;//When is false clicking on CustomerRecords table doesn't assign value to custID
-    private int comboBoxIndex;//howds the blank type number chosen from the combobox in Advisor class
+    private int typeBlank;//howds the blank type number chosen from the combobox in Advisor class
     private int blankAllowance;//how many legs can be added to the choosen blank
     DefaultTableModel flightsDftTblMdl, itinerearyDftTblMdl;
     int fTblSlctdRow;//when mouse clicked on flights table
     int itnrRowCount;// current itinenrary row count
     private long blankNo;//holds unsold blank number
+    boolean delayed;//if payment is delayed
+    private double price;//holds the final blank price
+    private double exchangeRate;
+    private CardInfo cardInfo;
 
     public BookTicket() {
         initComponents();
         isInstantiated = true;
         initFlightsTable();
+        delayed = false;
+        exchangeRate = 0;
+        price = 0;
+
     }
 
     private long findNextBlankNo() {
         try ( Connection con = DbCon.getConnection()) {
-            PreparedStatement pst = con.prepareStatement("select min(blankNumber) from Blank where isSold = 'FALSE' and blankNumber like '"
-                    + comboBoxIndex + "%'");
+            PreparedStatement pst = con.prepareStatement("select min(blankNumber) from Blank where isSold = 0 and blankNumber like '"
+                    + typeBlank + "%'");
             ResultSet rs = pst.executeQuery();
             rs.next();
             blankNo = rs.getLong("min(blankNumber)");
@@ -69,7 +80,7 @@ public class BookTicket extends javax.swing.JFrame {
 
             while (rs.next()) {
 
-                Object[] a = new Object[5];
+                Object[] a = new Object[6];
 
                 for (int i = 0; i < columnCount; i++) {
                     a[0] = rs.getString("departure");
@@ -77,6 +88,7 @@ public class BookTicket extends javax.swing.JFrame {
                     a[2] = rs.getString("depTime");
                     a[3] = rs.getString("arrTime");
                     a[4] = rs.getInt("number");
+                    a[5] = rs.getDouble("price");
                 }
                 flightsDftTblMdl.addRow(a);
 
@@ -117,11 +129,11 @@ public class BookTicket extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         otherTextField = new javax.swing.JTextField();
-        pricejTextField = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         blankNojLabel = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        amountjLabel = new javax.swing.JLabel();
+        PricejButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -201,11 +213,11 @@ public class BookTicket extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Flight Departure", "Flight Destination", "Arrival Time", "Departure Time", "Flight Number", "Customer"
+                "Flight Departure", "Flight Destination", "Arrival Time", "Departure Time", "Flight Number", "Price", "Customer"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -213,6 +225,11 @@ public class BookTicket extends javax.swing.JFrame {
             }
         });
         itineraryTable.setColumnSelectionAllowed(true);
+        itineraryTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                itineraryTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(itineraryTable);
         itineraryTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
@@ -235,10 +252,27 @@ public class BookTicket extends javax.swing.JFrame {
         });
 
         currencyComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        currencyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LOCAL", "USD" }));
+        currencyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CURRENCY", "LOCAL", "USD" }));
         currencyComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 currencyComboBoxActionPerformed(evt);
+            }
+        });
+
+        taxesTextField.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        taxesTextField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                taxesTextFieldMouseClicked(evt);
+            }
+        });
+        taxesTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                taxesTextFieldActionPerformed(evt);
+            }
+        });
+        taxesTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                taxesTextFieldKeyTyped(evt);
             }
         });
 
@@ -247,11 +281,11 @@ public class BookTicket extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Flight Departure", "Flight Destination", "Arrival TIme", "Departure Time", "Flight Number"
+                "Flight Departure", "Flight Destination", "Arrival TIme", "Departure Time", "Flight Number", "Price"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -274,25 +308,45 @@ public class BookTicket extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
         jLabel2.setText("OTHER");
 
+        otherTextField.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        otherTextField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                otherTextFieldMouseClicked(evt);
+            }
+        });
         otherTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 otherTextFieldActionPerformed(evt);
             }
         });
-
-        pricejTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pricejTextFieldActionPerformed(evt);
+        otherTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                otherTextFieldKeyTyped(evt);
             }
         });
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
-        jLabel3.setText("PRICE");
 
         blankNojLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel5.setText("Blank No:");
+
+        amountjLabel.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+
+        PricejButton.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        PricejButton.setText("PRICE");
+        PricejButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PricejButtonMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                PricejButtonMousePressed(evt);
+            }
+        });
+        PricejButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PricejButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout bookTicketBackgroundLayout = new javax.swing.GroupLayout(bookTicketBackground);
         bookTicketBackground.setLayout(bookTicketBackgroundLayout);
@@ -322,25 +376,21 @@ public class BookTicket extends javax.swing.JFrame {
                                     .addComponent(flightsLabel)
                                     .addComponent(voidBlankButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(delayPaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(141, 141, 141)
-                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(currencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(saveButton))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
-                                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
-                                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addGap(34, 34, 34))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                    .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(currencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(95, 95, 95)
+                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(PricejButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(34, 34, 34)
                                 .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(taxesTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
                                     .addComponent(otherTextField)
-                                    .addComponent(pricejTextField))))
+                                    .addComponent(amountjLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addContainerGap(110, Short.MAX_VALUE))
                     .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -377,9 +427,7 @@ public class BookTicket extends javax.swing.JFrame {
                                 .addComponent(taxesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(33, 33, 33)
                         .addComponent(otherTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
-                        .addComponent(pricejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(48, 48, 48)
+                        .addGap(116, 116, 116)
                         .addComponent(amountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
                         .addGap(41, 41, 41)
@@ -391,13 +439,14 @@ public class BookTicket extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(voidBlankButton)
-                                    .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(PricejButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
                                 .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2))
                                 .addGap(29, 29, 29)
-                                .addComponent(jLabel3))))))
+                                .addComponent(amountjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -420,6 +469,7 @@ public class BookTicket extends javax.swing.JFrame {
         isInstantiated = false;
     }//GEN-LAST:event_backButtonActionPerformed
 
+
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
 
         //  dftTblMdl = (DefaultTableModel) itineraryTable.getModel();
@@ -429,14 +479,14 @@ public class BookTicket extends javax.swing.JFrame {
 
             while (itinerearyDftTblMdl.getRowCount() > 0) {
                 pst = con.prepareStatement("insert into Itinerary values(?,?,?,?,?,?,?,?)");
-                pst.setInt(1, CustomerRecords.nextID("Itinerary"));
-                pst.setString(2, (String) itinerearyDftTblMdl.getValueAt(0, 0));
-                pst.setString(3, (String) itinerearyDftTblMdl.getValueAt(0, 1));
-                pst.setString(4, (String) itinerearyDftTblMdl.getValueAt(0, 2));
-                pst.setString(5, (String) itinerearyDftTblMdl.getValueAt(0, 3));
-                pst.setInt(6, (int) itinerearyDftTblMdl.getValueAt(0, 4));
-                pst.setLong(7, blankNo);
-                pst.setInt(8, (int) itinerearyDftTblMdl.getValueAt(0, 5));
+                pst.setInt(1, CustomerRecords.nextID("Itinerary"));//ID
+                pst.setString(2, (String) itinerearyDftTblMdl.getValueAt(0, 0));//Flight Departure
+                pst.setString(3, (String) itinerearyDftTblMdl.getValueAt(0, 1));//Flight Destination
+                pst.setString(4, (String) itinerearyDftTblMdl.getValueAt(0, 2));//Flight Arrival Time
+                pst.setString(5, (String) itinerearyDftTblMdl.getValueAt(0, 3));//Fligght Departure Time
+                pst.setInt(6, (int) itinerearyDftTblMdl.getValueAt(0, 4));//Flight Number
+                pst.setLong(7, blankNo);//Blank Number
+                pst.setInt(8, (int) itinerearyDftTblMdl.getValueAt(0, 6));//Customer
 
                 itinerearyDftTblMdl.removeRow(0);
 
@@ -444,19 +494,61 @@ public class BookTicket extends javax.swing.JFrame {
 
             }
 
+            pst = con.prepareStatement("insert into payment (BlankblankNumber,delayed,exchangeRate,"
+                    + "date,taxes,isRefunded) values(?,?,?,?,?,?)");
+            pst.setLong(1, blankNo);
+            pst.setBoolean(2, delayed);
+            pst.setDouble(3, exchangeRate);
+            pst.setString(4, LocalDate.now().toString());//date
+            pst.setDouble(5, Double.valueOf(taxesTextField.getText()));//taxes
+            pst.setBoolean(6, false);//is refunded
+            pst.execute();
+
+            if (paymentjComboBox.getSelectedItem().toString().equals("CARD")) {
+                pst = con.prepareStatement("update payment set type = '"
+                        + cardInfo.getCardNo() + "',"
+                        + " name = '" + cardInfo.getCardHldrName() + "',"
+                        + " expDate = '" + cardInfo.getCardExpDate() + "'"
+                        + " where BlankblankNumber = '" + blankNo + "'"
+                );
+                pst.execute();
+
+            } else {
+                pst = con.prepareStatement("update payment set type = 'cash' where BlankblankNumber = '" + blankNo + "'");
+                pst.execute();
+            }
+
+            if (typeBlank == 444 | typeBlank == 420) {
+                pst = con.prepareStatement("update payment set otherTaxes = '"
+                        + Double.valueOf(otherTextField.getText())
+                        + "' where BlankblankNumber = '" + blankNo + "'");
+                pst.execute();
+            }
+
+            pst = con.prepareStatement("update Blank set isSold = 1 where blankNumber = '" + blankNo + "'");
+            pst.execute();
+
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
         }
         custID = 0;
+
+        this.dispose();
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void voidBlankButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voidBlankButtonActionPerformed
-        if (voidBlankButton.getText().equals("VOID BLANK")) {
-            voidBlankButton.setText("VOIDED");
-            voidBlankButton.setBackground(Color.red);
-        } else if (voidBlankButton.getText().equals("VOIDED")) {
-            voidBlankButton.setText("VOID BLANK");
-            voidBlankButton.setBackground(selectCustomerButton.getBackground());
+
+        int dialogButton = JOptionPane.showConfirmDialog(null, "Do you want to VOID this blank?", "WARNING", JOptionPane.YES_NO_OPTION);
+
+        if (dialogButton == JOptionPane.YES_OPTION) {
+            try ( Connection con = DbCon.getConnection()) {
+                PreparedStatement ps = con.prepareStatement("update blank set isSold = 'VOID' where blankNumber = " + blankNo);
+                ps.execute();
+                this.dispose();
+
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_voidBlankButtonActionPerformed
 
@@ -466,19 +558,24 @@ public class BookTicket extends javax.swing.JFrame {
         cr.setVisible(true);
         cr.setDefaultCloseOperation(cr.DISPOSE_ON_CLOSE);
         blankNojLabel.setText(Long.toString(findNextBlankNo()));
-
-
+        //if the blank is not 444 or 440 don't allow writing into "Other" text field
+        if (typeBlank == 444 | typeBlank == 420) {
+            otherTextField.setEditable(true);
+        } else {
+            otherTextField.setEditable(false);
+        }
     }//GEN-LAST:event_selectCustomerButtonActionPerformed
 
     private void delayPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delayPaymentButtonActionPerformed
         if (delayPaymentButton.getText().equals("DELAY PAYMENT")) {
             delayPaymentButton.setText("DELAYED");
             delayPaymentButton.setBackground(Color.red);
+            delayed = true;
         } else if (delayPaymentButton.getText().equals("DELAYED")) {
             delayPaymentButton.setText("DELAY PAYMENT");
             delayPaymentButton.setBackground(selectCustomerButton.getBackground());
+            delayed = false;
         }
-        findNextBlankNo();
     }//GEN-LAST:event_delayPaymentButtonActionPerformed
 
     private void amountTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountTextboxActionPerformed
@@ -487,20 +584,71 @@ public class BookTicket extends javax.swing.JFrame {
     }//GEN-LAST:event_amountTextboxActionPerformed
 
     private void paymentjComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentjComboBoxActionPerformed
-        // TODO add your handling code here:
+        if (paymentjComboBox.getSelectedItem().toString().equals("CARD")) {
+            cardInfo = new CardInfo();
+            cardInfo.setVisible(true);
+            cardInfo.setDefaultCloseOperation(cardInfo.DISPOSE_ON_CLOSE);
+        }
     }//GEN-LAST:event_paymentjComboBoxActionPerformed
 
     private void currencyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currencyComboBoxActionPerformed
-        // TODO add your handling code here:
+
+        if ((typeBlank == 444 | typeBlank == 420) & currencyComboBox.getSelectedItem().toString().equals("USD")) {
+
+            try ( Connection con = DbCon.getConnection()) {
+                PreparedStatement pst = con.prepareStatement("select rate from ExchangeRates where date =(select max(date) from ExchangeRates)");
+                ResultSet rs = pst.executeQuery();
+                rs.next();
+                exchangeRate = rs.getDouble("rate");
+
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+            }
+//            if (otherTextField.getText().isEmpty()) {
+//                JOptionPane.showMessageDialog(null,
+//                        "Please fill the \"OTHER\" field!",
+//                        "Warning",
+//                        JOptionPane.WARNING_MESSAGE);
+//                currencyComboBox.setSelectedItem("LOCAL");
+//            }
+////            double USDPrice = new BigDecimal(price * exchangeRate).setScale(2, RoundingMode.HALF_UP).doubleValue();
+////            amountjLabel.setText(String.valueOf(USDPrice + Double.valueOf(otherTextField.getText()) + Double.valueOf(taxesTextField.getText())));
+//
+//            //Set to local price if local is chosen
+//        } else if (currencyComboBox.getSelectedItem().toString().equals("LOCAL")) {
+//            if (taxesTextField.getText().isEmpty()) {
+//                JOptionPane.showMessageDialog(null,
+//                        "Please fill the \"TAXES\" field!",
+//                        "Warning",
+//                        JOptionPane.WARNING_MESSAGE);
+//                currencyComboBox.setSelectedItem("LOCAL");
+//
+//            } else {
+////               amountjLabel.setText(String.valueOf( new BigDecimal(price).setScale(2,RoundingMode.HALF_UP).doubleValue()
+////                    + Double.valueOf(taxesTextField.getText())));
+//            }
+//
+//        } else {
+//            amountjLabel.setText("");
+//        }
+        }
+            //if the chosen blank is not 444 or 420 don't allow payment in USD
+            if (typeBlank != 444 & typeBlank != 420) {
+                if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
+                    JOptionPane.showMessageDialog(null,
+                            "This blank type doesn't allow payments in USD",
+                            "Warning",
+                            JOptionPane.WARNING_MESSAGE);
+                    currencyComboBox.setSelectedItem("LOCAL");
+                }
+            }
+        
+
     }//GEN-LAST:event_currencyComboBoxActionPerformed
 
     private void otherTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_otherTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_otherTextFieldActionPerformed
 
-    private void pricejTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pricejTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_pricejTextFieldActionPerformed
+    }//GEN-LAST:event_otherTextFieldActionPerformed
 
     private void flightsjTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flightsjTableMouseClicked
 
@@ -520,16 +668,88 @@ public class BookTicket extends javax.swing.JFrame {
                 fTblSlctdRow = flightsjTable.getSelectedRow();
                 itinerearyDftTblMdl.addRow(new Object[5]);
                 itnrRowCount = itineraryTable.getRowCount();
-                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 0), itnrRowCount - 1, 0);
-                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 1), itnrRowCount - 1, 1);
-                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 2), itnrRowCount - 1, 2);
-                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 3), itnrRowCount - 1, 3);
-                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 4), itnrRowCount - 1, 4);
-                itinerearyDftTblMdl.setValueAt(custID, itnrRowCount - 1, 5);
+                price += (double) flightsjTable.getValueAt(fTblSlctdRow, 5);
+                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 0), itnrRowCount - 1, 0);//Flight Departure
+                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 1), itnrRowCount - 1, 1);//Flight Destination
+                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 2), itnrRowCount - 1, 2);//Arrival Time
+                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 3), itnrRowCount - 1, 3);//Departure Time
+                itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 4), itnrRowCount - 1, 4);//Fight Number
+                itinerearyDftTblMdl.setValueAt((double) flightsjTable.getValueAt(fTblSlctdRow, 5), itnrRowCount - 1, 5);//Price
+                itinerearyDftTblMdl.setValueAt(custID, itnrRowCount - 1, 6);//Customer
             }
         }
 
     }//GEN-LAST:event_flightsjTableMouseClicked
+
+    private void taxesTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taxesTextFieldActionPerformed
+
+    }//GEN-LAST:event_taxesTextFieldActionPerformed
+
+    private void taxesTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_taxesTextFieldKeyTyped
+    }//GEN-LAST:event_taxesTextFieldKeyTyped
+
+    private void otherTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_otherTextFieldKeyTyped
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_otherTextFieldKeyTyped
+
+    private void itineraryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itineraryTableMouseClicked
+        // TODO add your handling code here:
+        itinerearyDftTblMdl.removeRow(itineraryTable.getSelectedRow());
+    }//GEN-LAST:event_itineraryTableMouseClicked
+
+    private void taxesTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taxesTextFieldMouseClicked
+
+    }//GEN-LAST:event_taxesTextFieldMouseClicked
+
+    private void otherTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_otherTextFieldMouseClicked
+
+    }//GEN-LAST:event_otherTextFieldMouseClicked
+
+    private void PricejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PricejButtonActionPerformed
+
+    }//GEN-LAST:event_PricejButtonActionPerformed
+
+    private void PricejButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PricejButtonMouseClicked
+        // TODO add your handling code here:
+       
+    }//GEN-LAST:event_PricejButtonMouseClicked
+
+    private void PricejButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PricejButtonMousePressed
+        // TODO add your handling code here:
+         if (currencyComboBox.getSelectedItem().toString().equals("CURRENCY")) {
+            JOptionPane.showMessageDialog(null,
+                    "Please select currency",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            currencyComboBox.setSelectedItem("LOCAL");
+            //if local set but taxes is empty
+            if (currencyComboBox.getSelectedItem().toString().equals("LOCAL") && (taxesTextField.getText() == null && taxesTextField.getText().length() <= 0 )) {
+                JOptionPane.showMessageDialog(null,
+                        "Please fill the \"TAXES\" field!",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                currencyComboBox.setSelectedItem("LOCAL");
+                //if USD set but other is empty
+            } else if (currencyComboBox.getSelectedItem().toString().equals("USD") && (otherTextField.getText() == null && taxesTextField.getText().length()<=0)) {
+                JOptionPane.showMessageDialog(null,
+                        "Please fill the \"OTHER\" field!",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                currencyComboBox.setSelectedItem("LOCAL");
+            }
+        } else {
+            if (currencyComboBox.getSelectedItem().toString().equals("LOCAL")) {
+                System.out.println("INSIDE LOCAL");
+                amountjLabel.setText(String.valueOf(new BigDecimal(price).setScale(2, RoundingMode.HALF_UP).doubleValue()
+                        + Double.valueOf(taxesTextField.getText())));
+            } else if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
+                System.out.println("INSIDE USD");
+                double USDPrice = new BigDecimal(price * exchangeRate).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                amountjLabel.setText(String.valueOf(USDPrice + Double.valueOf(otherTextField.getText()) + Double.valueOf(taxesTextField.getText())));
+            }
+        }
+    }//GEN-LAST:event_PricejButtonMousePressed
 
     /**
      * @param args the command line arguments
@@ -570,17 +790,19 @@ public class BookTicket extends javax.swing.JFrame {
     }
 
     public void setComboBoxIndex(int comboBoxIndex, int blankAllowance) {
-        this.comboBoxIndex = comboBoxIndex;
+        this.typeBlank = comboBoxIndex;
         this.blankAllowance = blankAllowance;
     }
 
     public int getComboboxIndex() {
-        return comboBoxIndex;
+        return typeBlank;
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton PricejButton;
     private javax.swing.JTextField amountTextbox;
+    private javax.swing.JLabel amountjLabel;
     private javax.swing.JButton backButton;
     private javax.swing.JLabel blankNojLabel;
     private javax.swing.JPanel bookTicketBackground;
@@ -594,14 +816,12 @@ public class BookTicket extends javax.swing.JFrame {
     private javax.swing.JTable itineraryTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField otherTextField;
     private javax.swing.JComboBox<String> paymentjComboBox;
-    private javax.swing.JTextField pricejTextField;
     private javax.swing.JButton saveButton;
     private javax.swing.JButton selectCustomerButton;
     private javax.swing.JTextField taxesTextField;
