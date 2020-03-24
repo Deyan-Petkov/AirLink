@@ -28,16 +28,16 @@ public class ExchangeRate extends javax.swing.JFrame {
      */
     public ExchangeRate() {
         initComponents();
-          try(Connection con = DbCon.getConnection()){
+        try ( Connection con = DbCon.getConnection()) {//gets the currency type this office is using
             pst = con.prepareStatement("select currency from AgencyDetails");
             ResultSet rs = pst.executeQuery();
             rs.next();
-            LocalCLabel.setText("1 " + rs.getString("currency") + ":");
-            
+            LocalCLabel.setText("1 " + rs.getString("currency") + ":");//sets the label to the according type of currency
+
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(ExchangeRate.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        //sets local date and time variable according to the current date and time
         localDateTime = LocalDateTime.now().withNano(0);
     }
 
@@ -168,12 +168,11 @@ public class ExchangeRate extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // TODO add your handling code here:
 
         String sql = "INSERT INTO ExchangeRates(Date, rate) Values(?,?)";
-        try (Connection con = DbCon.getConnection();) {//Get connection to the database
+        try ( Connection con = DbCon.getConnection();) {//Get connection to the database
 
-            //changes made 
+            //sets date and rate in ExchangeRates table
             pst = con.prepareStatement(sql);
             pst.setString(1, localDateTime.toString());
             pst.setString(2, exchangeRateTextbox.getText());
