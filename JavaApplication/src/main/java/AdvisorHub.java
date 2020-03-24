@@ -6,6 +6,7 @@ import java.util.Arrays;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
  *
  * @author xahna
@@ -227,10 +228,10 @@ public class AdvisorHub extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutButtonlogoutActionPerformed
 
     private void sellTicketComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellTicketComboBoxActionPerformed
-
-        //sets typeBlank and blankAllowance in Blank according to the blank that user chosed
-        if (Arrays.asList("444", "420", "201", "101").contains(sellTicketComboBox.getSelectedItem().toString())) {
-            BookTicket bookTicket = new BookTicket();
+       
+        
+        if (Arrays.asList("444","420","201","101").contains(sellTicketComboBox.getSelectedItem().toString())) {
+             BookTicket bookTicket = new BookTicket();
             bookTicket.setVisible(true);
             bookTicket.setDefaultCloseOperation(bookTicket.DISPOSE_ON_CLOSE);
 
@@ -248,7 +249,7 @@ public class AdvisorHub extends javax.swing.JFrame {
                     bookTicket.setComboBoxIndex(101, 1);
                     break;
             }
-        } else {
+        }else{
             // add code for blanks 451, 452
         }
 
