@@ -12,22 +12,23 @@ import javax.swing.JOptionPane;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author dhruv
  */
 public class Advisor extends javax.swing.JFrame {
-       PreparedStatement pst= null; 
-    ResultSet rs=null; 
+
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+
     /**
      * Creates new form advisor
      */
     public Advisor() {
         initComponents();
     }
-  
-     public static final String encrypt(String md5) {
+
+    public static final String encrypt(String md5) {
 
         try {//This class provides the encrypting algorithm (MD5) 
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
@@ -44,6 +45,7 @@ public class Advisor extends javax.swing.JFrame {
         }
         return null;
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -272,7 +274,7 @@ public class Advisor extends javax.swing.JFrame {
 
     private void backButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonadvisorListActionPerformed
         // TODO add your handling code here:
-           dispose(); 
+        dispose();
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
     private void passwordTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextboxActionPerformed
@@ -296,41 +298,31 @@ public class Advisor extends javax.swing.JFrame {
     }//GEN-LAST:event_surnameTextbox1ActionPerformed
 
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
-        
 
-
-
-
-         // TODO add your handling code here:
-           String sql= "INSERT INTO Staff(ID, password, role, name, address,email,phoneNum) Values(?,?,?,?,?,?,?)";
+        // TODO add your handling code here:
+        String sql = "INSERT INTO Staff(ID, password, role, name, address,email,phoneNum) Values(?,?,?,?,?,?,?)";
         try (//Get connection to the database
-            Connection con = DbCon.getConnection();
-            ){
-            
-           
-            
-          pst=con.prepareStatement(sql);
-          
-          pst.setString(1, null);
-          pst.setString(2, passwordTextbox.getText());
-          pst.setString(3, "advisor");
-          pst.setString(4,nameTextbox2.getText() );
-         pst.setString(5, addressTextbox1.getText() );
-        pst.setString(6, emailTextbox.getText() ); 
-          pst.setString(7, phoneTextbox.getText() );   
-        
-        
-        pst.execute();
-          JOptionPane.showMessageDialog(null,"inserted successfully" );
-          dispose();
-        
+                 Connection con = DbCon.getConnection();) {
+
+            pst = con.prepareStatement(sql);
+
+            pst.setString(1, null);
+            pst.setString(2, passwordTextbox.getText());
+            pst.setString(3, "advisor");
+            pst.setString(4, nameTextbox2.getText());
+            pst.setString(5, addressTextbox1.getText());
+            pst.setString(6, emailTextbox.getText());
+            pst.setString(7, phoneTextbox.getText());
+
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "inserted successfully");
+            dispose();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "error");
         }
-        catch (Exception e) {
-        JOptionPane.showMessageDialog(null,"error");
-        }
-        
-        
-        
+
+
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
 
     private void nameTextbox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextbox2ActionPerformed
@@ -393,4 +385,3 @@ public class Advisor extends javax.swing.JFrame {
     private javax.swing.JTextField surnameTextbox1;
     // End of variables declaration//GEN-END:variables
 }
-
