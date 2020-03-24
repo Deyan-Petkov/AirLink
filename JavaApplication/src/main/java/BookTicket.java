@@ -763,6 +763,7 @@ public class BookTicket extends javax.swing.JFrame {
 //                System.out.println("commission: " + getCommissionRate());
 //                System.out.println("taxes: " + taxes);
 //                System.out.println("final price: " + finalPrice);
+                  //
 //               
                 amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
             } else if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
