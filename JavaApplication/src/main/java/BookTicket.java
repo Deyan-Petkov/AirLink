@@ -755,13 +755,20 @@ public class BookTicket extends javax.swing.JFrame {
                         "Please fill the \"OTHER\" field!",
                         "Warning",
                         JOptionPane.WARNING_MESSAGE);
-                currencyComboBox.setSelectedItem("LOCAL");
-            }
-        } else {
-            if (currencyComboBox.getSelectedItem().toString().equals("LOCAL")) {
-                System.out.println("INSIDE LOCAL");
-                amountjLabel.setText(String.valueOf(new BigDecimal(price).setScale(2, RoundingMode.HALF_UP).doubleValue()
-                        + Double.valueOf(taxesTextField.getText())));
+            }//if local is set - calculate total price of all (flights * commission) + taxes 
+            else if (currencyComboBox.getSelectedItem().toString().equals("LOCAL")) {
+
+                double taxes = Double.valueOf(taxesTextField.getText());
+                double finalPrice = (price * getCommissionRate()) + taxes;
+                //for debugging purposes
+//                System.out.println("INSIDE LOCAL");
+//                System.out.println("price: " + price);
+//                System.out.println("commission: " + getCommissionRate());
+//                System.out.println("taxes: " + taxes);
+//                System.out.println("final price: " + finalPrice);
+                  //
+//               
+                amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
             } else if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
                 System.out.println("INSIDE USD");
 
