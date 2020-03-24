@@ -42,6 +42,7 @@ public class BookTicket extends javax.swing.JFrame {
     private double price;//holds the final blank price
     private double exchangeRate;
     private CardInfo cardInfo;
+    double commissionRate;
 
     public BookTicket() {
         initComponents();
@@ -51,6 +52,24 @@ public class BookTicket extends javax.swing.JFrame {
         exchangeRate = 0;
         price = 0;
 
+    }
+    
+    
+     public double getCommissionRate() {
+        if (commissionRate > 0) {
+            return commissionRate;
+        }
+        try ( Connection con = DbCon.getConnection()) {
+            PreparedStatement pst = con.prepareStatement("select commissionRate from Blank where blankNumber = '" + blankNo + "'");
+            ResultSet rs = pst.executeQuery();
+            rs.next();
+
+            commissionRate = rs.getDouble("commissionRate");
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return commissionRate;
     }
 
     private long findNextBlankNo() {
@@ -745,8 +764,22 @@ public class BookTicket extends javax.swing.JFrame {
                         + Double.valueOf(taxesTextField.getText())));
             } else if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
                 System.out.println("INSIDE USD");
-                double USDPrice = new BigDecimal(price * exchangeRate).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                amountjLabel.setText(String.valueOf(USDPrice + Double.valueOf(otherTextField.getText()) + Double.valueOf(taxesTextField.getText())));
+
+                double taxes = Double.valueOf(taxesTextField.getText());
+                double otherTaxes = Double.valueOf(otherTextField.getText());
+                double totalTaxes = taxes + otherTaxes;
+                // final price
+                double finalPrice = ((price * getCommissionRate()) + totalTaxes) * exchangeRate;
+                //for debugging purposes
+//                System.out.println("price" + price);
+//                System.out.println("taxes: " + taxes);
+//                System.out.println("other taxes: " + otherTaxes);
+//                System.out.println("exchange rate: " + exchangeRate);
+//                System.out.println("commission: " + getCommissionRate());
+//                System.out.println("final price: " + finalPrice);
+                //set amout label to present the final price
+                amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
+
             }
         }
     }//GEN-LAST:event_PricejButtonMousePressed

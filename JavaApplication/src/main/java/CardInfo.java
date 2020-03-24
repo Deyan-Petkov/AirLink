@@ -13,9 +13,8 @@ public class CardInfo extends javax.swing.JFrame {
     /**
      * Creates new form CardInfo
      */
-    
-    private String name,cardNo, expDate;
-    
+    private String name, cardNo, expDate;
+
     public CardInfo() {
         initComponents();
     }
@@ -192,7 +191,7 @@ public class CardInfo extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
     private void nameTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextboxActionPerformed
-       
+
     }//GEN-LAST:event_nameTextboxActionPerformed
 
     private void expDateTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expDateTextboxActionPerformed
@@ -204,24 +203,28 @@ public class CardInfo extends javax.swing.JFrame {
     }//GEN-LAST:event_cardNumberTextboxActionPerformed
 
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
-
-         name = nameTextbox.getText();
-         cardNo = cardNumberTextbox.getText();
-         expDate = expDateTextbox.getText();
-         this.dispose();
+        //assigns values to the variables according to the user input
+        name = nameTextbox.getText();
+        cardNo = cardNumberTextbox.getText();
+        expDate = expDateTextbox.getText();
+        this.dispose();
 
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
 
-    public String getCardNo(){
+    //used in BookTikcet
+    public String getCardNo() {
+
         return cardNo;
     }
-    public String getCardExpDate(){
+
+    public String getCardExpDate() {
         return expDate;
     }
-    public String getCardHldrName(){
+
+    public String getCardHldrName() {
         return name;
     }
-    
+
     /**
      * @param args the command line arguments
      */
