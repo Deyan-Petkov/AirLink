@@ -204,14 +204,14 @@ public class CardInfo extends javax.swing.JFrame {
     }//GEN-LAST:event_cardNumberTextboxActionPerformed
 
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
-
+        //assigns values to the variables according to the user input
          name = nameTextbox.getText();
          cardNo = cardNumberTextbox.getText();
          expDate = expDateTextbox.getText();
          this.dispose();
 
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
-
+    //used in BookTikcet
     public String getCardNo(){
         return cardNo;
     }

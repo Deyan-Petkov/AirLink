@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import jdk.nashorn.api.tree.ContinueTree;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -29,7 +30,7 @@ public class BookTicket extends javax.swing.JFrame {
 
     //buyer ID is set when advisor clicks on entry of the CustomerRecords table.
     //The value is assigned in CustomerRecords
-    static int custID;
+    static int custID;// used with if statement for protection so we don't record sale without a customer assigned
     //returns true if BookTicket object was created.
     static boolean isInstantiated;//When is false clicking on CustomerRecords table doesn't assign value to custID
     private int typeBlank;//howds the blank type number chosen from the combobox in Advisor class
@@ -40,7 +41,8 @@ public class BookTicket extends javax.swing.JFrame {
     private long blankNo;//holds unsold blank number
     boolean delayed;//if payment is delayed
     private double price;//holds the final blank price
-    private double exchangeRate;
+    private double exchangeRate;//last captured exchange rate - 1Local = ?USD
+    private double commissionRate;//the commision rate for the chosen blank
     private CardInfo cardInfo;
 
     public BookTicket() {
@@ -53,6 +55,7 @@ public class BookTicket extends javax.swing.JFrame {
 
     }
 
+    //used to assign blank to the current session. Takes the smallest number from the available once
     private long findNextBlankNo() {
         try ( Connection con = DbCon.getConnection()) {
             PreparedStatement pst = con.prepareStatement("select min(blankNumber) from Blank where isSold = 0 and blankNumber like '"
@@ -67,6 +70,25 @@ public class BookTicket extends javax.swing.JFrame {
         return blankNo;
     }
 
+    //returns the commission rate assigned to the current session blank
+    public double getCommissionRate() {
+        if (commissionRate > 0) {
+            return commissionRate;
+        }
+        try ( Connection con = DbCon.getConnection()) {
+            PreparedStatement pst = con.prepareStatement("select commissionRate from Blank where blankNumber = '" + blankNo + "'");
+            ResultSet rs = pst.executeQuery();
+            rs.next();
+
+            commissionRate = rs.getDouble("commissionRate");
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return commissionRate;
+    }
+
+    //populates the flight table with available flights from the databse table Flights
     private void initFlightsTable() {
         try ( Connection con = DbCon.getConnection()) {
             PreparedStatement pst = con.prepareStatement("select * from Flights");
@@ -74,14 +96,14 @@ public class BookTicket extends javax.swing.JFrame {
             ResultSetMetaData rsmd = rs.getMetaData();
 
             int columnCount = rsmd.getColumnCount();
-
+            //create a model to of the flights table to be populated later
             flightsDftTblMdl = (DefaultTableModel) flightsjTable.getModel();
             flightsDftTblMdl.setRowCount(0);
 
             while (rs.next()) {
-
+                //holds all valauese from table Flights
                 Object[] a = new Object[6];
-
+                //assigning of the values from Flight
                 for (int i = 0; i < columnCount; i++) {
                     a[0] = rs.getString("departure");
                     a[1] = rs.getString("destination");
@@ -89,9 +111,8 @@ public class BookTicket extends javax.swing.JFrame {
                     a[3] = rs.getString("arrTime");
                     a[4] = rs.getInt("number");
                     a[5] = rs.getDouble("price");
-                }
+                }// add new row to the model
                 flightsDftTblMdl.addRow(a);
-
             }
 
         } catch (ClassNotFoundException | SQLException ex) {
@@ -471,71 +492,76 @@ public class BookTicket extends javax.swing.JFrame {
 
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        //if the price was calculaated all fields are sent and we can save
+        if (amountjLabel.getText().length() > 0) {
+            try ( Connection con = DbCon.getConnection()) {
+                PreparedStatement pst;
+                //write to itinerary table
+                while (itinerearyDftTblMdl.getRowCount() > 0) {
+                    pst = con.prepareStatement("insert into Itinerary values(?,?,?,?,?,?,?,?)");
+                    pst.setInt(1, CustomerRecords.nextID("Itinerary"));//ID
+                    pst.setString(2, (String) itinerearyDftTblMdl.getValueAt(0, 0));//Flight Departure
+                    pst.setString(3, (String) itinerearyDftTblMdl.getValueAt(0, 1));//Flight Destination
+                    pst.setString(4, (String) itinerearyDftTblMdl.getValueAt(0, 2));//Flight Arrival Time
+                    pst.setString(5, (String) itinerearyDftTblMdl.getValueAt(0, 3));//Fligght Departure Time
+                    pst.setInt(6, (int) itinerearyDftTblMdl.getValueAt(0, 4));//Flight Number
+                    pst.setLong(7, blankNo);//Blank Number
+                    pst.setInt(8, (int) itinerearyDftTblMdl.getValueAt(0, 6));//Customer
 
-        //  dftTblMdl = (DefaultTableModel) itineraryTable.getModel();
-        // dftTblMdl.
-        try ( Connection con = DbCon.getConnection()) {
-            PreparedStatement pst;
+                    itinerearyDftTblMdl.removeRow(0);
 
-            while (itinerearyDftTblMdl.getRowCount() > 0) {
-                pst = con.prepareStatement("insert into Itinerary values(?,?,?,?,?,?,?,?)");
-                pst.setInt(1, CustomerRecords.nextID("Itinerary"));//ID
-                pst.setString(2, (String) itinerearyDftTblMdl.getValueAt(0, 0));//Flight Departure
-                pst.setString(3, (String) itinerearyDftTblMdl.getValueAt(0, 1));//Flight Destination
-                pst.setString(4, (String) itinerearyDftTblMdl.getValueAt(0, 2));//Flight Arrival Time
-                pst.setString(5, (String) itinerearyDftTblMdl.getValueAt(0, 3));//Fligght Departure Time
-                pst.setInt(6, (int) itinerearyDftTblMdl.getValueAt(0, 4));//Flight Number
-                pst.setLong(7, blankNo);//Blank Number
-                pst.setInt(8, (int) itinerearyDftTblMdl.getValueAt(0, 6));//Customer
+                    pst.execute();
 
-                itinerearyDftTblMdl.removeRow(0);
+                }
+                //write to payment table
+                pst = con.prepareStatement("insert into payment (BlankblankNumber,delayed,exchangeRate,"
+                        + "date,taxes,isRefunded) values(?,?,?,?,?,?)");
+                pst.setLong(1, blankNo);
+                pst.setBoolean(2, delayed);
+                pst.setDouble(3, exchangeRate);
+                pst.setString(4, LocalDate.now().toString());//date
+                pst.setDouble(5, Double.valueOf(taxesTextField.getText()));//taxes
+                pst.setBoolean(6, false);//is refunded
+                pst.execute();
+                //add card details if card option is selected
+                if (paymentjComboBox.getSelectedItem().toString().equals("CARD")) {
+                    pst = con.prepareStatement("update payment set type = '"
+                            + cardInfo.getCardNo() + "',"
+                            + " name = '" + cardInfo.getCardHldrName() + "',"
+                            + " expDate = '" + cardInfo.getCardExpDate() + "'"
+                            + " where BlankblankNumber = '" + blankNo + "'"
+                    );
+                    pst.execute();
 
+                } else {//write to payment if cash paymment is being used
+                    pst = con.prepareStatement("update payment set type = 'cash' where BlankblankNumber = '" + blankNo + "'");
+                    pst.execute();
+                }
+                //if blank is 444 or 420 write to otherTaxes inside payment 
+                if (typeBlank == 444 | typeBlank == 420) {
+                    pst = con.prepareStatement("update payment set otherTaxes = '"
+                            + Double.valueOf(otherTextField.getText())
+                            + "' where BlankblankNumber = '" + blankNo + "'");
+                    pst.execute();
+                }
+                //change this blank to sold in Blank
+                pst = con.prepareStatement("update Blank set isSold = 1 where blankNumber = '" + blankNo + "'");
                 pst.execute();
 
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
             }
+            custID = 0;
 
-            pst = con.prepareStatement("insert into payment (BlankblankNumber,delayed,exchangeRate,"
-                    + "date,taxes,isRefunded) values(?,?,?,?,?,?)");
-            pst.setLong(1, blankNo);
-            pst.setBoolean(2, delayed);
-            pst.setDouble(3, exchangeRate);
-            pst.setString(4, LocalDate.now().toString());//date
-            pst.setDouble(5, Double.valueOf(taxesTextField.getText()));//taxes
-            pst.setBoolean(6, false);//is refunded
-            pst.execute();
-
-            if (paymentjComboBox.getSelectedItem().toString().equals("CARD")) {
-                pst = con.prepareStatement("update payment set type = '"
-                        + cardInfo.getCardNo() + "',"
-                        + " name = '" + cardInfo.getCardHldrName() + "',"
-                        + " expDate = '" + cardInfo.getCardExpDate() + "'"
-                        + " where BlankblankNumber = '" + blankNo + "'"
-                );
-                pst.execute();
-
-            } else {
-                pst = con.prepareStatement("update payment set type = 'cash' where BlankblankNumber = '" + blankNo + "'");
-                pst.execute();
-            }
-
-            if (typeBlank == 444 | typeBlank == 420) {
-                pst = con.prepareStatement("update payment set otherTaxes = '"
-                        + Double.valueOf(otherTextField.getText())
-                        + "' where BlankblankNumber = '" + blankNo + "'");
-                pst.execute();
-            }
-
-            pst = con.prepareStatement("update Blank set isSold = 1 where blankNumber = '" + blankNo + "'");
-            pst.execute();
-
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "First calculate the price",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
         }
-        custID = 0;
-
-        this.dispose();
     }//GEN-LAST:event_saveButtonActionPerformed
-
+    //sets isSold in Blank table to void
     private void voidBlankButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voidBlankButtonActionPerformed
 
         int dialogButton = JOptionPane.showConfirmDialog(null, "Do you want to VOID this blank?", "WARNING", JOptionPane.YES_NO_OPTION);
@@ -565,7 +591,7 @@ public class BookTicket extends javax.swing.JFrame {
             otherTextField.setEditable(false);
         }
     }//GEN-LAST:event_selectCustomerButtonActionPerformed
-
+    //sets variable delayed which later will be passed to Payment table
     private void delayPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delayPaymentButtonActionPerformed
         if (delayPaymentButton.getText().equals("DELAY PAYMENT")) {
             delayPaymentButton.setText("DELAYED");
@@ -582,7 +608,7 @@ public class BookTicket extends javax.swing.JFrame {
         // TODO add your handling code here:
 
     }//GEN-LAST:event_amountTextboxActionPerformed
-
+    //if user choose card payment cardInfo window will pop up to take card details
     private void paymentjComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentjComboBoxActionPerformed
         if (paymentjComboBox.getSelectedItem().toString().equals("CARD")) {
             cardInfo = new CardInfo();
@@ -592,9 +618,9 @@ public class BookTicket extends javax.swing.JFrame {
     }//GEN-LAST:event_paymentjComboBoxActionPerformed
 
     private void currencyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currencyComboBoxActionPerformed
-
+        //if we work with blank types 420 or 444 and currency combobox is set to USD
         if ((typeBlank == 444 | typeBlank == 420) & currencyComboBox.getSelectedItem().toString().equals("USD")) {
-
+            //set exchange rate
             try ( Connection con = DbCon.getConnection()) {
                 PreparedStatement pst = con.prepareStatement("select rate from ExchangeRates where date =(select max(date) from ExchangeRates)");
                 ResultSet rs = pst.executeQuery();
@@ -604,45 +630,18 @@ public class BookTicket extends javax.swing.JFrame {
             } catch (ClassNotFoundException | SQLException ex) {
                 Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
             }
-//            if (otherTextField.getText().isEmpty()) {
-//                JOptionPane.showMessageDialog(null,
-//                        "Please fill the \"OTHER\" field!",
-//                        "Warning",
-//                        JOptionPane.WARNING_MESSAGE);
-//                currencyComboBox.setSelectedItem("LOCAL");
-//            }
-////            double USDPrice = new BigDecimal(price * exchangeRate).setScale(2, RoundingMode.HALF_UP).doubleValue();
-////            amountjLabel.setText(String.valueOf(USDPrice + Double.valueOf(otherTextField.getText()) + Double.valueOf(taxesTextField.getText())));
-//
-//            //Set to local price if local is chosen
-//        } else if (currencyComboBox.getSelectedItem().toString().equals("LOCAL")) {
-//            if (taxesTextField.getText().isEmpty()) {
-//                JOptionPane.showMessageDialog(null,
-//                        "Please fill the \"TAXES\" field!",
-//                        "Warning",
-//                        JOptionPane.WARNING_MESSAGE);
-//                currencyComboBox.setSelectedItem("LOCAL");
-//
-//            } else {
-////               amountjLabel.setText(String.valueOf( new BigDecimal(price).setScale(2,RoundingMode.HALF_UP).doubleValue()
-////                    + Double.valueOf(taxesTextField.getText())));
-//            }
-//
-//        } else {
-//            amountjLabel.setText("");
-//        }
         }
-            //if the chosen blank is not 444 or 420 don't allow payment in USD
-            if (typeBlank != 444 & typeBlank != 420) {
-                if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
-                    JOptionPane.showMessageDialog(null,
-                            "This blank type doesn't allow payments in USD",
-                            "Warning",
-                            JOptionPane.WARNING_MESSAGE);
-                    currencyComboBox.setSelectedItem("LOCAL");
-                }
+        //if the chosen blank is not 444 or 420 don't allow payment in USD
+        if (typeBlank != 444 & typeBlank != 420) {
+            if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
+                JOptionPane.showMessageDialog(null,
+                        "This blank type doesn't allow payments in USD",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                currencyComboBox.setSelectedItem("CURRENCY");
             }
-        
+        }
+
 
     }//GEN-LAST:event_currencyComboBoxActionPerformed
 
@@ -651,19 +650,19 @@ public class BookTicket extends javax.swing.JFrame {
     }//GEN-LAST:event_otherTextFieldActionPerformed
 
     private void flightsjTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flightsjTableMouseClicked
-
+        //if user tries to add more flights than allowed for the blank show meessage instead
         if (itnrRowCount >= blankAllowance) {
             JOptionPane.showMessageDialog(null,
                     "Maximum allowed flights for this type of blank is " + blankAllowance,
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
-        } else {
+        } else {//else allow to add more flights
             if (custID == 0) {
                 JOptionPane.showMessageDialog(null,
                         "To add flights, please first \"SELECT CUSTOMER\"",
                         "ERROR",
                         JOptionPane.ERROR_MESSAGE);
-            } else {
+            } else {//copy the selected row from flyghts to itinereary 
                 itinerearyDftTblMdl = (DefaultTableModel) itineraryTable.getModel();
                 fTblSlctdRow = flightsjTable.getSelectedRow();
                 itinerearyDftTblMdl.addRow(new Object[5]);
@@ -676,6 +675,7 @@ public class BookTicket extends javax.swing.JFrame {
                 itinerearyDftTblMdl.setValueAt(flightsjTable.getValueAt(fTblSlctdRow, 4), itnrRowCount - 1, 4);//Fight Number
                 itinerearyDftTblMdl.setValueAt((double) flightsjTable.getValueAt(fTblSlctdRow, 5), itnrRowCount - 1, 5);//Price
                 itinerearyDftTblMdl.setValueAt(custID, itnrRowCount - 1, 6);//Customer
+
             }
         }
 
@@ -694,12 +694,20 @@ public class BookTicket extends javax.swing.JFrame {
     }//GEN-LAST:event_otherTextFieldKeyTyped
 
     private void itineraryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itineraryTableMouseClicked
-        // TODO add your handling code here:
+        // subrtract the value of ticket from the blank price before deleting it
+        price -= (double) itinerearyDftTblMdl.getValueAt(itineraryTable.getSelectedRow(), 5);
+        //delete ticket from the blank
         itinerearyDftTblMdl.removeRow(itineraryTable.getSelectedRow());
     }//GEN-LAST:event_itineraryTableMouseClicked
 
     private void taxesTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taxesTextFieldMouseClicked
-
+        //makes sure customer has been chosen 
+        if (blankNojLabel.getText().length() <= 0) {
+            JOptionPane.showMessageDialog(null,
+                    "Please select customer",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_taxesTextFieldMouseClicked
 
     private void otherTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_otherTextFieldMouseClicked
@@ -712,41 +720,68 @@ public class BookTicket extends javax.swing.JFrame {
 
     private void PricejButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PricejButtonMouseClicked
         // TODO add your handling code here:
-       
+
     }//GEN-LAST:event_PricejButtonMouseClicked
 
     private void PricejButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PricejButtonMousePressed
-        // TODO add your handling code here:
-         if (currencyComboBox.getSelectedItem().toString().equals("CURRENCY")) {
+        //prevent from making calculation with null values
+        // if flyght has not been chosen yet
+        if (itinerearyDftTblMdl == null) {
+            JOptionPane.showMessageDialog(null,
+                    "Please select flight/s",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+
+        }//If currency is not set send message to the user
+        else if (currencyComboBox.getSelectedItem().toString().equals("CURRENCY")) {
             JOptionPane.showMessageDialog(null,
                     "Please select currency",
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
-            currencyComboBox.setSelectedItem("LOCAL");
-            //if local set but taxes is empty
-            if (currencyComboBox.getSelectedItem().toString().equals("LOCAL") && (taxesTextField.getText() == null && taxesTextField.getText().length() <= 0 )) {
+
+        } else {
+            //if local is set but taxes is empty
+            if (currencyComboBox.getSelectedItem().toString().equals("LOCAL") && (taxesTextField.getText() == null | taxesTextField.getText().length() <= 0)) {
                 JOptionPane.showMessageDialog(null,
                         "Please fill the \"TAXES\" field!",
                         "Warning",
                         JOptionPane.WARNING_MESSAGE);
-                currencyComboBox.setSelectedItem("LOCAL");
-                //if USD set but other is empty
-            } else if (currencyComboBox.getSelectedItem().toString().equals("USD") && (otherTextField.getText() == null && taxesTextField.getText().length()<=0)) {
+                //if USD is set but other is empty
+            } else if (currencyComboBox.getSelectedItem().toString().equals("USD") && (otherTextField.getText() == null | taxesTextField.getText().length() <= 0)) {
                 JOptionPane.showMessageDialog(null,
-                        "Please fill the \"OTHER\" field!",
+                        "Please fill the \"OTHER\" and \"TAXES\" fields!",
                         "Warning",
                         JOptionPane.WARNING_MESSAGE);
-                currencyComboBox.setSelectedItem("LOCAL");
-            }
-        } else {
-            if (currencyComboBox.getSelectedItem().toString().equals("LOCAL")) {
-                System.out.println("INSIDE LOCAL");
-                amountjLabel.setText(String.valueOf(new BigDecimal(price).setScale(2, RoundingMode.HALF_UP).doubleValue()
-                        + Double.valueOf(taxesTextField.getText())));
+            }//if local is set - calculate total price of all (flights * commission) + taxes 
+            else if (currencyComboBox.getSelectedItem().toString().equals("LOCAL")) {
+
+                double taxes = Double.valueOf(taxesTextField.getText());
+                double finalPrice = (price * getCommissionRate()) + taxes;
+                //for debugging purposes
+//                System.out.println("INSIDE LOCAL");
+//                System.out.println("price: " + price);
+//                System.out.println("commission: " + getCommissionRate());
+//                System.out.println("taxes: " + taxes);
+//                System.out.println("final price: " + finalPrice);
+//               
+                amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
             } else if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
                 System.out.println("INSIDE USD");
-                double USDPrice = new BigDecimal(price * exchangeRate).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                amountjLabel.setText(String.valueOf(USDPrice + Double.valueOf(otherTextField.getText()) + Double.valueOf(taxesTextField.getText())));
+
+                double taxes = Double.valueOf(taxesTextField.getText());
+                double otherTaxes = Double.valueOf(otherTextField.getText());
+                double totalTaxes = taxes + otherTaxes;
+                // final price
+                double finalPrice = ((price * getCommissionRate()) + totalTaxes) * exchangeRate;
+                //for debugging purposes
+//                System.out.println("price" + price);
+//                System.out.println("taxes: " + taxes);
+//                System.out.println("other taxes: " + otherTaxes);
+//                System.out.println("exchange rate: " + exchangeRate);
+//                System.out.println("commission: " + getCommissionRate());
+//                System.out.println("final price: " + finalPrice);
+
+                amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
             }
         }
     }//GEN-LAST:event_PricejButtonMousePressed
@@ -789,6 +824,8 @@ public class BookTicket extends javax.swing.JFrame {
         });
     }
 
+    //used in AdvisorHub.java. With this values set we can search for the 
+    //right type of blank e.g 444...... 420.......
     public void setComboBoxIndex(int comboBoxIndex, int blankAllowance) {
         this.typeBlank = comboBoxIndex;
         this.blankAllowance = blankAllowance;
