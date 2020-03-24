@@ -1,4 +1,3 @@
-
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,16 +13,15 @@ import javax.swing.JOptionPane;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
  *
  * @author dhruv
  */
 public class AgencyDetails extends javax.swing.JFrame {
-
-    PreparedStatement pst = null;
-    ResultSet rs = null;
-    Connection con = null;
-
+    PreparedStatement pst= null; 
+    ResultSet rs=null; 
+    Connection con=null; 
     /**
      * Creates new form agencyDetails
      */
@@ -179,7 +177,7 @@ public class AgencyDetails extends javax.swing.JFrame {
 
     private void backButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonadvisorListActionPerformed
         // TODO add your handling code here:
-        dispose();
+          dispose(); 
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
     private void addressTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addressTextboxActionPerformed
@@ -192,23 +190,29 @@ public class AgencyDetails extends javax.swing.JFrame {
 
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
         // TODO add your handling code here:
-
+   
+      
+       
         try (//Get connection to the database
-                 Connection con = DbCon.getConnection();) {
-
-            String Value1 = addressTextbox.getText();
-            String Value2 = nameTextbox.getText();
-            String sql = "update AgencyDetails set address='" + Value1 + "', name ='" + Value2 + "'  ";
-            pst = con.prepareStatement(sql);
+            Connection con = DbCon.getConnection();
+            ){
+            
+          String Value1= addressTextbox.getText();
+            String Value2=nameTextbox.getText();
+            String sql= "update AgencyDetails set address='" +Value1+"', name ='" +Value2+"'  ";
+            pst=con.prepareStatement(sql);
             pst.execute();
-            JOptionPane.showMessageDialog(null, "Details Updated");
+           JOptionPane.showMessageDialog(null,"Details Updated");
             dispose();
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Agency Details Save button error");
+        
+        
+            
         }
-
-
+        catch (Exception e) {
+        JOptionPane.showMessageDialog(null,"Agency Details Save button error");
+        }
+        
+      
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
 
     /**
