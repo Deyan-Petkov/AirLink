@@ -1,5 +1,12 @@
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -12,11 +19,35 @@ import java.util.Arrays;
  */
 public class AdvisorHub extends javax.swing.JFrame {
 
+    private static int id;
+
     /**
      * Creates new form advisorHub
+     *
+     * @param id is the ID of the current logged in advisor
      */
-    public AdvisorHub() {
+    public AdvisorHub(int id) {
         initComponents();
+        this.id = id;
+    }
+
+    private int getAvailabelBlanks() {
+        int availableBlanks = 0;
+            try ( Connection con = DbCon.getConnection()) {
+
+                PreparedStatement pst = con.prepareStatement("select count(blankNumber) from Blank where blankNumber like '"
+                        + sellTicketComboBox.getSelectedItem().toString() + "%' and staffID in (\n"
+                        + "select id from Staff where ID = '"+ id +"')");
+                ResultSet rs = pst.executeQuery();
+                rs.next();
+                availableBlanks = rs.getInt("count(blankNumber)");
+
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(AdvisorHub.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        System.out.println("number of available blanks: "+ availableBlanks);
+
+        return availableBlanks;
     }
 
     /**
@@ -227,9 +258,9 @@ public class AdvisorHub extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutButtonlogoutActionPerformed
 
     private void sellTicketComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellTicketComboBoxActionPerformed
-
+        System.out.println("advisor id: " + id);
         //sets typeBlank and blankAllowance in Blank according to the blank that user chosed
-        if (Arrays.asList("444", "420", "201", "101").contains(sellTicketComboBox.getSelectedItem().toString())) {
+        if (getAvailabelBlanks() > 0 && Arrays.asList("444", "420", "201", "101").contains(sellTicketComboBox.getSelectedItem().toString())) {
             BookTicket bookTicket = new BookTicket();
             bookTicket.setVisible(true);
             bookTicket.setDefaultCloseOperation(bookTicket.DISPOSE_ON_CLOSE);
@@ -249,7 +280,15 @@ public class AdvisorHub extends javax.swing.JFrame {
                     break;
             }
         } else {
-            // add code for blanks 451, 452
+            // add code for blanks 451, 
+            
+
+            JOptionPane.showMessageDialog(null,
+                    "You have no assigned blanks from this type.\n"
+                    + "Please contact your manager. ",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            sellTicketComboBox.setSelectedItem("SELL TICKET");
         }
 
 
@@ -286,7 +325,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdvisorHub().setVisible(true);
+                new AdvisorHub(id).setVisible(true);
             }
         });
     }
