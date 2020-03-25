@@ -307,7 +307,7 @@ public class Advisor extends javax.swing.JFrame {
             pst = con.prepareStatement(sql);
 
             pst.setString(1, null);
-            pst.setString(2, LoginForm.encrypt(passwordTextbox.getText()));
+            pst.setString(2, passwordTextbox.getText());
             pst.setString(3, "advisor");
             pst.setString(4, nameTextbox2.getText());
             pst.setString(5, addressTextbox1.getText());
