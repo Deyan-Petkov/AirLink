@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
  */
 public class AdvisorHub extends javax.swing.JFrame {
 
-    private static int id;
+    public static int id;
 
     /**
      * Creates new form advisorHub
@@ -30,7 +30,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         initComponents();
         this.id = id;
     }
-
+    //checks if the advisor using the sysmte has available blanks from chosen type
     private int getAvailabelBlanks() {
         int availableBlanks = 0;
             try ( Connection con = DbCon.getConnection()) {
@@ -259,7 +259,7 @@ public class AdvisorHub extends javax.swing.JFrame {
 
     private void sellTicketComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellTicketComboBoxActionPerformed
         System.out.println("advisor id: " + id);
-        //sets typeBlank and blankAllowance in Blank according to the blank that user chosed
+        //sets typeBlank and blankAllowance in Blank according to the blank that user chosed if s/he has available 
         if (getAvailabelBlanks() > 0 && Arrays.asList("444", "420", "201", "101").contains(sellTicketComboBox.getSelectedItem().toString())) {
             BookTicket bookTicket = new BookTicket();
             bookTicket.setVisible(true);

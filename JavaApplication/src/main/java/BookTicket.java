@@ -54,7 +54,7 @@ public class BookTicket extends javax.swing.JFrame {
     //used to assign blank to the current session. Takes the smallest number from the available once
     private long findNextBlankNo() {
         try ( Connection con = DbCon.getConnection()) {
-            PreparedStatement pst = con.prepareStatement("select min(blankNumber) from Blank where isSold = 0 and blankNumber like '"
+            PreparedStatement pst = con.prepareStatement("select min(blankNumber) from Blank where isSold = 0 and StaffID = " + AdvisorHub.id +" and blankNumber like '"
                     + typeBlank + "%'");
             ResultSet rs = pst.executeQuery();
             rs.next();
