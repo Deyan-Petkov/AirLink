@@ -88,6 +88,7 @@ public class AdvisorsList extends javax.swing.JFrame {
         bluePanel = new javax.swing.JPanel();
         advisorsListTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
         addtButton = new javax.swing.JButton();
         advisorsListPane = new javax.swing.JScrollPane();
         advisorsListTable = new javax.swing.JTable();
@@ -137,6 +138,9 @@ public class AdvisorsList extends javax.swing.JFrame {
                     .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
+
+        deleteButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        deleteButton.setText("DELETE");
 
         addtButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         addtButton.setText("ADD");
@@ -192,11 +196,13 @@ public class AdvisorsList extends javax.swing.JFrame {
             .addComponent(bluePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(advisorsListBackgroundLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(addtButton, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(addtButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(191, 191, 191)
-                .addComponent(selectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(selectButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorsListBackgroundLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -212,10 +218,12 @@ public class AdvisorsList extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
                 .addGroup(advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addtButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(selectButton)
-                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(82, 82, 82))
+                    .addComponent(selectButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(18, 18, 18)
+                .addGroup(advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(deleteButton)
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -352,6 +360,7 @@ public class AdvisorsList extends javax.swing.JFrame {
     private javax.swing.JLabel advisorsListTitle;
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bluePanel;
+    private javax.swing.JButton deleteButton;
     private javax.swing.JButton selectButton;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
