@@ -251,7 +251,9 @@ public class AdminStockControl extends javax.swing.JFrame {
          for(int i=0;i<row;i++){   //for how ever many blanks ordered(however many new rows)
               long number = (long) Math.floor(Math.random() * 9_000_000_0L) + 1_000_000_0L;  //random number generated for last 8 digits of uniques blank number
               String blanknum=blanka+number;  //blank number = first 3 digit of blank number + last 8 difits of random number
-          PreparedStatement pst = con.prepareStatement("INSERT INTO Blank Values (?,?,?,?,?,?)");
+          long blanknums=  Long.parseLong(blanknum);
+              
+              PreparedStatement pst = con.prepareStatement("INSERT INTO Blank Values (?,?,?,?,?,?)");
          
           PreparedStatement stm=con.prepareStatement(commission);
           rs=stm.executeQuery();
@@ -261,9 +263,9 @@ public class AdminStockControl extends javax.swing.JFrame {
           
           //going to new rows and just inserting the values. 
           
-            pst.setString(1,blanknum);
+            pst.setLong(1,blanknums);
             pst.setString(2, null);
-            pst.setString(3, "False");
+            pst.setBoolean(3, false);
           pst.setString(4, result);
           pst.setString(5, null);
             pst.setString(6, date);
