@@ -1,3 +1,18 @@
+
+import static java.lang.System.gc;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,14 +24,37 @@
  * @author dhruv
  */
 public class AdminStockControl extends javax.swing.JFrame {
-
+  
+   
+    PreparedStatement pst= null; 
+    ResultSet rs=null; 
+    Connection con=null; 
+    
+    // decleration for values in date
+     int day;
+      int month;
+      int year;
+      String date; 
+  
+ 
     /**
      * Creates new form adminStockControl
      */
     public AdminStockControl() {
-        initComponents();
+       initComponents();
+  
+     //below is assignation of date 
+       GregorianCalendar gc= new GregorianCalendar();
+       day=gc.get(Calendar.DAY_OF_MONTH);
+     // getting month from gc.get() is meesed up thats why hardcoded it 
+     year=gc.get(Calendar.YEAR);
+     date= year+"/"+"4"+"/"+day;
     }
+        
+    
+   
 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -31,10 +69,10 @@ public class AdminStockControl extends javax.swing.JFrame {
         adminStockControlTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
-        deleteButton = new javax.swing.JButton();
         addtButton1 = new javax.swing.JButton();
-        tablePane = new javax.swing.JScrollPane();
-        blankTable = new javax.swing.JTable();
+        quantityTextField = new javax.swing.JTextField();
+        blankComboBox = new javax.swing.JComboBox<>();
+        orderTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -59,7 +97,7 @@ public class AdminStockControl extends javax.swing.JFrame {
         bluePanelLayout.setHorizontalGroup(
             bluePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bluePanelLayout.createSequentialGroup()
-                .addContainerGap(99, Short.MAX_VALUE)
+                .addContainerGap(96, Short.MAX_VALUE)
                 .addComponent(adminStockControlTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 921, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -85,14 +123,6 @@ public class AdminStockControl extends javax.swing.JFrame {
             }
         });
 
-        deleteButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        deleteButton.setText("DELETE");
-        deleteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteButtonadvisorListActionPerformed(evt);
-            }
-        });
-
         addtButton1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         addtButton1.setText("ADD");
         addtButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -101,29 +131,39 @@ public class AdminStockControl extends javax.swing.JFrame {
             }
         });
 
-        blankTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                { new Boolean(false), null, null}
-            },
-            new String [] {
-                "", "BLANK NUMBER", "Quantity "
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Integer.class, java.lang.Integer.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+        quantityTextField.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        quantityTextField.setText("current quantity...");
+        quantityTextField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                quantityTextFieldMouseClicked(evt);
             }
         });
-        tablePane.setViewportView(blankTable);
+        quantityTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quantityTextFieldActionPerformed(evt);
+            }
+        });
+
+        blankComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        blankComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Choose Blank", "444", "440", "420", "201", "101", "451", "452" }));
+        blankComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                blankComboBoxActionPerformed(evt);
+            }
+        });
+
+        orderTextField.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        orderTextField.setText("order...");
+        orderTextField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                orderTextFieldMouseClicked(evt);
+            }
+        });
+        orderTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                orderTextFieldActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout adminStockControlBackgroundLayout = new javax.swing.GroupLayout(adminStockControlBackground);
         adminStockControlBackground.setLayout(adminStockControlBackgroundLayout);
@@ -132,28 +172,35 @@ public class AdminStockControl extends javax.swing.JFrame {
             .addComponent(bluePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(addtButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(154, 154, 154)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
-                .addGap(124, 124, 124)
-                .addComponent(tablePane, javax.swing.GroupLayout.PREFERRED_SIZE, 946, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(156, 156, 156)
+                .addComponent(quantityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(orderTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(262, 262, 262))
+            .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
+                .addGap(384, 384, 384)
+                .addComponent(blankComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         adminStockControlBackgroundLayout.setVerticalGroup(
             adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
                 .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(80, 80, 80)
-                .addComponent(tablePane, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 444, Short.MAX_VALUE)
+                .addGap(37, 37, 37)
+                .addComponent(blankComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(87, 87, 87)
+                .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(orderTextField)
+                    .addComponent(quantityTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 359, Short.MAX_VALUE)
                 .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addtButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(addtButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -178,19 +225,149 @@ public class AdminStockControl extends javax.swing.JFrame {
             dispose(); 
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
+       
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
-        // TODO add your handling code here:
+        // new blanks will be added to the database 
+        
+        String s=blankComboBox.getSelectedItem().toString();  //takes the value of blank number that is selected 
+        String quantity= orderTextField.getText(); //takes the value of new number of blanks that are ordered by the advisor
+        int row= Integer.parseInt(quantity);  // new rows that need to be added depending on the number of blanks ordered 
+        String blanka=null; // just done to create keep first 3 digits of blank numebr same 
+        String commission=null;
+        String result=null;
+        
+       try (   Connection con = DbCon.getConnection();) {
+     
+
+           
+        if(s=="444"){blanka="444";  commission="SELECT rate FROM commission where blanktype like '444';";} //these stms are for diffirent cases of first 3 digits of uniqu blank number and fetching th commission rate from the Db
+        if(s=="440"){blanka="440"; commission="SELECT rate FROM commission where blanktype like '440';";}
+        if(s=="420"){blanka="420"; commission="SELECT rate FROM commission where blanktype like '420';";}
+        if(s=="201"){blanka="201";  commission="SELECT rate FROM commission where blanktype like '201';";}
+        if(s=="101"){blanka="101"; commission="SELECT rate FROM commission where blanktype like '101';";} 
+        if(s=="451"){blanka="451"; commission="SELECT rate FROM commission where blanktype like '451';";} 
+        if(s=="452"){blanka="452"; commission="SELECT rate FROM commission where blanktype like '452';"; }    
+        
+         for(int i=0;i<row;i++){   //for how ever many blanks ordered(however many new rows)
+              long number = (long) Math.floor(Math.random() * 9_000_000_0L) + 1_000_000_0L;  //random number generated for last 8 digits of uniques blank number
+              String blanknum=blanka+number;  //blank number = first 3 digit of blank number + last 8 difits of random number
+          PreparedStatement pst = con.prepareStatement("INSERT INTO Blank Values (?,?,?,?,?,?)");
+         
+          PreparedStatement stm=con.prepareStatement(commission);
+          rs=stm.executeQuery();
+          while(rs.next()){
+            result=rs.getString("rate");
+          }
+          
+          //going to new rows and just inserting the values. 
+          
+            pst.setString(1,blanknum);
+            pst.setString(2, null);
+            pst.setString(3, "False");
+          pst.setString(4, result);
+          pst.setString(5, null);
+            pst.setString(6, date);
+           
+            pst.execute();
+           }
+         JOptionPane.showMessageDialog(null,"insterted");
+            
+            
+            
+        } catch (SQLException | ClassNotFoundException e) {
+          JOptionPane.showMessageDialog(null,"error");
+        }
+        
+        
+        
+        
+        
+        
+        
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
 
-    private void deleteButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonadvisorListActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_deleteButtonadvisorListActionPerformed
-
     private void addtButton1advisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addtButton1advisorListActionPerformed
-        // TODO add your handling code here:
+        // This just shows the new quantity of blanks after its ordered by (old quantity+new orered amount) only front end, this finciton has no back end implications
+        String orderquantity=orderTextField.getText(); 
+        int oq=Integer.parseInt(orderquantity);
+       
+        String oldq=   quantityTextField.getText();
+          int x=Integer.parseInt(oldq);
+        
+          int newq=oq+x; 
+          
+        String newStock=Integer.toString(newq);
+        
+        quantityTextField.setText(newStock);
+        
+        
         
     }//GEN-LAST:event_addtButton1advisorListActionPerformed
 
+    private void quantityTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantityTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_quantityTextFieldActionPerformed
+
+    private void blankComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blankComboBoxActionPerformed
+        // this is showing the number of specific type of blanks in teh database 
+       
+     try (   Connection con = DbCon.getConnection();) {
+           String s=blankComboBox.getSelectedItem().toString();  //takes the type of blank that is chose in combo box 
+        String sql=null;
+        //diffiret stms for diffirent blank types, done in orer to count how many there are in the Db 
+        if(s=="444"){
+            sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '444%';\n" +"]  ";
+         }
+        if(s=="440"){
+            sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '440%';\n" +"]  ";
+         }    
+        if(s=="420"){
+            sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '420%';\n" +"]  ";
+         }  
+            
+       if(s=="201"){
+            sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '201%';\n" +"]  ";
+         }
+       if(s=="101"){
+            sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '101%';\n" +"]  ";
+         }
+       if(s=="451"){
+            sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '451%';\n" +"]  ";
+         } 
+       if(s=="452"){
+            sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '452%';\n" +"]  ";
+         } 
+        
+        //this just shows in the text fied the quantity of blanks that are available in the stock.
+        
+        pst=con.prepareStatement(sql);
+            rs=pst.executeQuery();
+            if(rs.next()){
+            String sum=rs.getString("count(blankNumber)");
+            quantityTextField.setText(sum);
+          
+        }
+         
+        }catch (SQLException | ClassNotFoundException e) {
+          JOptionPane.showMessageDialog(null,e);
+        }
+    }//GEN-LAST:event_blankComboBoxActionPerformed
+
+    private void orderTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_orderTextFieldActionPerformed
+
+    private void quantityTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_quantityTextFieldMouseClicked
+        // TODO add your handling code here:
+          quantityTextField.setText("");//clears the textField once you click on it
+    }//GEN-LAST:event_quantityTextFieldMouseClicked
+
+    private void orderTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_orderTextFieldMouseClicked
+        // TODO add your handling code here:
+        orderTextField.setText("");//clears the textField once you click on it
+    }//GEN-LAST:event_orderTextFieldMouseClicked
+        
+     
     /**
      * @param args the command line arguments
      */
@@ -232,10 +409,10 @@ public class AdminStockControl extends javax.swing.JFrame {
     private javax.swing.JPanel adminStockControlBackground;
     private javax.swing.JLabel adminStockControlTitle;
     private javax.swing.JButton backButton;
-    private javax.swing.JTable blankTable;
+    private javax.swing.JComboBox<String> blankComboBox;
     private javax.swing.JPanel bluePanel;
-    private javax.swing.JButton deleteButton;
+    private javax.swing.JTextField orderTextField;
+    private javax.swing.JTextField quantityTextField;
     private javax.swing.JButton saveButton;
-    private javax.swing.JScrollPane tablePane;
     // End of variables declaration//GEN-END:variables
 }

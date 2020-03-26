@@ -107,7 +107,7 @@ public class ExchangeRate extends javax.swing.JFrame {
         });
 
         LocalCLabel.setFont(new java.awt.Font("Tahoma", 0, 40)); // NOI18N
-        LocalCLabel.setText("1 USD:");
+        LocalCLabel.setText("Local");
 
         exchangeRateTextbox.setFont(new java.awt.Font("Tahoma", 0, 40)); // NOI18N
         exchangeRateTextbox.addActionListener(new java.awt.event.ActionListener() {

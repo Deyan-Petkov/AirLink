@@ -45,8 +45,10 @@ public class AgencyDetails extends javax.swing.JFrame {
         addressLabel = new javax.swing.JLabel();
         nameLabel = new javax.swing.JLabel();
         addressTextbox = new javax.swing.JTextField();
-        nameTextbox = new javax.swing.JTextField();
         saveButton = new javax.swing.JButton();
+        currencyTypeLabel = new javax.swing.JLabel();
+        nameTextbox = new javax.swing.JTextField();
+        currencyTextbox = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -101,13 +103,6 @@ public class AgencyDetails extends javax.swing.JFrame {
             }
         });
 
-        nameTextbox.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
-        nameTextbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameTextboxActionPerformed(evt);
-            }
-        });
-
         saveButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         saveButton.setText("SAVE");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
@@ -116,49 +111,78 @@ public class AgencyDetails extends javax.swing.JFrame {
             }
         });
 
+        currencyTypeLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        currencyTypeLabel.setText("Currency type:");
+
+        nameTextbox.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        nameTextbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameTextboxActionPerformed(evt);
+            }
+        });
+
+        currencyTextbox.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        currencyTextbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                currencyTextboxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout agencyDetailsBackgroundLayout = new javax.swing.GroupLayout(agencyDetailsBackground);
         agencyDetailsBackground.setLayout(agencyDetailsBackgroundLayout);
         agencyDetailsBackgroundLayout.setHorizontalGroup(
             agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(bluePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, agencyDetailsBackgroundLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(agencyDetailsBackgroundLayout.createSequentialGroup()
+                .addGroup(agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, agencyDetailsBackgroundLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(agencyDetailsBackgroundLayout.createSequentialGroup()
+                        .addGap(193, 193, 193)
+                        .addGroup(agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(currencyTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(addressTextbox, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
+                            .addComponent(currencyTextbox))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(agencyDetailsBackgroundLayout.createSequentialGroup()
-                    .addGap(213, 213, 213)
-                    .addGroup(agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(agencyDetailsBackgroundLayout.createSequentialGroup()
-                            .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(nameTextbox))
-                        .addGroup(agencyDetailsBackgroundLayout.createSequentialGroup()
-                            .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(addressTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGap(214, 214, 214)))
+                    .addGap(376, 376, 376)
+                    .addComponent(nameTextbox)
+                    .addGap(212, 212, 212)))
         );
         agencyDetailsBackgroundLayout.setVerticalGroup(
             agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(agencyDetailsBackgroundLayout.createSequentialGroup()
-                .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 613, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(currencyTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(91, 91, 91)
                 .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(agencyDetailsBackgroundLayout.createSequentialGroup()
+                .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(66, 66, 66)
+                .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(agencyDetailsBackgroundLayout.createSequentialGroup()
+                        .addGap(53, 53, 53)
+                        .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(agencyDetailsBackgroundLayout.createSequentialGroup()
+                        .addGap(67, 67, 67)
+                        .addComponent(addressTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(113, 113, 113)
+                .addComponent(currencyTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 132, Short.MAX_VALUE))
             .addGroup(agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(agencyDetailsBackgroundLayout.createSequentialGroup()
-                    .addGap(245, 245, 245)
-                    .addGroup(agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(nameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
-                    .addGroup(agencyDetailsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, agencyDetailsBackgroundLayout.createSequentialGroup()
-                            .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(116, 116, 116))
-                        .addComponent(addressTextbox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(245, 245, 245)))
+                    .addGap(209, 209, 209)
+                    .addComponent(nameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(529, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -183,7 +207,7 @@ public class AgencyDetails extends javax.swing.JFrame {
     private void addressTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addressTextboxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_addressTextboxActionPerformed
-
+  
     private void nameTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextboxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nameTextboxActionPerformed
@@ -199,7 +223,10 @@ public class AgencyDetails extends javax.swing.JFrame {
             
           String Value1= addressTextbox.getText();
             String Value2=nameTextbox.getText();
-            String sql= "update AgencyDetails set address='" +Value1+"', name ='" +Value2+"'  ";
+           String Value3=currencyTextbox.getText();
+           String sql= "update AgencyDetails set address='" +Value1+"', name ='" +Value2+"' , currency ='" +Value3+"'  ";
+            
+            
             pst=con.prepareStatement(sql);
             pst.execute();
            JOptionPane.showMessageDialog(null,"Details Updated");
@@ -214,6 +241,10 @@ public class AgencyDetails extends javax.swing.JFrame {
         
       
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
+
+    private void currencyTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currencyTextboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_currencyTextboxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -258,6 +289,8 @@ public class AgencyDetails extends javax.swing.JFrame {
     private javax.swing.JLabel agencyDetailsTitle;
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bluePanel;
+    private javax.swing.JTextField currencyTextbox;
+    private javax.swing.JLabel currencyTypeLabel;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextbox;
     private javax.swing.JButton saveButton;

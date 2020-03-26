@@ -1,3 +1,9 @@
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,7 +15,10 @@
  * @author dhruv
  */
 public class Commission extends javax.swing.JFrame {
-
+   PreparedStatement pst= null; 
+    PreparedStatement rst= null; 
+    ResultSet rs=null; 
+    Connection con=null;
     /**
      * Creates new form commission
      */
@@ -168,6 +177,43 @@ public class Commission extends javax.swing.JFrame {
 
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
         // TODO add your handling code here:
+        
+        try (//Get connection to the database
+            Connection con = DbCon.getConnection();
+            ){
+            String Value1=selectBlankTypeComboBox.getSelectedItem().toString();
+          String Value2= rateTextbox.getText();
+          String sql2=null;
+          
+
+           
+            String sql= " UPDATE commission SET rate = '"+Value2+"' WHERE blanktype = '"+Value1+"' ";  // there stms updates info into to commission table 
+           
+            if(Value1=="444"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"444%\"; ";}   //this stms updates the commission rates fot all the blanks in the Blank table 
+            if(Value1=="440"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"440%\"; ";}
+            if(Value1=="420"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"420%\"; ";}
+            if(Value1=="201"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"201%\"; ";}
+            if(Value1=="101"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"101%\"; ";}
+            if(Value1=="451"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"451%\"; ";}
+            if(Value1=="452"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"452%\"; ";}
+            
+            rst=con.prepareStatement(sql); // updats commission table 
+            pst=con.prepareStatement(sql2);  //updates Blank table 
+        
+            pst.execute(); 
+            rst.execute();
+           JOptionPane.showMessageDialog(null,"Details Updated");
+            dispose();
+        
+        
+            
+        }
+        catch (Exception e) {
+        JOptionPane.showMessageDialog(null,"Agency Details Save button error");
+        }
+        
+      
+    
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
 
     /**
