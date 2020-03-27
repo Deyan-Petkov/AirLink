@@ -239,42 +239,39 @@ public class AdminStockControl extends javax.swing.JFrame {
        try (   Connection con = DbCon.getConnection();) {
      
 
-           
-        if(s=="444"){blanka="444";  commission="SELECT rate FROM commission where blanktype like '444';";} //these stms are for diffirent cases of first 3 digits of uniqu blank number and fetching th commission rate from the Db
-        if(s=="440"){blanka="440"; commission="SELECT rate FROM commission where blanktype like '440';";}
-        if(s=="420"){blanka="420"; commission="SELECT rate FROM commission where blanktype like '420';";}
-        if(s=="201"){blanka="201";  commission="SELECT rate FROM commission where blanktype like '201';";}
-        if(s=="101"){blanka="101"; commission="SELECT rate FROM commission where blanktype like '101';";} 
-        if(s=="451"){blanka="451"; commission="SELECT rate FROM commission where blanktype like '451';";} 
-        if(s=="452"){blanka="452"; commission="SELECT rate FROM commission where blanktype like '452';"; }    
+           //write else ifs 
+        if(s=="444"){blanka="444";  ;} //these stms are for diffirent cases of first 3 digits of uniqu blank number and fetching th commission rate from the Db
+        if(s=="440"){blanka="440"; ;}
+        if(s=="420"){blanka="420"; ;}
+        if(s=="201"){blanka="201";  ;}
+        if(s=="101"){blanka="101"; ;} 
+        if(s=="451"){blanka="451"; ;} 
+        if(s=="452"){blanka="452";  }    
         
          for(int i=0;i<row;i++){   //for how ever many blanks ordered(however many new rows)
               long number = (long) Math.floor(Math.random() * 9_000_000_0L) + 1_000_000_0L;  //random number generated for last 8 digits of uniques blank number
               String blanknum=blanka+number;  //blank number = first 3 digit of blank number + last 8 difits of random number
           long blanknums=  Long.parseLong(blanknum);
               
-              PreparedStatement pst = con.prepareStatement("INSERT INTO Blank Values (?,?,?,?,?,?)");
+              PreparedStatement pst = con.prepareStatement("INSERT INTO Blank Values (?,?,?,?,?)");
          
-          PreparedStatement stm=con.prepareStatement(commission);
-          rs=stm.executeQuery();
-          while(rs.next()){
-            result=rs.getString("rate");
-          }
+  
+         
           
           //going to new rows and just inserting the values. 
           
             pst.setLong(1,blanknums);
             pst.setString(2, null);
             pst.setBoolean(3, false);
-          pst.setString(4, result);
-          pst.setString(5, null);
-            pst.setString(6, date);
+          
+          pst.setString(4, null);
+            pst.setString(5, date);
            
             pst.execute();
            }
          JOptionPane.showMessageDialog(null,"insterted");
             
-            
+            dispose();
             
         } catch (SQLException | ClassNotFoundException e) {
           JOptionPane.showMessageDialog(null,"error");
