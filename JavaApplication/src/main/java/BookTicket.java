@@ -54,7 +54,7 @@ public class BookTicket extends javax.swing.JFrame {
     //used to assign blank to the current session. Takes the smallest number from the available once
     private long findNextBlankNo() {
         try ( Connection con = DbCon.getConnection()) {
-            PreparedStatement pst = con.prepareStatement("select min(blankNumber) from Blank where isSold = 0 and StaffID = " + AdvisorHub.id +" and blankNumber like '"
+            PreparedStatement pst = con.prepareStatement("select min(blankNumber) from Blank where isSold = 0 and StaffID = " + AdvisorHub.id + " and blankNumber like '"
                     + typeBlank + "%'");
             ResultSet rs = pst.executeQuery();
             rs.next();
@@ -694,6 +694,7 @@ public class BookTicket extends javax.swing.JFrame {
         price -= (double) itinerearyDftTblMdl.getValueAt(itineraryTable.getSelectedRow(), 5);
         //delete ticket from the blank
         itinerearyDftTblMdl.removeRow(itineraryTable.getSelectedRow());
+        itnrRowCount = itineraryTable.getRowCount();//update row count 
     }//GEN-LAST:event_itineraryTableMouseClicked
 
     private void taxesTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taxesTextFieldMouseClicked
@@ -737,13 +738,13 @@ public class BookTicket extends javax.swing.JFrame {
 
         } else {
             //if local is set but taxes is empty
-            if (currencyComboBox.getSelectedItem().toString().equals("LOCAL") && (taxesTextField.getText() == null | taxesTextField.getText().length() <= 0)) {
+            if (currencyComboBox.getSelectedItem().toString().equals("LOCAL") && taxesTextField.getText().length() <= 0) {//to add check if the input is correct type and reject letters
                 JOptionPane.showMessageDialog(null,
                         "Please fill the \"TAXES\" field!",
                         "Warning",
                         JOptionPane.WARNING_MESSAGE);
                 //if USD is set but other is empty
-            } else if (currencyComboBox.getSelectedItem().toString().equals("USD") && (otherTextField.getText() == null | taxesTextField.getText().length() <= 0)) {
+            } else if (currencyComboBox.getSelectedItem().toString().equals("USD") && (taxesTextField.getText().length() <= 0)) {
                 JOptionPane.showMessageDialog(null,
                         "Please fill the \"OTHER\" and \"TAXES\" fields!",
                         "Warning",
@@ -758,9 +759,30 @@ public class BookTicket extends javax.swing.JFrame {
 //                System.out.println("price: " + price);
 //                System.out.println("commission: " + getCommissionRate());
 //                System.out.println("taxes: " + taxes);
-//                System.out.println("final price: " + finalPrice);
+
+                //if the blank is international add other taxes
+                if (typeBlank == 444 || typeBlank == 420) {
+                    if (otherTextField.getText().length() > 0) {//if "other" text field is filled get it's value
+                        double otherTaxes = Double.valueOf(otherTextField.getText());
+                        finalPrice += otherTaxes;
+                        
+//                        System.out.println("Other Taxes: " + otherTaxes);
+//                        System.out.println("Final Price: " + finalPrice);
+                        
+                        amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
+                    } else {//else ask the user to fill this field
+                        JOptionPane.showMessageDialog(null,
+                                "Please fill the \"OTHER\" text field!",
+                                "Warning",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
+                } else {//else add only taxes
+                    amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
+                    System.out.println("final price: " + finalPrice);
+
+                }
 //               
-                amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
+
             } else if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
                 System.out.println("INSIDE USD");
 

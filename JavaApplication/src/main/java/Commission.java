@@ -87,7 +87,7 @@ public class Commission extends javax.swing.JFrame {
         );
 
         selectBlankTypeComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        selectBlankTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT BLANK TYPE", "444", "440", "420", "201", "101", "451", "452" }));
+        selectBlankTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT BLANK TYPE", "444", "420", "201", "101", "451", "452" }));
         selectBlankTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectBlankTypeComboBoxActionPerformed(evt);
@@ -189,13 +189,13 @@ public class Commission extends javax.swing.JFrame {
            
             String sql= " UPDATE commission SET rate = '"+Value2+"' WHERE blanktype = '"+Value1+"' ";  // there stms updates info into to commission table 
            
-            if(Value1=="444"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"444%\"; ";}   //this stms updates the commission rates fot all the blanks in the Blank table 
-            if(Value1=="440"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"440%\"; ";}
-            if(Value1=="420"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"420%\"; ";}
-            if(Value1=="201"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"201%\"; ";}
-            if(Value1=="101"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"101%\"; ";}
-            if(Value1=="451"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"451%\"; ";}
-            if(Value1=="452"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"452%\"; ";}
+            if(Value1.equals("444")){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"444%\"; ";}   //this stms updates the commission rates fot all the blanks in the Blank table 
+           // if(Value1=="440"){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"440%\"; ";} ONLY MANUALLY FILLED!!!
+            else  if(Value1.equals("420")){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"420%\"; ";}
+            else if(Value1.equals("201")){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"201%\"; ";}
+            else if(Value1.equals("101")){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"101%\"; ";}
+            else if(Value1.equals("451")){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"451%\"; ";}
+            else if(Value1.equals("452")){sql2= "UPDATE Blank SET commissionRate = '"+Value2+"' WHERE blankNumber Like \"452%\"; ";}
             
             rst=con.prepareStatement(sql); // updats commission table 
             pst=con.prepareStatement(sql2);  //updates Blank table 
@@ -203,7 +203,7 @@ public class Commission extends javax.swing.JFrame {
             pst.execute(); 
             rst.execute();
            JOptionPane.showMessageDialog(null,"Details Updated");
-            dispose();
+           
         
         
             
