@@ -113,7 +113,7 @@ public class ManagerHub extends javax.swing.JFrame {
         });
 
         makeATSComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        makeATSComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MAKE ATS", "Interline - By Advisor", "Domestic" }));
+        makeATSComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MAKE ATS", "Interline", "Domestic" }));
         makeATSComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 makeATSComboBoxActionPerformed(evt);
@@ -257,9 +257,17 @@ public class ManagerHub extends javax.swing.JFrame {
 
     private void makeATSComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeATSComboBoxActionPerformed
         // TODO add your handling code here:
-     
-        
-        
+     switch (makeATSComboBox.getSelectedItem().toString()) {
+                case "Interline":
+                    InterlineSalesReport interlineSalesReport = new InterlineSalesReport();
+                    interlineSalesReport.setVisible(true);
+                    interlineSalesReport.setDefaultCloseOperation(interlineSalesReport.DISPOSE_ON_CLOSE);
+                    break;
+                case "Domestic":
+                    DomesticSalesReport domesticSalesReport = new DomesticSalesReport();
+                    domesticSalesReport.setVisible(true);
+                    domesticSalesReport.setDefaultCloseOperation(domesticSalesReport.DISPOSE_ON_CLOSE);
+        }
     }//GEN-LAST:event_makeATSComboBoxActionPerformed
 
     /**
