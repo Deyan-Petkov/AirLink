@@ -72,11 +72,13 @@ public class BookTicket extends javax.swing.JFrame {
             return commissionRate;
         }
         try ( Connection con = DbCon.getConnection()) {
-            PreparedStatement pst = con.prepareStatement("select commissionRate from Blank where blankNumber = '" + blankNo + "'");
+            PreparedStatement pst = con.prepareStatement("select rate from commission where blanktype like '" +
+                    typeBlank +"%'and date in ( select max(date) from commission where blanktype like '"+ typeBlank +"%')");
             ResultSet rs = pst.executeQuery();
             rs.next();
 
-            commissionRate = rs.getDouble("commissionRate");
+            commissionRate = rs.getDouble("rate");
+            //System.out.println("Commission: " + commissionRate);
 
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
@@ -778,13 +780,13 @@ public class BookTicket extends javax.swing.JFrame {
                     }
                 } else {//else add only taxes
                     amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
-                    System.out.println("final price: " + finalPrice);
+                    //System.out.println("final price: " + finalPrice);
 
                 }
 //               
 
             } else if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
-                System.out.println("INSIDE USD");
+              //  System.out.println("INSIDE USD");
 
                 double taxes = Double.valueOf(taxesTextField.getText());
                 double otherTaxes = Double.valueOf(otherTextField.getText());
