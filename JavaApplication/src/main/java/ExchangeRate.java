@@ -1,20 +1,44 @@
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author xahna
  */
 public class ExchangeRate extends javax.swing.JFrame {
 
+    PreparedStatement pst = null;
+    LocalDateTime localDateTime;
+    String result;
+
     /**
      * Creates new form exchangeRate
      */
     public ExchangeRate() {
         initComponents();
+        try ( Connection con = DbCon.getConnection()) {//gets the currency type this office is using
+            pst = con.prepareStatement("select currency from AgencyDetails");
+            ResultSet rs = pst.executeQuery();
+            rs.next();
+            LocalCLabel.setText("1 " + rs.getString("currency") + ":");//sets the label to the according type of currency
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(ExchangeRate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //sets local date and time variable according to the current date and time
+        localDateTime = LocalDateTime.now().withNano(0);
     }
 
     /**
@@ -31,8 +55,9 @@ public class ExchangeRate extends javax.swing.JFrame {
         exchangeRateTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
-        usdLabel = new javax.swing.JLabel();
+        LocalCLabel = new javax.swing.JLabel();
         exchangeRateTextbox = new javax.swing.JTextField();
+        USDjLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -81,10 +106,18 @@ public class ExchangeRate extends javax.swing.JFrame {
             }
         });
 
-        usdLabel.setFont(new java.awt.Font("Tahoma", 0, 40)); // NOI18N
-        usdLabel.setText("1 USD:");
+        LocalCLabel.setFont(new java.awt.Font("Tahoma", 0, 40)); // NOI18N
+        LocalCLabel.setText("Local");
 
         exchangeRateTextbox.setFont(new java.awt.Font("Tahoma", 0, 40)); // NOI18N
+        exchangeRateTextbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exchangeRateTextboxActionPerformed(evt);
+            }
+        });
+
+        USDjLabel.setFont(new java.awt.Font("Tahoma", 0, 40)); // NOI18N
+        USDjLabel.setText("USD");
 
         javax.swing.GroupLayout createCustomerBackgroundLayout = new javax.swing.GroupLayout(createCustomerBackground);
         createCustomerBackground.setLayout(createCustomerBackgroundLayout);
@@ -98,9 +131,11 @@ public class ExchangeRate extends javax.swing.JFrame {
                         .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(createCustomerBackgroundLayout.createSequentialGroup()
                         .addGap(235, 235, 235)
-                        .addComponent(usdLabel)
+                        .addComponent(LocalCLabel)
                         .addGap(51, 51, 51)
                         .addComponent(exchangeRateTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(USDjLabel)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -111,8 +146,9 @@ public class ExchangeRate extends javax.swing.JFrame {
                 .addGap(214, 214, 214)
                 .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(exchangeRateTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(usdLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 225, Short.MAX_VALUE)
+                    .addComponent(LocalCLabel)
+                    .addComponent(USDjLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 227, Short.MAX_VALUE)
                 .addComponent(saveButton)
                 .addContainerGap())
         );
@@ -132,13 +168,32 @@ public class ExchangeRate extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // TODO add your handling code here:
+
+        String sql = "INSERT INTO ExchangeRates(Date, rate) Values(?,?)";
+        try ( Connection con = DbCon.getConnection();) {//Get connection to the database
+
+            //sets date and rate in ExchangeRates table
+            pst = con.prepareStatement(sql);
+            pst.setString(1, localDateTime.toString());
+            pst.setString(2, exchangeRateTextbox.getText());
+
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "inserted successfully");
+            dispose();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "error");
+        }
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_backButtonActionPerformed
+
+    private void exchangeRateTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exchangeRateTextboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_exchangeRateTextboxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -177,12 +232,13 @@ public class ExchangeRate extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel LocalCLabel;
+    private javax.swing.JLabel USDjLabel;
     private javax.swing.JButton backButton;
     private javax.swing.JPanel createCustomerBackground;
     private javax.swing.JPanel exchangeRateBackground;
     private javax.swing.JTextField exchangeRateTextbox;
     private javax.swing.JLabel exchangeRateTitle;
     private javax.swing.JButton saveButton;
-    private javax.swing.JLabel usdLabel;
     // End of variables declaration//GEN-END:variables
 }

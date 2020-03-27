@@ -1,20 +1,53 @@
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author xahna
  */
 public class AdvisorHub extends javax.swing.JFrame {
 
+    public static int id;
+
     /**
      * Creates new form advisorHub
+     *
+     * @param id is the ID of the current logged in advisor
      */
-    public AdvisorHub() {
+    public AdvisorHub(int id) {
         initComponents();
+        this.id = id;
+    }
+    //checks if the advisor using the sysmte has available blanks from chosen type
+    private int getAvailabelBlanks() {
+        int availableBlanks = 0;
+            try ( Connection con = DbCon.getConnection()) {
+
+                PreparedStatement pst = con.prepareStatement("select count(blankNumber) from Blank where blankNumber like '"
+                        + sellTicketComboBox.getSelectedItem().toString() + "%' and staffID in (\n"
+                        + "select id from Staff where ID = '"+ id +"')");
+                ResultSet rs = pst.executeQuery();
+                rs.next();
+                availableBlanks = rs.getInt("count(blankNumber)");
+
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(AdvisorHub.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        System.out.println("number of available blanks: "+ availableBlanks);
+
+        return availableBlanks;
     }
 
     /**
@@ -113,7 +146,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         });
 
         makeATSComboBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        makeATSComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MAKE ATS", "International", "Domestic" }));
+        makeATSComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MAKE ATS", "Interline", "Domestic" }));
         makeATSComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 makeATSComboBoxActionPerformed(evt);
@@ -121,7 +154,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         });
 
         sellTicketComboBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        sellTicketComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELL TICKET", "444\t", "440", "420", "201", "101", "451", "452" }));
+        sellTicketComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELL TICKET", "444", "420", "201", "101", "451", "452" }));
         sellTicketComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 sellTicketComboBoxActionPerformed(evt);
@@ -191,7 +224,7 @@ public class AdvisorHub extends javax.swing.JFrame {
 
     private void returnTicketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnTicketButtonActionPerformed
         ReturnTicket s = new ReturnTicket();
-        s.setVisible(true);     
+        s.setVisible(true);
         s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);// TODO add your handling code here:
     }//GEN-LAST:event_returnTicketButtonActionPerformed
 
@@ -200,9 +233,9 @@ public class AdvisorHub extends javax.swing.JFrame {
     }//GEN-LAST:event_logsButtonActionPerformed
 
     private void CustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CustomerButtonActionPerformed
-        CustomerForm s = new CustomerForm();
-        s.setVisible(true);
-        s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
+        CustomerRecords customerRecords = new CustomerRecords();
+        customerRecords.setVisible(true);
+        customerRecords.setDefaultCloseOperation(customerRecords.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_CustomerButtonActionPerformed
 
     private void exchangeRateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exchangeRateButtonActionPerformed
@@ -214,7 +247,17 @@ public class AdvisorHub extends javax.swing.JFrame {
 
     private void makeATSComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeATSComboBoxActionPerformed
         // TODO add your handling code here:
-        
+        switch (makeATSComboBox.getSelectedItem().toString()) {
+                case "Interline":
+                    InterlineSalesReport interlineSalesReport = new InterlineSalesReport();
+                    interlineSalesReport.setVisible(true);
+                    interlineSalesReport.setDefaultCloseOperation(interlineSalesReport.DISPOSE_ON_CLOSE);
+                    break;
+                case "Domestic":
+                    DomesticSalesReport domesticSalesReport = new DomesticSalesReport();
+                    domesticSalesReport.setVisible(true);
+                    domesticSalesReport.setDefaultCloseOperation(domesticSalesReport.DISPOSE_ON_CLOSE);
+        }
     }//GEN-LAST:event_makeATSComboBoxActionPerformed
 
     private void logoutButtonlogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonlogoutActionPerformed
@@ -225,10 +268,40 @@ public class AdvisorHub extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutButtonlogoutActionPerformed
 
     private void sellTicketComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellTicketComboBoxActionPerformed
-        // TODO add your handling code here:
-         BookTicket s = new BookTicket();
-        s.setVisible(true);     
-        s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
+        System.out.println("advisor id: " + id);
+        //sets typeBlank and blankAllowance in Blank according to the blank that user chosed if s/he has available 
+        if (getAvailabelBlanks() > 0 && Arrays.asList("444", "420", "201", "101").contains(sellTicketComboBox.getSelectedItem().toString())) {
+            BookTicket bookTicket = new BookTicket();
+            bookTicket.setVisible(true);
+            bookTicket.setDefaultCloseOperation(bookTicket.DISPOSE_ON_CLOSE);
+
+            switch (sellTicketComboBox.getSelectedItem().toString()) {
+                case "444":
+                    bookTicket.setComboBoxIndex(444, 4);
+                    break;
+                case "420":
+                    bookTicket.setComboBoxIndex(420, 2);
+                    break;
+                case "201":
+                    bookTicket.setComboBoxIndex(201, 2);
+                    break;
+                case "101":
+                    bookTicket.setComboBoxIndex(101, 1);
+                    break;
+            }
+        } else {
+            // add code for blanks 451, 
+            
+
+            JOptionPane.showMessageDialog(null,
+                    "You have no assigned blanks from this type.\n"
+                    + "Please contact your manager. ",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            sellTicketComboBox.setSelectedItem("SELL TICKET");
+        }
+
+
     }//GEN-LAST:event_sellTicketComboBoxActionPerformed
 
     /**
@@ -262,7 +335,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdvisorHub().setVisible(true);
+                new AdvisorHub(id).setVisible(true);
             }
         });
     }

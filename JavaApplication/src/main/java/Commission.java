@@ -1,15 +1,23 @@
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author dhruv
  */
 public class Commission extends javax.swing.JFrame {
 
+    private PreparedStatement pst = null;
+  
     /**
      * Creates new form commission
      */
@@ -78,7 +86,7 @@ public class Commission extends javax.swing.JFrame {
         );
 
         selectBlankTypeComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        selectBlankTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT BLANK TYPE", "444", "440", "420", "201", "101", "451", "452" }));
+        selectBlankTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT BLANK TYPE", "444", "420", "201", "101", "451", "452" }));
         selectBlankTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectBlankTypeComboBoxActionPerformed(evt);
@@ -155,7 +163,7 @@ public class Commission extends javax.swing.JFrame {
 
     private void backButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonadvisorListActionPerformed
         // TODO add your handling code here:
-           dispose(); 
+        dispose();
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
     private void selectBlankTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBlankTypeComboBoxActionPerformed
@@ -168,6 +176,27 @@ public class Commission extends javax.swing.JFrame {
 
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
         // TODO add your handling code here:
+
+        try (//Get connection to the database
+                 Connection con = DbCon.getConnection();) {
+            int blankType = Integer.parseInt(selectBlankTypeComboBox.getSelectedItem().toString());
+            double rate = Double.parseDouble(rateTextbox.getText());
+            String sql2 = null;
+
+            String sql = "insert into commission values (?,?,?)";
+            pst = con.prepareStatement(sql); // updats commission table 
+            pst.setInt(1, blankType);
+            pst.setDouble(2, rate);
+            pst.setString(3, LocalDateTime.now().withNano(0).toString() );
+            pst.execute();
+
+            JOptionPane.showMessageDialog(null, "Details Updated");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Update failed!\nThe \"Rate\" field must be numeric value.");
+        }
+
+
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
 
     /**

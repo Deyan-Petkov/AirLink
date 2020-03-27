@@ -30,11 +30,15 @@ public class CustomerStatus extends javax.swing.JFrame {
         bluePanel = new javax.swing.JPanel();
         customerStatusTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
-        RateLabel = new javax.swing.JLabel();
-        rateTextbox = new javax.swing.JTextField();
+        rangeFromLabel = new javax.swing.JLabel();
+        rangeToTextbox = new javax.swing.JTextField();
         discountTypeComboBox = new javax.swing.JComboBox<>();
         setStatusComboBox = new javax.swing.JComboBox<>();
         saveButton = new javax.swing.JButton();
+        rateLabel1 = new javax.swing.JLabel();
+        rangeToLabel = new javax.swing.JLabel();
+        rateTextbox1 = new javax.swing.JTextField();
+        rangeFromTextbox1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -59,7 +63,7 @@ public class CustomerStatus extends javax.swing.JFrame {
         bluePanelLayout.setHorizontalGroup(
             bluePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bluePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(280, Short.MAX_VALUE)
                 .addComponent(customerStatusTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 551, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(144, 144, 144)
                 .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -78,13 +82,13 @@ public class CustomerStatus extends javax.swing.JFrame {
                 .addContainerGap(54, Short.MAX_VALUE))
         );
 
-        RateLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        RateLabel.setText("Rate:");
+        rangeFromLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        rangeFromLabel.setText("Range From:");
 
-        rateTextbox.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
-        rateTextbox.addActionListener(new java.awt.event.ActionListener() {
+        rangeToTextbox.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        rangeToTextbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rateTextboxActionPerformed(evt);
+                rangeToTextboxActionPerformed(evt);
             }
         });
 
@@ -112,40 +116,80 @@ public class CustomerStatus extends javax.swing.JFrame {
             }
         });
 
+        rateLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        rateLabel1.setText("Rate(%):");
+
+        rangeToLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        rangeToLabel.setText(" To:");
+
+        rateTextbox1.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        rateTextbox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rateTextbox1ActionPerformed(evt);
+            }
+        });
+
+        rangeFromTextbox1.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        rangeFromTextbox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rangeFromTextbox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout customerStatusBackgroundLayout = new javax.swing.GroupLayout(customerStatusBackground);
         customerStatusBackground.setLayout(customerStatusBackgroundLayout);
         customerStatusBackgroundLayout.setHorizontalGroup(
             customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(bluePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerStatusBackgroundLayout.createSequentialGroup()
+            .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
                 .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerStatusBackgroundLayout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(setStatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(93, 93, 93)
-                        .addComponent(RateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rateTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
-                        .addComponent(discountTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(63, 63, 63)
+                        .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(setStatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(discountTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(192, 192, 192)
+                        .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(rangeToLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(rangeFromLabel))
+                            .addComponent(rateLabel1))
+                        .addGap(18, 18, 18)
+                        .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(rateTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rangeToTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rangeFromTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         customerStatusBackgroundLayout.setVerticalGroup(
             customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
                 .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 262, Short.MAX_VALUE)
-                .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(67, 67, 67)
+                .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(setStatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rateLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(rateTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 157, Short.MAX_VALUE)
+                .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
                         .addComponent(discountTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(rateTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(setStatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(RateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(247, 247, 247)
+                        .addGap(148, 148, 148))
+                    .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
+                        .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(rangeFromTextbox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rangeFromLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(25, 25, 25)
+                        .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(rangeToLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rangeToTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(121, 121, 121)))
                 .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -169,9 +213,9 @@ public class CustomerStatus extends javax.swing.JFrame {
          dispose(); 
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
-    private void rateTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rateTextboxActionPerformed
+    private void rangeToTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rangeToTextboxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_rateTextboxActionPerformed
+    }//GEN-LAST:event_rangeToTextboxActionPerformed
 
     private void discountTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_discountTypeComboBoxActionPerformed
         // TODO add your handling code here:
@@ -184,6 +228,14 @@ public class CustomerStatus extends javax.swing.JFrame {
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
+
+    private void rateTextbox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rateTextbox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rateTextbox1ActionPerformed
+
+    private void rangeFromTextbox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rangeFromTextbox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rangeFromTextbox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -222,13 +274,17 @@ public class CustomerStatus extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel RateLabel;
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bluePanel;
     private javax.swing.JPanel customerStatusBackground;
     private javax.swing.JLabel customerStatusTitle;
     private javax.swing.JComboBox<String> discountTypeComboBox;
-    private javax.swing.JTextField rateTextbox;
+    private javax.swing.JLabel rangeFromLabel;
+    private javax.swing.JTextField rangeFromTextbox1;
+    private javax.swing.JLabel rangeToLabel;
+    private javax.swing.JTextField rangeToTextbox;
+    private javax.swing.JLabel rateLabel1;
+    private javax.swing.JTextField rateTextbox1;
     private javax.swing.JButton saveButton;
     private javax.swing.JComboBox<String> setStatusComboBox;
     // End of variables declaration//GEN-END:variables

@@ -1,3 +1,15 @@
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,13 +21,28 @@
  * @author xahna
  */
 public class ManagerStock extends javax.swing.JFrame {
-
+    //Holds copy of the database during the current session
+    private DefaultTableModel defTabMod;
+    //holds the row number selected by the user
+    private int selectedRow;
+    static int advisorID;
+    static String advisorname; 
+      static boolean isInstantiated;//When is false clicking on CustomerRecords table doesn't assign value to custID
+  
+    PreparedStatement pst= null; 
+    ResultSet rs=null; 
+    Connection con=null; 
+    
     /**
      * Creates new form managerStock
      */
     public ManagerStock() {
         initComponents();
+        isInstantiated=true; 
+     
     }
+     //populates the customerTable table with the relevant data from tha databse
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -30,15 +57,23 @@ public class ManagerStock extends javax.swing.JFrame {
         customerRecordsBlueBackground = new javax.swing.JPanel();
         customerRecordsTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
-        deleteButton = new javax.swing.JButton();
-        viewButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        returnButton = new javax.swing.JButton();
+        assignButton = new javax.swing.JButton();
+        selectBlankTypeComboBox = new javax.swing.JComboBox<>();
+        quantityTextbox = new javax.swing.JTextField();
+        selectAdvisorButton = new javax.swing.JButton();
+        nameTextbox = new javax.swing.JTextField();
+        reAssignButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         customerRecordsBackground.setBackground(new java.awt.Color(255, 255, 255));
         customerRecordsBackground.setPreferredSize(new java.awt.Dimension(1200, 1539));
+        customerRecordsBackground.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                customerRecordsBackgroundMouseMoved(evt);
+            }
+        });
 
         customerRecordsBlueBackground.setBackground(new java.awt.Color(102, 255, 255));
 
@@ -58,7 +93,7 @@ public class ManagerStock extends javax.swing.JFrame {
         customerRecordsBlueBackgroundLayout.setHorizontalGroup(
             customerRecordsBlueBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerRecordsBlueBackgroundLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(313, Short.MAX_VALUE)
                 .addComponent(customerRecordsTitle)
                 .addGap(158, 158, 158)
                 .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -77,167 +112,115 @@ public class ManagerStock extends javax.swing.JFrame {
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        deleteButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        deleteButton.setText("DELETE");
-        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+        returnButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        returnButton.setText("RETURN");
+        returnButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteButtonActionPerformed(evt);
+                returnButtonActionPerformed(evt);
             }
         });
 
-        viewButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        viewButton.setText("SELECT");
-        viewButton.addActionListener(new java.awt.event.ActionListener() {
+        assignButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        assignButton.setText("Assign");
+        assignButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewButtonActionPerformed(evt);
+                assignButtonActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "", "BLANK NUMBER", "OWNERS ID", "BLANK TYPE", "SOLD", "AUDITORS COUPON", "NUMBER OF COUPONS"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class, java.lang.Integer.class, java.lang.Integer.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+        selectBlankTypeComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        selectBlankTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT BLANK TYPE", "444", "440", "420", "201", "101", "451", "452" }));
+        selectBlankTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectBlankTypeComboBoxActionPerformed(evt);
             }
         });
-        jTable1.setColumnSelectionAllowed(true);
-        jScrollPane1.setViewportView(jTable1);
-        jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+
+        quantityTextbox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        quantityTextbox.setText("Enter Quantity...");
+        quantityTextbox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                quantityTextboxMouseClicked(evt);
+            }
+        });
+        quantityTextbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quantityTextboxActionPerformed(evt);
+            }
+        });
+
+        selectAdvisorButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        selectAdvisorButton.setText("SELECT ADVISOR");
+        selectAdvisorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectAdvisorButtonActionPerformed(evt);
+            }
+        });
+
+        nameTextbox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        nameTextbox.setText("Advisor's Name...");
+        nameTextbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameTextboxActionPerformed(evt);
+            }
+        });
+
+        reAssignButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        reAssignButton.setText("Re-Assign");
+        reAssignButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reAssignButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout customerRecordsBackgroundLayout = new javax.swing.GroupLayout(customerRecordsBackground);
         customerRecordsBackground.setLayout(customerRecordsBackgroundLayout);
         customerRecordsBackgroundLayout.setHorizontalGroup(
             customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(customerRecordsBlueBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
-                .addContainerGap(75, Short.MAX_VALUE)
-                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1069, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
-                        .addComponent(viewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerRecordsBackgroundLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerRecordsBackgroundLayout.createSequentialGroup()
+                        .addGap(111, 111, 111)
+                        .addComponent(selectAdvisorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(821, 821, 821))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerRecordsBackgroundLayout.createSequentialGroup()
+                        .addComponent(assignButton, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(56, Short.MAX_VALUE))
+                        .addComponent(reAssignButton, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(178, 178, 178)
+                        .addComponent(returnButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerRecordsBackgroundLayout.createSequentialGroup()
+                .addGap(121, 121, 121)
+                .addComponent(selectBlankTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(quantityTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(117, 117, 117))
         );
         customerRecordsBackgroundLayout.setVerticalGroup(
             customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
                 .addComponent(customerRecordsBlueBackground, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(97, 97, 97)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
+                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(quantityTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(selectBlankTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(69, 69, 69)
+                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(selectAdvisorButton)
+                    .addComponent(nameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 406, Short.MAX_VALUE)
                 .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(viewButton)
-                    .addComponent(deleteButton))
-                .addGap(61, 61, 61))
+                    .addComponent(assignButton)
+                    .addComponent(returnButton)
+                    .addComponent(reAssignButton))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -256,17 +239,122 @@ public class ManagerStock extends javax.swing.JFrame {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
+        isInstantiated=false;
             dispose(); 
     }//GEN-LAST:event_backButtonActionPerformed
 
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    private void returnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_deleteButtonActionPerformed
+           String s=selectBlankTypeComboBox.getSelectedItem().toString();  //choosen blanks
+        int chosen=  Integer.parseInt(s);
+       String quantity= quantityTextbox.getText(); //input of quantity of blanks
+        int blanks=  Integer.parseInt(quantity);
+        
+        
+        //get blanks where isSOld is false and staffID is null and blankID==combobox
+        //delete that row and do it untill the quantity. 
+        
+        
+    }//GEN-LAST:event_returnButtonActionPerformed
 
-    private void viewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewButtonActionPerformed
-        Blank s = new Blank();
-        s.setVisible(true);// TODO add your handling code here:
-    }//GEN-LAST:event_viewButtonActionPerformed
+    private void assignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignButtonActionPerformed
+ 
+        
+       String s=selectBlankTypeComboBox.getSelectedItem().toString();  //choosen blanks
+        int chosen=  Integer.parseInt(s);
+       String quantity= quantityTextbox.getText(); //input of quantity of blanks
+        int blanks=  Integer.parseInt(quantity);
+       String dbblank=null;
+   int initialblanks=blanks; 
+        try (   Connection con = DbCon.getConnection();) {
+        String sql ="select * from Blank where StaffID IS null ";
+        pst=con.prepareStatement(sql);
+        rs=pst.executeQuery();
+        
+    
+       
+           while(rs.next() ){
+             
+                dbblank=rs.getString("blankNumber");
+        
+      
+               char a= dbblank.charAt(0); char b= dbblank.charAt(1); char c= dbblank.charAt(2);  //pick fist 3 digits of blank num 
+               String digits = new StringBuilder().append(a).append(b).append(c).toString(); //merger chars into a stign 
+               int stock=  Integer.parseInt(digits);//conver top strin ginto int for comparisio in the If statment 
+    
+               if(chosen==stock&&blanks!=0){
+                     PreparedStatement rst = null;
+                     rst=con.prepareStatement("UPDATE Blank SET StaffID = '"+advisorID+"' where blankNumber= '"+dbblank+"'  ");
+                     rst.execute();
+      
+                    blanks--;
+               }
+          
+       
+          
+         }
+           
+           
+       if(blanks==initialblanks){JOptionPane.showMessageDialog(null,"all the blanks are assigned");}    
+       
+       else if(blanks<initialblanks){ JOptionPane.showMessageDialog(null,"not enough blanks therefore could only assign" + " "+ (initialblanks-blanks) +" "+ "blanks");}
+            
+         
+   
+           
+     
+            
+     
+        }catch (SQLException | ClassNotFoundException e) {
+          JOptionPane.showMessageDialog(null,e);
+        }
+       
+       dispose();
+    
+          
+          
+          
+            
+            
+            
+        
+    }//GEN-LAST:event_assignButtonActionPerformed
+
+    private void selectBlankTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBlankTypeComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_selectBlankTypeComboBoxActionPerformed
+
+    private void quantityTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantityTextboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_quantityTextboxActionPerformed
+
+    private void selectAdvisorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAdvisorButtonActionPerformed
+        // TODO add your handling code here:
+          AdvisorsList advlist= new AdvisorsList();
+        advlist.setVisible(true);
+    }//GEN-LAST:event_selectAdvisorButtonActionPerformed
+
+    private void nameTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nameTextboxActionPerformed
+
+    private void customerRecordsBackgroundMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customerRecordsBackgroundMouseMoved
+      if(AdvisorsList.select==true){
+      
+       nameTextbox.setText(advisorname);
+      
+      
+      }
+    }//GEN-LAST:event_customerRecordsBackgroundMouseMoved
+
+    private void reAssignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reAssignButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_reAssignButtonActionPerformed
+
+    private void quantityTextboxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_quantityTextboxMouseClicked
+        // TODO add your handling code here:
+         quantityTextbox.setText("");//clears the textField once you click on it
+    }//GEN-LAST:event_quantityTextboxMouseClicked
 
     /**
      * @param args the command line arguments
@@ -305,13 +393,16 @@ public class ManagerStock extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton assignButton;
     private javax.swing.JButton backButton;
     private javax.swing.JPanel customerRecordsBackground;
     private javax.swing.JPanel customerRecordsBlueBackground;
     private javax.swing.JLabel customerRecordsTitle;
-    private javax.swing.JButton deleteButton;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JButton viewButton;
+    private javax.swing.JTextField nameTextbox;
+    private javax.swing.JTextField quantityTextbox;
+    private javax.swing.JButton reAssignButton;
+    private javax.swing.JButton returnButton;
+    private javax.swing.JButton selectAdvisorButton;
+    private javax.swing.JComboBox<String> selectBlankTypeComboBox;
     // End of variables declaration//GEN-END:variables
 }

@@ -199,7 +199,7 @@ public class LoginForm extends javax.swing.JFrame {
             Connection con = DbCon.getConnection();
             ){
              //find if we have this username and password in the database
-            PreparedStatement ps = con.prepareStatement("select role from Staff where password = ? and name = ?");
+            PreparedStatement ps = con.prepareStatement("select role, ID from Staff where password = ? and name = ?");
             //replace the wildcard characters 
             ps.setString(1, md5EncUserInput);
             ps.setString(2, name);
@@ -215,7 +215,7 @@ public class LoginForm extends javax.swing.JFrame {
                         admHub.setDefaultCloseOperation(AdminHub.DISPOSE_ON_CLOSE);
                         break;
                     case "advisor":
-                        AdvisorHub advisorHub = new AdvisorHub();
+                        AdvisorHub advisorHub = new AdvisorHub(rs.getInt("ID"));
                         advisorHub.setVisible(true);
                         this.dispose();
                         advisorHub.setDefaultCloseOperation(AdvisorHub.DISPOSE_ON_CLOSE);

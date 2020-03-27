@@ -1,3 +1,17 @@
+
+
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,14 +23,58 @@
  * @author dhruv
  */
 public class AdvisorsList extends javax.swing.JFrame {
-
+ //Holds copy of the database during the current session
+    private DefaultTableModel defTabMod;
+    //holds the row number selected by the user
+    private int selectedRow;    
+     static boolean select=false;//When is false clicking on CustomerRecords table doesn't assign value to custID
+    
+    
     /**
      * Creates new form advisorsList
      */
     public AdvisorsList() {
         initComponents();
+         initAdvisorsList("select * from staff where role='advisor'");
+            selectedRow = -1;
+            
     }
+ //populates the customerTable table with the relevant data from tha databse
+   private void initAdvisorsList(String sqlStatement) {
+        //estabblish connection with the database
+        try ( PreparedStatement ps = DbCon.getConnection().prepareStatement(sqlStatement);) {
+            ResultSet rs = ps.executeQuery();//contains the data returned from the database quiery
+            ResultSetMetaData rsmd = rs.getMetaData();
+            //controls the for loop for the assigning of values in the vector
+            int column = rsmd.getColumnCount();
+            //initialize this form table according to the database structure
+            defTabMod = (DefaultTableModel)  advisorsListTable.getModel();
+            defTabMod.setRowCount(0);
+            //loops over each row of the database
+            while (rs.next()) {
+                Vector v = new Vector();
 
+                for (int i = 1; i <= column; i++) {
+                    v.add(rs.getInt("ID"));
+                  
+                    v.add(rs.getString("role"));
+                    v.add(rs.getString("name"));
+                    v.add(rs.getString("address"));
+                    v.add(rs.getString("email"));
+                    v.add(rs.getInt("phoneNum"));
+                    
+                    
+                }//inserts single row collected data from the databse into this form table
+                defTabMod.addRow(v);
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+    }
+  
+  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -30,16 +88,22 @@ public class AdvisorsList extends javax.swing.JFrame {
         bluePanel = new javax.swing.JPanel();
         advisorsListTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
-        viewButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         addtButton = new javax.swing.JButton();
         advisorsListPane = new javax.swing.JScrollPane();
         advisorsListTable = new javax.swing.JTable();
+        selectButton = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         advisorsListBackground.setBackground(new java.awt.Color(255, 255, 255));
         advisorsListBackground.setPreferredSize(new java.awt.Dimension(1100, 800));
+        advisorsListBackground.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                advisorsListBackgroundMouseMoved(evt);
+            }
+        });
 
         bluePanel.setBackground(new java.awt.Color(125, 240, 240));
 
@@ -59,7 +123,7 @@ public class AdvisorsList extends javax.swing.JFrame {
         bluePanelLayout.setHorizontalGroup(
             bluePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bluePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(302, Short.MAX_VALUE)
                 .addComponent(advisorsListTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(74, 74, 74)
                 .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -75,14 +139,6 @@ public class AdvisorsList extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        viewButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        viewButton.setText("VIEW");
-        viewButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewButtonadvisorListActionPerformed(evt);
-            }
-        });
-
         deleteButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         deleteButton.setText("DELETE");
 
@@ -96,90 +152,42 @@ public class AdvisorsList extends javax.swing.JFrame {
 
         advisorsListTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
-                "", "ID", "ADDRESS", "PHONE", "EMAIL", "PASSWORD"
+                "ID", "ROLE", "NAME", "ADDRESS", "EMAIL", "PHONE NUMBER"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Integer.class, java.lang.String.class, java.lang.Long.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
+        advisorsListTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                advisorsListTableMouseClicked(evt);
+            }
+        });
         advisorsListPane.setViewportView(advisorsListTable);
+
+        selectButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        selectButton.setText("SELECT");
+        selectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectButtonActionPerformed(evt);
+            }
+        });
+
+        updateButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        updateButton.setText("UPDATE");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout advisorsListBackgroundLayout = new javax.swing.GroupLayout(advisorsListBackground);
         advisorsListBackground.setLayout(advisorsListBackgroundLayout);
@@ -188,28 +196,33 @@ public class AdvisorsList extends javax.swing.JFrame {
             .addComponent(bluePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(advisorsListBackgroundLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(addtButton, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(145, 145, 145)
-                .addComponent(viewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
-                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(addtButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(selectButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
-            .addGroup(advisorsListBackgroundLayout.createSequentialGroup()
-                .addGap(137, 137, 137)
-                .addComponent(advisorsListPane, javax.swing.GroupLayout.PREFERRED_SIZE, 917, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorsListBackgroundLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(advisorsListPane, javax.swing.GroupLayout.PREFERRED_SIZE, 916, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(129, 129, 129))
         );
         advisorsListBackgroundLayout.setVerticalGroup(
             advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(advisorsListBackgroundLayout.createSequentialGroup()
                 .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
-                .addComponent(advisorsListPane, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
-                .addGroup(advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addtButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(advisorsListPane, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
+                .addGroup(advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(addtButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(18, 18, 18)
+                .addGroup(advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(deleteButton)
-                    .addComponent(viewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -231,19 +244,77 @@ public class AdvisorsList extends javax.swing.JFrame {
     private void backButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonadvisorListActionPerformed
         // TODO add your handling code here:
         
-    
+   
           dispose(); 
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
-    private void viewButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewButtonadvisorListActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_viewButtonadvisorListActionPerformed
-
+   
     private void addtButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addtButtonadvisorListActionPerformed
         // TODO add your handling code here:
         Advisor adv= new Advisor();
         adv.setVisible(true);
+   
     }//GEN-LAST:event_addtButtonadvisorListActionPerformed
+
+    private void selectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectButtonActionPerformed
+        // TODO add your handling code here:
+          select=true;
+        dispose();
+    }//GEN-LAST:event_selectButtonActionPerformed
+
+    
+   
+    private void advisorsListTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_advisorsListTableMouseClicked
+        // TODO add your handling code here:
+          //holds teh row number selected with the mouse
+        selectedRow = advisorsListTable.getSelectedRow();
+                 if(ManagerStock.isInstantiated){
+             //Set custID in BookTicket according to the mouse selected row ID
+             ManagerStock.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
+             
+             ManagerStock.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString();
+         }
+ 
+       
+    }//GEN-LAST:event_advisorsListTableMouseClicked
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+    
+           // Implements the updatate button updating the whole row chosen with the mouse.
+        //By double clicking you can change the entry. After finishing click update.
+        try ( Connection con = DbCon.getConnection()) {
+            PreparedStatement pst = null;
+
+            pst = con.prepareStatement("update staff set role = '"
+                    + defTabMod.getValueAt(selectedRow, 1)
+                    + "', name = '"
+                    + defTabMod.getValueAt(selectedRow, 2)
+                    + "', address= '"
+                    + defTabMod.getValueAt(selectedRow, 3)
+                    + "', email = '"
+                    + defTabMod.getValueAt(selectedRow, 4)
+                    + "', phoneNum = '"
+                    + defTabMod.getValueAt(selectedRow, 5)
+                   
+                    + "' where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
+
+            pst.execute();
+            initAdvisorsList("select * from staff where role='advisor'");
+
+        } catch (SQLException | ClassNotFoundException e) {
+          JOptionPane.showMessageDialog(null,"error");
+        }
+        
+    }//GEN-LAST:event_updateButtonActionPerformed
+
+    private void advisorsListBackgroundMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_advisorsListBackgroundMouseMoved
+        // TODO add your handling code here:
+            if(Advisor.buttonPressed()==true){
+             initAdvisorsList("select * from staff where role='advisor'");
+    
+             }
+    
+    }//GEN-LAST:event_advisorsListBackgroundMouseMoved
 
     /**
      * @param args the command line arguments
@@ -290,6 +361,7 @@ public class AdvisorsList extends javax.swing.JFrame {
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bluePanel;
     private javax.swing.JButton deleteButton;
-    private javax.swing.JButton viewButton;
+    private javax.swing.JButton selectButton;
+    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }
