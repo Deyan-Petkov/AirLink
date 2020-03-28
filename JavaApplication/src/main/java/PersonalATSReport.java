@@ -1,20 +1,138 @@
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author xahna
  */
 public class PersonalATSReport extends javax.swing.JFrame {
 
+    private DefaultTableModel defTabMod;
+
     /**
      * Creates new form personalATSReport
      */
     public PersonalATSReport() {
         initComponents();
+        initReportTable();
+    }
+
+    private void initReportTable() {
+        //estabblish connection with the database
+        try ( Connection con = DbCon.getConnection()) {
+            Statement statement = con.createStatement();
+            String s1 = "CREATE TEMPORARY TABLE IDomestic (\n"
+                    + "    issuedN          VARCHAR (15),\n"
+                    + "    fBase            DOUBLE (10),\n"
+                    + "    fBaseUSD         DOUBLE (10),\n"
+                    + "    pMethod          VARCHAR(10),\n"
+                    + "    taxes            DOUBLE (10),\n"
+                    + "    price            DOUBLE (10),\n"
+                    + "    commission1      DOUUBLE (10),\n"
+                    + "    commission2      DOUBLE(10),\n"
+                    + "    notes            VARCHAR(200)\n"
+                    + ");";
+            String s2 = "CREATE TEMPORARY TABLE totals (\n"
+                    + "    totalCommissions DOUBLE (10),\n"
+                    + "    netDebit         DOUBLE (10),\n"
+                    + "    totalNetAmnt     DOUBLE (10)\n"
+                    + ");";
+            String s3 = "INSERT INTO IDomestic (\n"
+                    + "      issuedN\n"
+                    + "  )\n"
+                    + "  SELECT blankNumber\n"
+                    + "        FROM blank\n"
+                    + "       where  isSold = 1 and StaffID = 2\n"
+                    + "       and ( blankNumber like '201%'\n"
+                    + "       or blankNumber like '101%');";
+
+            String s4 = "insert into IDomestic (issuedN) values ('TOTAL')";
+
+            String s5 = "UPDATE IDomestic\n"
+                    + "SET fBase = (\n"
+                    + "   SELECT sum (price)\n"
+                    + "     FROM t\n"
+                    + "    WHERE blankNumber = issuedN\n"
+                    + ");";
+            String s6 = "update Idomestic set fBase=(\n"
+                    + "   SELECT sum(fBase) from IDomestic )\n"
+                    + "    WHERE issuedN = 'TOTAL'";
+            String s7 = "    UPDATE Idomestic\n"
+                    + "    SET pMethod = (\n"
+                    + "       SELECT type\n"
+                    + "         FROM Payment\n"
+                    + "        WHERE BlankblankNumber = issuedN\n"
+                    + "    );";
+
+            String s8 = "    UPDATE IDomestic\n"
+                    + "    SET taxes = (\n"
+                    + "       SELECT taxes\n"
+                    + "         FROM Payment\n"
+                    + "        WHERE BlankblankNumber = issuedN\n"
+                    + "    )";
+            String s9 = "  update Idomestic set taxes =(\n"
+                    + "       SELECT sum(taxes) from IDomestic )\n"
+                    + "        WHERE issuedN = 'TOTAL'";
+            String s10 = "update Idomestic set price =\n"
+                    + "            taxes + fbase\n"
+                    + "           \n"
+                    + "";
+            statement.addBatch(s1);
+            statement.addBatch(s2);
+            statement.addBatch(s3);
+            statement.addBatch(s4);
+            statement.addBatch(s5);
+            statement.addBatch(s6);
+            statement.addBatch(s7);
+            statement.addBatch(s8);
+            statement.addBatch(s9);
+            statement.addBatch(s10);
+            statement.executeBatch();
+            PreparedStatement pst = con.prepareStatement("select * from Idomestic");
+
+            ResultSet rs = pst.executeQuery();//contains the data returned from the database quiery
+            ResultSetMetaData rsmd = rs.getMetaData();
+            //controls the for loop for the assigning of values in the vector
+            int column = rsmd.getColumnCount();
+            //initialize this form table according to the database structure
+            defTabMod = (DefaultTableModel) reportJTable.getModel();
+            defTabMod.setRowCount(0);
+            //loops over each row of the database
+            while (rs.next()) {
+                Vector v = new Vector();
+
+                for (int i = 1; i <= column; i++) {
+                    v.add(rs.getString("issuedN"));
+                    v.add(rs.getDouble("fBase"));
+                    v.add(rs.getDouble("fBaseUSD"));
+                    v.add(rs.getString("pMethod"));
+                    v.add(rs.getDouble("taxes"));
+                    v.add(rs.getDouble("price"));
+                    v.add(rs.getDouble("commission1"));
+                    v.add(rs.getDouble("commission2"));
+                    v.add(rs.getString("notes"));
+                }//inserts single row collected data from the databse into this form table
+                defTabMod.addRow(v);
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, e);
+        }
+
     }
 
     /**
@@ -36,6 +154,8 @@ public class PersonalATSReport extends javax.swing.JFrame {
         toLabel = new javax.swing.JLabel();
         dateFinishTextbox = new javax.swing.JTextField();
         printButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        reportJTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,27 +219,44 @@ public class PersonalATSReport extends javax.swing.JFrame {
             }
         });
 
+        reportJTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Issued Number", "Local Fare Base", "USD Fare Base", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8", "Title 9"
+            }
+        ));
+        reportJTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jScrollPane1.setViewportView(reportJTable);
+
         javax.swing.GroupLayout personalATSBackgroundLayout = new javax.swing.GroupLayout(personalATSBackground);
         personalATSBackground.setLayout(personalATSBackgroundLayout);
         personalATSBackgroundLayout.setHorizontalGroup(
             personalATSBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(personalATSBlueBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(personalATSBackgroundLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(generateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(printButton, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(personalATSBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(personalATSBackgroundLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(generateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(printButton, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(personalATSBackgroundLayout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(dateLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(dateStartTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(toLabel)
+                        .addGap(18, 18, 18)
+                        .addComponent(dateFinishTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(personalATSBackgroundLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(dateLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(dateStartTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(toLabel)
-                .addGap(18, 18, 18)
-                .addComponent(dateFinishTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, personalATSBackgroundLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 907, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(136, 136, 136))
         );
         personalATSBackgroundLayout.setVerticalGroup(
             personalATSBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,7 +268,9 @@ public class PersonalATSReport extends javax.swing.JFrame {
                     .addComponent(toLabel)
                     .addComponent(dateStartTextbox)
                     .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 575, Short.MAX_VALUE)
+                .addGap(61, 61, 61)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 238, Short.MAX_VALUE)
                 .addGroup(personalATSBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(generateButton)
                     .addComponent(printButton))
@@ -142,7 +281,7 @@ public class PersonalATSReport extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(personalATSBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 1200, Short.MAX_VALUE)
+            .addComponent(personalATSBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 1207, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -207,10 +346,12 @@ public class PersonalATSReport extends javax.swing.JFrame {
     private javax.swing.JLabel dateLabel;
     private javax.swing.JTextField dateStartTextbox;
     private javax.swing.JButton generateButton;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel personalATSBackground;
     private javax.swing.JPanel personalATSBlueBackground;
     private javax.swing.JLabel personalATSTitle;
     private javax.swing.JButton printButton;
+    private javax.swing.JTable reportJTable;
     private javax.swing.JLabel toLabel;
     // End of variables declaration//GEN-END:variables
 }
