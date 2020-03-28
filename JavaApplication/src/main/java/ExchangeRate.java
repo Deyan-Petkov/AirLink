@@ -40,7 +40,7 @@ public class ExchangeRate extends javax.swing.JFrame {
         //sets local date and time variable according to the current date and time
         localDateTime = LocalDateTime.now().withNano(0);
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
