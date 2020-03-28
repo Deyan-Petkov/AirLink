@@ -513,13 +513,14 @@ public class BookTicket extends javax.swing.JFrame {
                 }
                 //write to payment table
                 pst = con.prepareStatement("insert into payment (BlankblankNumber,delayed,exchangeRate,"
-                        + "date,taxes,isRefunded) values(?,?,?,?,?,?)");
+                        + "commissionRate,date,taxes,isRefunded) values(?,?,?,?,?,?,?)");
                 pst.setLong(1, blankNo);
                 pst.setBoolean(2, delayed);
                 pst.setDouble(3, exchangeRate);
-                pst.setString(4, LocalDate.now().toString());//date
-                pst.setDouble(5, Double.valueOf(taxesTextField.getText()));//taxes
-                pst.setBoolean(6, false);//is refunded
+                pst.setDouble(4, commissionRate);
+                pst.setString(5, LocalDate.now().toString());//date
+                pst.setDouble(6, Double.valueOf(taxesTextField.getText()));//taxes
+                pst.setBoolean(7, false);//is refunded
                 pst.execute();
                 //add card details if card option is selected
                 if (paymentjComboBox.getSelectedItem().toString().equals("CARD")) {

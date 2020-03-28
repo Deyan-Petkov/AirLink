@@ -1,9 +1,11 @@
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -21,7 +23,6 @@ public class ExchangeRate extends javax.swing.JFrame {
 
     PreparedStatement pst = null;
     LocalDateTime localDateTime;
-    String result;
 
     /**
      * Creates new form exchangeRate
@@ -40,7 +41,7 @@ public class ExchangeRate extends javax.swing.JFrame {
         //sets local date and time variable according to the current date and time
         localDateTime = LocalDateTime.now().withNano(0);
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
