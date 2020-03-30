@@ -37,8 +37,8 @@ public class PersonalATSReport extends javax.swing.JFrame {
     }
 
     //check if the input dates are in the correct format
-    private boolean isValidDate(String date) {
-
+    static boolean isValidDate(String date) {
+        
         if (date.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})")) {
             return true;
         }
