@@ -27,7 +27,7 @@ public class AdvisorReportList extends javax.swing.JFrame {
     private DefaultTableModel defTabMod;
     //holds the row number selected by the user
     private int selectedRow;    
-     static boolean select=false;//When is false clicking on CustomerRecords table doesn't assign value to custID
+    static boolean select=false;//When is false clicking on CustomerRecords table doesn't assign value to custID
     
     
     /**
@@ -204,13 +204,21 @@ public class AdvisorReportList extends javax.swing.JFrame {
         // TODO add your handling code here:
           //holds teh row number selected with the mouse
         selectedRow = advisorsListTable.getSelectedRow();
-                 if(DomesticSalesReport.isInstantiated){
-             //Set custID in BookTicket according to the mouse selected row ID
+        if(DomesticSalesReport.isInstantiated){
+                     
              DomesticSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
-             
              DomesticSalesReport.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString();
              
             PersonalATSReport personal = new PersonalATSReport();
+            personal.setVisible(true);
+            personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
+         }
+        else if (InterlineSalesReport.isInstantiated){
+             
+            InterlineSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
+            InterlineSalesReport.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString();
+            
+            PersonalInterlineReport personal = new PersonalInterlineReport();
             personal.setVisible(true);
             personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
          }
