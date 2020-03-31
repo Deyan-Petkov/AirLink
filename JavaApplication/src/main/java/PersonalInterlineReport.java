@@ -30,10 +30,7 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
     //check if the input dates are in the correct format
     static boolean isValidDate(String date) {
         
-        if(date.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})")) {
-            return true;
-    }
-        return false;
+        return date.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})");
     }
     
 
