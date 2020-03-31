@@ -1,10 +1,13 @@
 
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
@@ -230,6 +233,22 @@ public class AdvisorHub extends javax.swing.JFrame {
 
     private void logsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logsButtonActionPerformed
         // TODO add your handling code here:
+ 
+        try(Connection con = DbCon.getConnection()){
+                PreparedStatement pst2 = con.prepareStatement("select  name from staff where ID='"+id+"' ");
+                    
+               ResultSet rs2 = pst2.executeQuery();
+               
+           String filename= rs2.getString("name")+" "+"logfile";
+     
+           ProcessBuilder pb = new ProcessBuilder("Notepad.exe", filename);
+        pb.start();
+      
+        
+        }
+        catch(Exception e){  System.out.println("error");}
+        
+    
     }//GEN-LAST:event_logsButtonActionPerformed
 
     private void CustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CustomerButtonActionPerformed
@@ -352,4 +371,6 @@ public class AdvisorHub extends javax.swing.JFrame {
     private javax.swing.JButton returnTicketButton;
     private javax.swing.JComboBox<String> sellTicketComboBox;
     // End of variables declaration//GEN-END:variables
+
 }
+

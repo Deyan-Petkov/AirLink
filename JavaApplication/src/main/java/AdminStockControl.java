@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Vector;
@@ -31,10 +32,9 @@ public class AdminStockControl extends javax.swing.JFrame {
     Connection con=null; 
     
     // decleration for values in date
-     int day;
-      int month;
-      int year;
-      String date; 
+     LocalDateTime localDateTime;
+    
+ ; 
   
  
     /**
@@ -44,11 +44,11 @@ public class AdminStockControl extends javax.swing.JFrame {
        initComponents();
   
      //below is assignation of date 
-       GregorianCalendar gc= new GregorianCalendar();
-       day=gc.get(Calendar.DAY_OF_MONTH);
-     // getting month from gc.get() is meesed up thats why hardcoded it 
-     year=gc.get(Calendar.YEAR);
-     date= year+"/"+"4"+"/"+day;
+     
+             localDateTime = LocalDateTime.now().withNano(0);
+   
+      
+
     }
         
     
@@ -73,6 +73,8 @@ public class AdminStockControl extends javax.swing.JFrame {
         quantityTextField = new javax.swing.JTextField();
         blankComboBox = new javax.swing.JComboBox<>();
         orderTextField = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -132,7 +134,6 @@ public class AdminStockControl extends javax.swing.JFrame {
         });
 
         quantityTextField.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        quantityTextField.setText("current quantity...");
         quantityTextField.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 quantityTextFieldMouseClicked(evt);
@@ -153,7 +154,6 @@ public class AdminStockControl extends javax.swing.JFrame {
         });
 
         orderTextField.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        orderTextField.setText("order...");
         orderTextField.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 orderTextFieldMouseClicked(evt);
@@ -165,43 +165,66 @@ public class AdminStockControl extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel1.setText("Place Order:");
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel2.setText("Current Quantity:");
+
         javax.swing.GroupLayout adminStockControlBackgroundLayout = new javax.swing.GroupLayout(adminStockControlBackground);
         adminStockControlBackground.setLayout(adminStockControlBackgroundLayout);
         adminStockControlBackgroundLayout.setHorizontalGroup(
             adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(bluePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(addtButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
+                        .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(blankComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, adminStockControlBackgroundLayout.createSequentialGroup()
+                                .addGap(358, 358, 358)
+                                .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(orderTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(quantityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addComponent(addtButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
-                .addGap(156, 156, 156)
-                .addComponent(quantityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(orderTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(262, 262, 262))
-            .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
-                .addGap(384, 384, 384)
-                .addComponent(blankComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
+                    .addGap(166, 166, 166)
+                    .addComponent(jLabel2)
+                    .addContainerGap(850, Short.MAX_VALUE)))
         );
         adminStockControlBackgroundLayout.setVerticalGroup(
             adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
                 .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
+                .addGap(54, 54, 54)
                 .addComponent(blankComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(87, 87, 87)
-                .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(orderTextField)
-                    .addComponent(quantityTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 359, Short.MAX_VALUE)
+                .addGap(72, 72, 72)
+                .addComponent(quantityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
+                .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(orderTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(158, 158, 158)
                 .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addtButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
+            .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
+                    .addGap(395, 395, 395)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(426, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -212,7 +235,7 @@ public class AdminStockControl extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(adminStockControlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+            .addComponent(adminStockControlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 903, Short.MAX_VALUE)
         );
 
         pack();
@@ -265,13 +288,13 @@ public class AdminStockControl extends javax.swing.JFrame {
             pst.setBoolean(3, false);
           
           pst.setString(4, null);
-            pst.setString(5, date);
+            pst.setString(5, localDateTime.toString());
            
             pst.execute();
            }
          JOptionPane.showMessageDialog(null,"insterted");
             
-            dispose();
+        
             
         } catch (SQLException | ClassNotFoundException e) {
           JOptionPane.showMessageDialog(null,"error");
@@ -312,29 +335,39 @@ public class AdminStockControl extends javax.swing.JFrame {
        
      try (   Connection con = DbCon.getConnection();) {
            String s=blankComboBox.getSelectedItem().toString();  //takes the type of blank that is chose in combo box 
-        String sql=null;
+            String sql=null;
+        
+         
+          
         //diffiret stms for diffirent blank types, done in orer to count how many there are in the Db 
         if(s=="444"){
             sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '444%';\n" +"]  ";
+          
          }
         if(s=="440"){
             sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '440%';\n" +"]  ";
+       
          }    
         if(s=="420"){
             sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '420%';\n" +"]  ";
+            
          }  
             
        if(s=="201"){
             sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '201%';\n" +"]  ";
+         
          }
        if(s=="101"){
             sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '101%';\n" +"]  ";
+         
          }
        if(s=="451"){
             sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '451%';\n" +"]  ";
+          
          } 
        if(s=="452"){
             sql="select count(blankNumber) from Blank where blankNumber \n" +"LIKE '452%';\n" +"]  ";
+           
          } 
         
         //this just shows in the text fied the quantity of blanks that are available in the stock.
@@ -410,6 +443,8 @@ public class AdminStockControl extends javax.swing.JFrame {
     private javax.swing.JButton backButton;
     private javax.swing.JComboBox<String> blankComboBox;
     private javax.swing.JPanel bluePanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField orderTextField;
     private javax.swing.JTextField quantityTextField;
     private javax.swing.JButton saveButton;

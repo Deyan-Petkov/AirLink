@@ -251,6 +251,7 @@ public class AdvisorsList extends javax.swing.JFrame {
     private void selectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectButtonActionPerformed
         // TODO add your handling code here:
           select=true;
+        
         dispose();
     }//GEN-LAST:event_selectButtonActionPerformed
 

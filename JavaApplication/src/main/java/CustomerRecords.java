@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -24,6 +25,7 @@ public class CustomerRecords extends javax.swing.JFrame {
     private DefaultTableModel defTabMod;
     //holds the row number selected by the user
     private int selectedRow;
+
     
 
     public CustomerRecords() {
@@ -305,6 +307,9 @@ public class CustomerRecords extends javax.swing.JFrame {
              BookTicket.custID = (int) defTabMod.getValueAt(selectedRow, 0);
              this.dispose();
          }
+         
+          SalesRecords.customerID=(int) defTabMod.getValueAt(selectedRow, 0); //this may be used when FIND button is clicked as, in order to view custoemr sales record 
+            
 
     }//GEN-LAST:event_customerTableMouseClicked
     //Update entry from the databse
@@ -390,9 +395,16 @@ public class CustomerRecords extends javax.swing.JFrame {
 
     private void ticketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ticketButtonActionPerformed
         // TODO add your handling code here:
-        SalesRecords s = new SalesRecords();
-        s.setVisible(true);     
-        s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
+      if ( SalesRecords.customerID== 0) {
+                JOptionPane.showMessageDialog(null,
+                        "To view records, please first \"SELECT CUSTOMER\"",
+                        "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        
+      else{   SalesRecords s = new SalesRecords();
+        s.setVisible(true); }    
+    
     }//GEN-LAST:event_ticketButtonActionPerformed
 
     /**
