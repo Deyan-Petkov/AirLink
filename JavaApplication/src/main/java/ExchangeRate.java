@@ -21,8 +21,7 @@ public class ExchangeRate extends javax.swing.JFrame {
 
     PreparedStatement pst = null;
     LocalDateTime localDateTime;
-    String result;
-   
+    
     /**
      * Creates new form exchangeRate
      */
