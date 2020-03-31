@@ -50,66 +50,72 @@ public class GlobalInterlineReport extends javax.swing.JFrame {
             try ( Connection con = DbCon.getConnection()) {
                 Statement statement = con.createStatement();
 
-                statement.addBatch("CREATE TEMPORARY table GInterline(\n" 
-                        +"n integer primary key autoincrement,\n" 
-                        +"agent integer (3),\n" 
-                        +"sold integer(3),\n" 
-                        +"fBase double(10),\n" 
-                        +"taxes double (10),\n" 
-                        +"otherTaxes double (10),\n" 
-                        +"cashP double(10),\n" 
-                        +"cardP double(10),\n" 
-                        +"amount double (10),\n" 
-                        +"commission double(10));");
+                statement.addBatch("Create temp view if not exists glbrepI as\n"
+                        + "select * from t  WHERE date >= '"+ fromDate + "' AND \n"
+                        + "  date <= '" + toDate + "' AND \n"
+                        + "  (blankNumber LIKE '444%' OR \n"
+                        + "   blankNumber LIKE '420%');");
+
+                statement.addBatch("CREATE TEMPORARY table GInterline(\n"
+                        + "n integer primary key autoincrement,\n"
+                        + "agent integer (3),\n"
+                        + "sold integer(3),\n"
+                        + "fBase double(10),\n"
+                        + "taxes double (10),\n"
+                        + "otherTaxes double (10),\n"
+                        + "cashP double(10),\n"
+                        + "cardP double(10),\n"
+                        + "amount double (10),\n"
+                        + "commission double(10));");
                 /*select all id's which sold domestic blanks during the selected period*/
-                statement.addBatch("INSERT INTO GInterline(agent) SELECT DISTINCT staffID FROM glbrepI WHERE isSold = 1\n" 
-                        +"AND date >= '2020-03-23'\n" 
-                        +"AND date <= '2020-03-28'\n" 
-                        +"AND blankNumber LIKE '444%' OR blankNumber LIKE '420%'\n" 
-                        +"ORDER BY staffID;");
+                statement.addBatch("INSERT INTO GInterline(agent) SELECT DISTINCT staffID FROM glbrepI WHERE isSold = 1\n"
+                        + "AND date >= '"+ fromDate + "'\n"
+                        + "AND date <= '"+ toDate + "'\n"
+                        + "AND blankNumber LIKE '444%' OR blankNumber LIKE '420%'\n"
+                        + "ORDER BY staffID;");
                 /*How many blanks each advisor have sold*/
-                statement.addBatch("UPDATE GInterline SET sold = (\n" 
-                        +"SELECT count(DISTINCT blankNumber) FROM glbrepI WHERE staffID = agent);");
+                statement.addBatch("UPDATE GInterline SET sold = (\n"
+                        + "SELECT count(DISTINCT blankNumber) FROM glbrepI WHERE staffID = agent);");
                 /*Total price for sold domestic tickets per advisor*/
-                statement.addBatch("UPDATE GInterline SET fBase = (\n" 
-                        +"SELECT sum(price)\n" 
-                        +"FROM glbrepI\n" 
-                        +"WHERE staffID = agent);");
+                statement.addBatch("UPDATE GInterline SET fBase = (\n"
+                        + "SELECT sum(price)\n"
+                        + "FROM glbrepI\n"
+                        + "WHERE staffID = agent);");
                 /*Set taxes payed by customer for all blanks sold by advisor*/
-                statement.addBatch("UPDATE GInterline SET taxes = (\n" 
-                        +"SELECT txs FROM (\n" 
-                        +"SELECT sum(taxes) AS txs,staffID AS stf FROM\n" 
-                        +"(SELECT DISTINCT blankNumber,taxes,staffID FROM glbrepI) WHERE staffID IN\n" 
-                        +"(SELECT agent FROM GInterline) GROUP BY staffID) WHERE stf = agent);");
+                statement.addBatch("UPDATE GInterline SET taxes = (\n"
+                        + "SELECT txs FROM (\n"
+                        + "SELECT sum(taxes) AS txs,staffID AS stf FROM\n"
+                        + "(SELECT DISTINCT blankNumber,taxes,staffID FROM glbrepI) WHERE staffID IN\n"
+                        + "(SELECT agent FROM GInterline) GROUP BY staffID) WHERE stf = agent);");
                 /*Set other taxes payed by customer for all blanks sold by advisor*/
-                statement.addBatch("UPDATE GInterline SET otherTaxes = (\n" 
-                        +"SELECT otxs FROM (\n" 
-                        +"SELECT sum(otherTaxes) AS otxs,staffID AS stf FROM\n" 
-                        +"(SELECT DISTINCT blankNumber,otherTaxes,staffID FROM glbrepI) WHERE staffID IN\n" 
-                        +"(SELECT agent FROM GInterline) GROUP BY staffID) WHERE stf = agent);");
+                statement.addBatch("UPDATE GInterline SET otherTaxes = (\n"
+                        + "SELECT otxs FROM (\n"
+                        + "SELECT sum(otherTaxes) AS otxs,staffID AS stf FROM\n"
+                        + "(SELECT DISTINCT blankNumber,otherTaxes,staffID FROM glbrepI) WHERE staffID IN\n"
+                        + "(SELECT agent FROM GInterline) GROUP BY staffID) WHERE stf = agent);");
                 /*set total amount payed*/
                 statement.addBatch("UPDATE GInterline SET amount = (fBase + taxes + otherTaxes);");
                 /*Set commission for each advisor*/
-                statement.addBatch("UPDATE GInterline SET commission =\n" 
-                        +"(SELECT sum((price*cr)-price) FROM\n" 
-                        +"(SELECT DISTINCT blankNumber AS bn, staffID AS id, price, commissionrate AS cr FROM glbrepI) WHERE id = agent );");
+                statement.addBatch("UPDATE GInterline SET commission =\n"
+                        + "(SELECT sum((price*cr)-price) FROM\n"
+                        + "(SELECT DISTINCT blankNumber AS bn, staffID AS id, price, commissionrate AS cr FROM glbrepI) WHERE id = agent );");
                 /*set cash payment amount*/
-                statement.addBatch("UPDATE GInterline SET cashP =(\n" 
-                        +"SELECT sum(price + taxes + otherTaxes) FROM\n" 
-                        +"(SELECT sum(price) AS price FROM glbrepI WHERE staffID = agent AND type IS 'cash'),\n" 
-                        +"(SELECT sum(taxes) AS taxes FROM\n" 
-                        +"(SELECT DISTINCT blankNumber, taxes FROM glbrepI WHERE staffID = agent AND type IS 'cash')),\n"
-                        +"(SELECT sum(otherTaxes) AS otherTaxes FROM\n" 
-                        +"(SELECT DISTINCT blankNumber, otherTaxes FROM glbrepI WHERE staffID = agent AND type IS 'cash')));");
+                statement.addBatch("UPDATE GInterline SET cashP =(\n"
+                        + "SELECT sum(price + taxes + otherTaxes) FROM\n"
+                        + "(SELECT sum(price) AS price FROM glbrepI WHERE staffID = agent AND type IS 'cash'),\n"
+                        + "(SELECT sum(taxes) AS taxes FROM\n"
+                        + "(SELECT DISTINCT blankNumber, taxes FROM glbrepI WHERE staffID = agent AND type IS 'cash')),\n"
+                        + "(SELECT sum(otherTaxes) AS otherTaxes FROM\n"
+                        + "(SELECT DISTINCT blankNumber, otherTaxes FROM glbrepI WHERE staffID = agent AND type IS 'cash')));");
                 /*set card payment amount*/
-                statement.addBatch("UPDATE GInterline SET cardP =(\n" 
-                        +"SELECT sum(price + taxes + otherTaxes) FROM\n" 
-                        +"(SELECT sum(price) AS price FROM glbrepI WHERE staffID = agent AND type IS NOT 'cash'),\n" 
-                        +"(SELECT sum(taxes) AS taxes FROM\n" 
-                        +"(SELECT DISTINCT blankNumber, taxes FROM glbrepI WHERE staffID = agent AND type IS NOT 'cash')),\n" 
-                        +"(SELECT sum(otherTaxes) AS otherTaxes FROM\n" 
-                        +"(SELECT DISTINCT blankNumber, otherTaxes FROM glbrepI WHERE staffID = agent AND type IS NOT 'cash')));");
-                
+                statement.addBatch("UPDATE GInterline SET cardP =(\n"
+                        + "SELECT sum(price + taxes + otherTaxes) FROM\n"
+                        + "(SELECT sum(price) AS price FROM glbrepI WHERE staffID = agent AND type IS NOT 'cash'),\n"
+                        + "(SELECT sum(taxes) AS taxes FROM\n"
+                        + "(SELECT DISTINCT blankNumber, taxes FROM glbrepI WHERE staffID = agent AND type IS NOT 'cash')),\n"
+                        + "(SELECT sum(otherTaxes) AS otherTaxes FROM\n"
+                        + "(SELECT DISTINCT blankNumber, otherTaxes FROM glbrepI WHERE staffID = agent AND type IS NOT 'cash')));");
+
                 /*Insert row total */
                 statement.addBatch("INSERT INTO GInterline (agent) values('TOTAL');");
                 statement.addBatch("UPDATE GInterline SET sold = (SELECT sum(sold) FROM GInterline) WHERE agent = 'TOTAL';");
@@ -151,8 +157,8 @@ public class GlobalInterlineReport extends javax.swing.JFrame {
                     }//inserts single row collected data from the databse into this form table
                     reportDefTabMod.addRow(v);
                 }
-                
-                 /*We use this table to show only two values but otherways we'll
+
+                /*We use this table to show only two values but otherways we'll
             have two empty columns from Idomestic and only those two
             values at the bottom*/
                 statement.addBatch("CREATE TEMPORARY TABLE totals  (\n"
@@ -173,7 +179,6 @@ public class GlobalInterlineReport extends javax.swing.JFrame {
                 //pupulate first and second column from totals table 
                 totalsDeffTabMod.setValueAt(new BigDecimal(rs.getDouble("netDebit")).setScale(2, RoundingMode.HALF_UP), 0, 0);
                 totalsDeffTabMod.setValueAt(new BigDecimal(rs.getDouble("totalNetAmnt")).setScale(2, RoundingMode.HALF_UP), 0, 1);
-
 
             } catch (ClassNotFoundException | SQLException ex) {
                 Logger.getLogger(GlobalInterlineReport.class.getName()).log(Level.SEVERE, null, ex);
