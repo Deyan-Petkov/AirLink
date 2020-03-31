@@ -1,3 +1,16 @@
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,14 +22,56 @@
  * @author dhruv
  */
 public class Alerts extends javax.swing.JFrame {
-
+    
+    
+     //Holds copy of the database during the current session
+    private DefaultTableModel defTabMod;
+PreparedStatement pst= null; 
+    ResultSet rs=null; 
+    Connection con=null;
+    
     /**
      * Creates new form alerts
      */
     public Alerts() {
         initComponents();
+          //sets local date and time variable according to the current date and time
+    initAlerts("SELECT Distinct date,CustomerID,firstname FROM Payment,Itinerary, Customer where Itinerary.BlankblankNumber=Payment.BlankblankNumber and delayed=1"
+            + " and julianday(CURRENT_DATE)-julianday(payment.date)>=30 and Itinerary.CustomerID=Customer.ID;");
+    
+    
     }
+   private void initAlerts(String sqlStatement) {
+        //estabblish connection with the database
+        try ( PreparedStatement ps = DbCon.getConnection().prepareStatement(sqlStatement);) {
+            ResultSet rs = ps.executeQuery();//contains the data returned from the database quiery
+            ResultSetMetaData rsmd = rs.getMetaData();
+            //controls the for loop for the assigning of values in the vector
+            int column = rsmd.getColumnCount();
+            //initialize this form table according to the database structure
+            defTabMod = (DefaultTableModel)  alertsTable.getModel();
+            defTabMod.setRowCount(0);
+            //loops over each row of the database
+            while (rs.next()) {
+                Vector v = new Vector();
+            
+                for (int i = 1; i <= column; i++) {
+                    
+                    v.add(rs.getString("CustomerID"));
+                    v.add(rs.getString("firstname"));
+                    v.add(rs.getString("date"));
+                  
+                    
+                    
+                }//inserts single row collected data from the databse into this form table
+                defTabMod.addRow(v);
+            }
 
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,6 +92,11 @@ public class Alerts extends javax.swing.JFrame {
 
         alertsBackground.setBackground(new java.awt.Color(255, 255, 255));
         alertsBackground.setPreferredSize(new java.awt.Dimension(1100, 800));
+        alertsBackground.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                alertsBackgroundMouseMoved(evt);
+            }
+        });
 
         bluePanel.setBackground(new java.awt.Color(125, 240, 240));
 
@@ -76,63 +136,14 @@ public class Alerts extends javax.swing.JFrame {
 
         alertsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "TICKET ID", "CUSTOUMER ID", "DATE OF PURCHASE"
+                "CUSTOUMER ID", "CUSTOMER NAME", "DATE OF PURCHASE"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -149,15 +160,15 @@ public class Alerts extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, alertsBackgroundLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(alertsPane, javax.swing.GroupLayout.PREFERRED_SIZE, 851, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(84, 84, 84))
+                .addGap(123, 123, 123))
         );
         alertsBackgroundLayout.setVerticalGroup(
             alertsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(alertsBackgroundLayout.createSequentialGroup()
                 .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(88, 88, 88)
+                .addGap(61, 61, 61)
                 .addComponent(alertsPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(131, Short.MAX_VALUE))
+                .addContainerGap(156, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -178,6 +189,14 @@ public class Alerts extends javax.swing.JFrame {
         // TODO add your handling code here:
             dispose(); 
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
+
+    private void alertsBackgroundMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_alertsBackgroundMouseMoved
+        // TODO add your handling code here:
+  
+        
+        
+        
+    }//GEN-LAST:event_alertsBackgroundMouseMoved
 
     /**
      * @param args the command line arguments

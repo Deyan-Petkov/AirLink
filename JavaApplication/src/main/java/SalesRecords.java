@@ -1,3 +1,15 @@
+
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,14 +21,60 @@
  * @author dhruv
  */
 public class SalesRecords extends javax.swing.JFrame {
-
+  //Holds copy of the database during the current session
+    private DefaultTableModel defTabMod, defTabMod2;
+    //holds the row number selected by the user
+    private int selectedRow;
+   static int customerID; 
+   
+   
+   PreparedStatement pst= null; 
+    ResultSet rs=null; 
+    Connection con=null;
+   
+    static boolean isInstantiated;//When is false clicking on CustomerRecords table doesn't assign value to custID
     /**
      * Creates new form salesRecord
      */
     public SalesRecords() {
+         isInstantiated = true;
         initComponents();
+         initSalesRecords("select * from Itinerary WHERE CustomerID='"+customerID+"' ");
     }
+//populates the customerTable table with the relevant data from tha databse
+    private void initSalesRecords(String sqlStatement) {
+        //estabblish connection with the database
+        try ( PreparedStatement ps = DbCon.getConnection().prepareStatement(sqlStatement);) {
+            ResultSet rs = ps.executeQuery();//contains the data returned from the database quiery
+            ResultSetMetaData rsmd = rs.getMetaData();
+            //controls the for loop for the assigning of values in the vector
+            int column = rsmd.getColumnCount();
+            //initialize this form table according to the database structure
+            defTabMod = (DefaultTableModel) ticketsTable.getModel();
+            defTabMod.setRowCount(0);
+            //loops over each row of the database
+            while (rs.next()) {
+                Vector v = new Vector();
 
+                for (int i = 1; i <= column; i++) {
+                    v.add(rs.getInt("ID"));
+                    v.add(rs.getString("flightDeparture"));
+                    v.add(rs.getString("flightDestination"));
+                    v.add(rs.getString("flightArrivalTime"));
+                    v.add(rs.getString("flightDepartureTime"));
+                    v.add(rs.getString("FlightNum"));
+                    v.add(rs.getString("BlankblankNumber"));
+                    v.add(rs.getDouble("CustomerID"));
+                  
+                }//inserts single row collected data from the databse into this form table
+                defTabMod.addRow(v);
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -46,17 +104,18 @@ public class SalesRecords extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Blank Number", "Amount", "Delayed", "Exchange Rate", "Type", "Date", "Taxes", "Is Refunded", "Name"
+                "Blank Number", "Delayed", "Exchange Rate", "Type", "Date", "Taxes", "Is Refunded", "Name"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.Boolean.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
+        paymentTable.setColumnSelectionAllowed(true);
         paymentTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 paymentTableMouseClicked(evt);
@@ -92,6 +151,11 @@ public class SalesRecords extends javax.swing.JFrame {
 
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         jButton1.setText("EDIT SALE");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout salesRecordBackgroundLayout = new javax.swing.GroupLayout(salesRecordBackground);
         salesRecordBackground.setLayout(salesRecordBackgroundLayout);
@@ -181,13 +245,48 @@ public class SalesRecords extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ticketsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticketsTableMouseClicked
-        //holds teh row number selected with the mouse
-    
-        //If BookTicket object was instantiated that means
-        //we are inside CustomerRecords to choose customer.
-       
+         selectedRow = ticketsTable.getSelectedRow();
+        String blanknumber= defTabMod.getValueAt(selectedRow, 6).toString();
+        
+            try ( PreparedStatement ps = DbCon.getConnection().prepareStatement("SELECT *  FROM Payment WHERE BlankblankNumber ='"+blanknumber+"' ");) {
+            ResultSet rs = ps.executeQuery();//contains the data returned from the database quiery
+            ResultSetMetaData rsmd = rs.getMetaData();
+            //controls the for loop for the assigning of values in the vector
+            int column = rsmd.getColumnCount();
+            //initialize this form table according to the database structure
+            defTabMod2 = (DefaultTableModel)   paymentTable.getModel();
+            defTabMod2.setRowCount(0);
+            //loops over each row of the database
+            while (rs.next()) {
+                Vector v = new Vector();
+            
+                for (int i = 0; i <= column; i++) {
+                    
+                    v.add(rs.getString("BlankblankNumber"));
+                    v.add(rs.getBoolean("delayed"));
+                    v.add(rs.getString("exchangeRate"));
+                   v.add(rs.getString("type"));
+                   v.add(rs.getString("date"));
+                   v.add(rs.getString("taxes"));
+                 v.add(rs.getBoolean("isRefunded"));
+                 v.add(rs.getString("name"));
+                //v.add(rs.getString("expDate"));
+                         
+                    
+                    
+                }//inserts single row collected data from the databse into this form table
+                defTabMod2.addRow(v);
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, e);
+        }    
     }//GEN-LAST:event_ticketsTableMouseClicked
 
+    
+    
+    
+    
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
         dispose();
@@ -196,6 +295,76 @@ public class SalesRecords extends javax.swing.JFrame {
     private void paymentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_paymentTableMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_paymentTableMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+             // Implements the updatate button updating the whole row chosen with the mouse.
+        //By double clicking you can change the entry. After finishing click update.
+        try ( Connection con = DbCon.getConnection()) {
+            PreparedStatement pst = null;
+          
+            pst = con.prepareStatement("update Itinerary set flightDeparture = '"
+                    + defTabMod.getValueAt(selectedRow, 1)
+                    + "', flightDestination = '"
+                    + defTabMod.getValueAt(selectedRow, 2)
+                    + "', flightArrivalTime = '"
+                    + defTabMod.getValueAt(selectedRow, 3)
+                    + "', flightDepartureTime = '"
+                    + defTabMod.getValueAt(selectedRow, 4)
+                    + "', FlightNum = '"
+                    + defTabMod.getValueAt(selectedRow, 5)
+                    + "', BlankblankNumber = '"
+                    + defTabMod.getValueAt(selectedRow, 6) 
+                    +  "', CustomerID = '"
+                    + defTabMod.getValueAt(selectedRow, 7)
+                   
+                    + "' where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
+
+            pst.execute();
+            initSalesRecords("select * from Itinerary WHERE CustomerID='"+customerID+"'");
+
+             PreparedStatement pst2 = null; 
+            
+              pst2 = con.prepareStatement("update Payment set delayed= '"
+                    + defTabMod2.getValueAt(selectedRow, 1)
+                    + "', exchangeRate = '"
+                    + defTabMod2.getValueAt(selectedRow, 2)
+                    + "',type = '"
+                    + defTabMod2.getValueAt(selectedRow, 3)
+                    + "', date = '"
+                    + defTabMod2.getValueAt(selectedRow, 4)
+                    + "', taxes = '"
+                    + defTabMod2.getValueAt(selectedRow, 5)
+                    + "', isRefunded = '"
+                    + defTabMod2.getValueAt(selectedRow, 6) 
+                    +  "', name = '"
+                    + defTabMod2.getValueAt(selectedRow, 7)
+                   
+                    + "' where BlankblankNumber = '" + defTabMod2.getValueAt(selectedRow, 0) + "'");
+
+            pst2.execute();
+            
+            
+            
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }                                            
+
+   
+
+                                          
+
+                                              
+
+                                             
+
+    private void customerRecordsBackgroundMouseClicked(java.awt.event.MouseEvent evt) {                                                       
+
+                                                         
+    //creates new row initialising the ID and leaving rest of the columns to the user
+                                              
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

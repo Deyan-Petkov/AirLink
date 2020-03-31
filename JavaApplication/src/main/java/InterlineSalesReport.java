@@ -1,3 +1,6 @@
+
+import javax.swing.table.DefaultTableModel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,8 +16,16 @@ public class InterlineSalesReport extends javax.swing.JFrame {
     /**
      * Creates new form personalATSReport
      */
+    //Holds copy of the database during the current session
+    private DefaultTableModel defTabMod;
+    //holds the row number selected by the user
+    private int selectedRow;
+    static int advisorID;
+    static String advisorname; 
+    static boolean isInstantiated;
     public InterlineSalesReport() {
         initComponents();
+        isInstantiated=true;
     }
 
     /**
@@ -128,6 +139,7 @@ public class InterlineSalesReport extends javax.swing.JFrame {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
+        isInstantiated=false;
         dispose();
     }//GEN-LAST:event_backButtonActionPerformed
 
@@ -140,9 +152,8 @@ public class InterlineSalesReport extends javax.swing.JFrame {
 
     private void IndividualButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IndividualButtonActionPerformed
         // TODO add your handling code here:
-        PersonalInterlineReport personal = new PersonalInterlineReport();
-        personal.setVisible(true);
-        personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
+        AdvisorReportList list = new AdvisorReportList();
+        list.setVisible(true);
     }//GEN-LAST:event_IndividualButtonActionPerformed
 
     /**
