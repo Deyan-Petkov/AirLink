@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +37,7 @@ public class GlobalATSReport extends javax.swing.JFrame {
     public GlobalATSReport() {
         initComponents();
     }
-
+    
     private void initReportTable() {
         //if date fields are empty prompt a message and don't proceed any further 
         if (fromDate.length() < 1 | toDate.length() < 1) {
@@ -43,13 +45,13 @@ public class GlobalATSReport extends javax.swing.JFrame {
         } else if (!PersonalATSReport.isValidDate(fromDate) | !PersonalATSReport.isValidDate(toDate)) {//check if the dates are entered in the correct format
             System.out.println("is valid fromdate : " + PersonalATSReport.isValidDate(fromDate));
             System.out.println("is valid to date : " + PersonalATSReport.isValidDate(toDate));
-
+            
             JOptionPane.showMessageDialog(null, "Date fields must contain date in format \"yyyy-mm-dd\"");
         } else {
             //estabblish connection with the database
             try ( Connection con = DbCon.getConnection()) {
                 Statement statement = con.createStatement();
-
+                
                 statement.addBatch("create temporary table gsr(\n"
                         + "n integer primary key autoincrement,\n"
                         + "agent integer (3),\n"
@@ -62,6 +64,26 @@ public class GlobalATSReport extends javax.swing.JFrame {
                         + "amount double (10),\n"
                         + "commission double(10)\n"
                         + ")");
+                
+                statement.addBatch("create view if not exists t as\n"
+                        + "select Blank.blankNumber, Blank.isSold, Blank.StaffID,Blank.dateReceived,\n"
+                        + "Itinerary.flightDeparture,Itinerary.flightDestination,Itinerary.flightArrivalTime,Itinerary.flightDepartureTime,Itinerary.FlightNum, Itinerary.CustomerID,Itinerary.ID,\n"
+                        + "Payment.date,Payment.exchangeRate,Payment.expDate,Payment.isRefunded, Payment.taxes, Payment.otherTaxes, Payment.type,Payment.commissionRate,\n"
+                        + "Flights.number,Flights.price, Flights.arrTime, Flights.depTime,\n"
+                        + "commission.rate\n"
+                        + "from Blank\n"
+                        + "left join Itinerary on Blank.blankNumber = itinerary.BlankblankNumber\n"
+                        + "left join Payment on Blank.blankNumber = Payment.BlankblankNumber\n"
+                        + "left join Flights on Itinerary.FlightNum = Flights.number\n"
+                        + "left join commission on Payment.date = commission.date");
+
+                //create temporary veiw populated with data according to the current session
+                statement.addBatch("create temp view glbrep as\n"
+                        + "select * from t  WHERE date >= '" + fromDate + "' AND\n"
+                        + "  date <= '" + toDate + "' AND\n"
+                        + "  (blankNumber LIKE '201%' OR\n"
+                        + "   blankNumber LIKE '101%')");
+
                 /*select all id's which sold domestic blanks during the selected period*/
                 statement.addBatch("insert into gsr(agent) select distinct staffId from t where isSold = 1\n"
                         + "and date >= '" + fromDate + "'\n"
@@ -118,7 +140,7 @@ public class GlobalATSReport extends javax.swing.JFrame {
                         + "(select sum (taxes) as taxes from\n"
                         + "(select distinct blankNumber, taxes from glbrep where staffID = agent and type is not 'cash'))\n"
                         + ")");
-                
+
                 /*Insert row total */
                 statement.addBatch("insert into gsr (agent) values('TOTAL')");
                 statement.addBatch("update gsr set sold = (select sum(sold) from gsr) where agent = 'TOTAL'");
@@ -129,11 +151,11 @@ public class GlobalATSReport extends javax.swing.JFrame {
                 statement.addBatch("update gsr set cardP = (select sum(cardP) from gsr) where agent = 'TOTAL'");
                 statement.addBatch("update gsr set amount = (select sum(amount) from gsr) where agent = 'TOTAL'");
                 statement.addBatch("update gsr set commission = (select sum(commission) from gsr) where agent = 'TOTAL'");
-
+                
                 statement.executeBatch();
-
+                
                 PreparedStatement pst = con.prepareStatement("select * from gsr");
-
+                
                 ResultSet rs = pst.executeQuery();//contains the data returned from the database quiery
                 ResultSetMetaData rsmd = rs.getMetaData();
                 //controls the for loop for the assigning of values in the vector
@@ -144,7 +166,7 @@ public class GlobalATSReport extends javax.swing.JFrame {
                 //loops over each row of the database
                 while (rs.next()) {
                     Vector v = new Vector();
-
+                    
                     for (int i = 1; i <= column; i++) {
                         v.add(rs.getString("n"));
                         v.add(rs.getString("agent"));
@@ -159,8 +181,8 @@ public class GlobalATSReport extends javax.swing.JFrame {
                     }//inserts single row collected data from the databse into this form table
                     reportDefTabMod.addRow(v);
                 }
-                
-                 /*We use this table to show only two values but otherways we'll
+
+                /*We use this table to show only two values but otherways we'll
             have two empty columns from Idomestic and only those two
             values at the bottom*/
                 statement.addBatch("CREATE TEMPORARY TABLE totals  (\n"
@@ -173,7 +195,7 @@ public class GlobalATSReport extends javax.swing.JFrame {
                         + " (select (amount - commission) from gsr where agent = 'TOTAL'))\n"
                         + "");
                 statement.executeBatch();
-
+                
                 pst = con.prepareStatement("select * from totals");
                 rs = pst.executeQuery();
                 totalsDeffTabMod = (DefaultTableModel) totalsjTable.getModel();//create model
@@ -182,8 +204,7 @@ public class GlobalATSReport extends javax.swing.JFrame {
                 //pupulate first and second column from totals table 
                 totalsDeffTabMod.setValueAt(new BigDecimal(rs.getDouble("netDebit")).setScale(2, RoundingMode.HALF_UP), 0, 0);
                 totalsDeffTabMod.setValueAt(new BigDecimal(rs.getDouble("totalNetAmnt")).setScale(2, RoundingMode.HALF_UP), 0, 1);
-
-
+                
             } catch (ClassNotFoundException | SQLException ex) {
                 Logger.getLogger(GlobalATSReport.class.getName()).log(Level.SEVERE, null, ex);
             }

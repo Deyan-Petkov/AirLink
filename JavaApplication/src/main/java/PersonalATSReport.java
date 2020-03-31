@@ -70,6 +70,20 @@ public class PersonalATSReport extends javax.swing.JFrame {
                         + "    commission      DOUBLE(10),\n"
                         + "    notes            VARCHAR(200)\n"
                         + ");");
+                
+                statement.addBatch("create view if not exists t as\n"
+                        + "select Blank.blankNumber, Blank.isSold, Blank.StaffID,Blank.dateReceived,\n"
+                        + "Itinerary.flightDeparture,Itinerary.flightDestination,Itinerary.flightArrivalTime,Itinerary.flightDepartureTime,Itinerary.FlightNum, Itinerary.CustomerID,Itinerary.ID,\n"
+                        + "Payment.date,Payment.exchangeRate,Payment.expDate,Payment.isRefunded, Payment.taxes, Payment.otherTaxes, Payment.type,Payment.commissionRate,\n"
+                        + "Flights.number,Flights.price, Flights.arrTime, Flights.depTime,\n"
+                        + "commission.rate\n"
+                        + "from Blank\n"
+                        + "left join Itinerary on Blank.blankNumber = itinerary.BlankblankNumber\n"
+                        + "left join Payment on Blank.blankNumber = Payment.BlankblankNumber\n"
+                        + "left join Flights on Itinerary.FlightNum = Flights.number\n"
+                        + "left join commission on Payment.date = commission.date");
+                
+                
                 /*List all domestic blanks sold for the given period*/
                 //TODO  substitude staffId
                 statement.addBatch("INSERT INTO IDomestic (\n"
