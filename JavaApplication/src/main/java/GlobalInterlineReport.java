@@ -162,7 +162,7 @@ public class GlobalInterlineReport extends javax.swing.JFrame {
 
                 /*Calculate and insert netDebit and total net amount*/
                 statement.addBatch("insert into totals (netDebit,totalNetAmnt) values ((select fBase - commission from GInterline where agent = 'TOTAL'),\n"
-                        + " (select (amount - commission) from GInterline where agent = 'TOTAL'));");
+                        + "(select (amount - commission) from GInterline where agent = 'TOTAL'));");
                 statement.executeBatch();
 
                 pst = con.prepareStatement("SELECT * FROM totals");
