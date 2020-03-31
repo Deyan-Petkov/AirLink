@@ -27,14 +27,16 @@ public class ManagerStock extends javax.swing.JFrame {
     private DefaultTableModel defTabMod;
     //holds the row number selected by the user
     private int selectedRow;
-    static int advisorID;
+    static int advisorID; 
     static String advisorname; 
     static boolean isInstantiated;//When is false clicking on CustomerRecords table doesn't assign value to custID
    String oldadv; //used in reassign button to get the id of old advisor 
-    PreparedStatement pst= null; 
+       String highestblankamount;
+   PreparedStatement pst= null; 
     ResultSet rs=null; 
     Connection con=null; 
           
+Boolean clicked=false;
       
     
     /**
@@ -42,8 +44,18 @@ public class ManagerStock extends javax.swing.JFrame {
      */
     public ManagerStock() {
         initComponents();
-        isInstantiated=true; 
+         quantityTextbox.setVisible(false);
+         
+       
+         selectAdvisorButton.setVisible(false);
+      
+       nameTextbox.setVisible(false);
+       nameWithMaxAMountTextbox.setVisible(false);
      
+         isInstantiated=true; 
+    
+       
+   
     }
      //populates the customerTable table with the relevant data from tha databse
    
@@ -69,7 +81,6 @@ public class ManagerStock extends javax.swing.JFrame {
         nameTextbox = new javax.swing.JTextField();
         reAssignButton = new javax.swing.JButton();
         nameWithMaxAMountTextbox = new javax.swing.JTextField();
-        currentAmountTextbox = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -136,6 +147,11 @@ public class ManagerStock extends javax.swing.JFrame {
 
         selectBlankTypeComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         selectBlankTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT BLANK TYPE", "444", "440", "420", "201", "101", "451", "452" }));
+        selectBlankTypeComboBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                selectBlankTypeComboBoxMouseClicked(evt);
+            }
+        });
         selectBlankTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectBlankTypeComboBoxActionPerformed(evt);
@@ -157,6 +173,11 @@ public class ManagerStock extends javax.swing.JFrame {
 
         selectAdvisorButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         selectAdvisorButton.setText("SELECT ADVISOR");
+        selectAdvisorButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                selectAdvisorButtonMouseClicked(evt);
+            }
+        });
         selectAdvisorButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectAdvisorButtonActionPerformed(evt);
@@ -187,14 +208,6 @@ public class ManagerStock extends javax.swing.JFrame {
             }
         });
 
-        currentAmountTextbox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        currentAmountTextbox.setText("Amount of Blanks");
-        currentAmountTextbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                currentAmountTextboxActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout customerRecordsBackgroundLayout = new javax.swing.GroupLayout(customerRecordsBackground);
         customerRecordsBackground.setLayout(customerRecordsBackgroundLayout);
         customerRecordsBackgroundLayout.setHorizontalGroup(
@@ -214,43 +227,36 @@ public class ManagerStock extends javax.swing.JFrame {
                         .addGap(111, 111, 111)
                         .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
-                                .addComponent(nameWithMaxAMountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
-                                .addComponent(selectAdvisorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(821, 821, 821))))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerRecordsBackgroundLayout.createSequentialGroup()
-                .addGap(121, 121, 121)
-                .addComponent(selectBlankTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(quantityTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(currentAmountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(60, 60, 60))
+                                .addComponent(quantityTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerRecordsBackgroundLayout.createSequentialGroup()
+                                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
+                                        .addComponent(selectBlankTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
+                                        .addComponent(selectAdvisorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(265, 265, 265)))
+                                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(nameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nameWithMaxAMountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(93, 93, 93))))))
         );
         customerRecordsBackgroundLayout.setVerticalGroup(
             customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
                 .addComponent(customerRecordsBlueBackground, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(97, 97, 97)
-                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(quantityTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(selectBlankTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(69, 69, 69)
-                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(50, 50, 50)
+                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(selectBlankTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nameWithMaxAMountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                .addComponent(quantityTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(91, 91, 91)
+                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(selectAdvisorButton)
                     .addComponent(nameTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
-                        .addGap(101, 101, 101)
-                        .addComponent(nameWithMaxAMountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(customerRecordsBackgroundLayout.createSequentialGroup()
-                        .addGap(92, 92, 92)
-                        .addComponent(currentAmountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 243, Short.MAX_VALUE)
+                .addGap(285, 285, 285)
                 .addGroup(customerRecordsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(assignButton)
                     .addComponent(returnButton)
@@ -290,11 +296,6 @@ public class ManagerStock extends javax.swing.JFrame {
         
         
      try (   Connection con = DbCon.getConnection();) {
-       
-         
-
-             
-                   
                      PreparedStatement rst = null;
                      rst=con.prepareStatement(" DELETE FROM Blank WHERE blankNumber IN(select blankNUmber from(select blankNumber FROM Blank where blankNumber like '"+s+"%' AND isSold = 0 LIMIT "+blanks+")x)");
                      rst.execute();
@@ -319,12 +320,20 @@ public class ManagerStock extends javax.swing.JFrame {
     }//GEN-LAST:event_returnButtonActionPerformed
 
     private void assignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignButtonActionPerformed
- 
-        
-       String s=selectBlankTypeComboBox.getSelectedItem().toString();  //choosen blanks
-        int chosen=  Integer.parseInt(s);
-       String quantity= quantityTextbox.getText(); //input of quantity of blanks
+   String quantity= quantityTextbox.getText(); //input of quantity of blanks
         int blanks=  Integer.parseInt(quantity);
+        
+        if ( advisorID==0) {
+                JOptionPane.showMessageDialog(null,
+                        "To assign please first \"SELECT ADVISOR\"",
+                        "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+  
+        
+  else{   String s=selectBlankTypeComboBox.getSelectedItem().toString();  //choosen blanks
+        int chosen=  Integer.parseInt(s);
+     
        String dbblank=null;
    int initialblanks=blanks; 
         try (   Connection con = DbCon.getConnection();) {
@@ -358,8 +367,8 @@ public class ManagerStock extends javax.swing.JFrame {
            
        if(blanks==initialblanks){JOptionPane.showMessageDialog(null,"All of the blanks are currently assigned, please re-assign");}    
        
-       else if(blanks<initialblanks){ JOptionPane.showMessageDialog(null,"Not enough blanks therefore could only assign" + " "+ (initialblanks-blanks) +" "+ "blanks");}
-            
+      else if(blanks!=0){ JOptionPane.showMessageDialog(null,"Not enough blanks therefore could only assign" + " "+ (initialblanks-blanks) +" "+ "blanks");}
+      else if(blanks==0){JOptionPane.showMessageDialog(null," "+initialblanks+"   blanks assigned ");     dispose();}      
          
    
            
@@ -370,19 +379,32 @@ public class ManagerStock extends javax.swing.JFrame {
           JOptionPane.showMessageDialog(null,e);
         }
        
-       dispose();
+   
     
           
           
           
             
-            
+  }
             
         
     }//GEN-LAST:event_assignButtonActionPerformed
 
     private void selectBlankTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBlankTypeComboBoxActionPerformed
         // TODO add your handling code here:
+          int s= selectBlankTypeComboBox.getSelectedIndex();
+      
+           if(s!=11){ 
+         
+           quantityTextbox.setVisible(true);
+          nameWithMaxAMountTextbox.setVisible(true);  
+         
+           nameTextbox.setVisible(true);
+          
+          }
+    
+          
+            
          String blankType=selectBlankTypeComboBox.getSelectedItem().toString();
           char a= blankType.charAt(0); char b= blankType.charAt(1); char c= blankType.charAt(2);  //pick fist 3 digits of blank num 
                String digits = new StringBuilder().append(a).append(b).append(c).toString(); //merger chars into a stign 
@@ -400,15 +422,15 @@ public class ManagerStock extends javax.swing.JFrame {
          
     oldadv=advisorID.get(0).toString();
           
-         
+       highestblankamount= blankamount.get(0).toString();
           
           String sql2="SELECT name FROM Staff where ID ='"+oldadv +"'";  //all of this is showin g teh first bales of arry (adv who has the most quatity) into the GUI page 
             PreparedStatement pst2= null; 
              ResultSet rs2=null; 
              pst2=con.prepareStatement(sql2);
              rs2=pst2.executeQuery();
-          nameWithMaxAMountTextbox.setText(rs2.getString("name"));
-          currentAmountTextbox.setText(blankamount.get(0).toString()); 
+          nameWithMaxAMountTextbox.setText("advisor: "+rs2.getString("name")+" "+"has"+" "+blankamount.get(0).toString()+" "+"blanks");
+         // currentAmountTextbox.setText(blankamount.get(0).toString()+" "+"blanks"); 
             
           
      //String s=rs.getString(rs.getRow()); System.out.println(s)
@@ -424,6 +446,8 @@ public class ManagerStock extends javax.swing.JFrame {
 
     private void selectAdvisorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAdvisorButtonActionPerformed
         // TODO add your handling code here:
+    
+            
           AdvisorsList advlist= new AdvisorsList();
         advlist.setVisible(true);
     }//GEN-LAST:event_selectAdvisorButtonActionPerformed
@@ -434,15 +458,22 @@ public class ManagerStock extends javax.swing.JFrame {
 
     private void customerRecordsBackgroundMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customerRecordsBackgroundMouseMoved
       if(AdvisorsList.select==true){
-      
+       
        nameTextbox.setText(advisorname);
-      
+    
       
       }
     }//GEN-LAST:event_customerRecordsBackgroundMouseMoved
 
     private void reAssignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reAssignButtonActionPerformed
         // TODO add your handling code here:
+         if ( advisorID==0) {
+                JOptionPane.showMessageDialog(null,
+                        "To reassign please first \"SELECT ADVISOR\"",
+                        "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+         else{
        String s=selectBlankTypeComboBox.getSelectedItem().toString();  //choosen blanks
        int chosen=  Integer.parseInt(s);
        String quantity= quantityTextbox.getText(); //input of quantity of blanks
@@ -464,7 +495,7 @@ public class ManagerStock extends javax.swing.JFrame {
             
            }
        }
-           int x = Integer.parseInt(currentAmountTextbox.getText());
+           int x = Integer.parseInt(    highestblankamount); //use rs. get here
            if(blanks>x){JOptionPane.showMessageDialog(null,"Quantity entered must be lower than available quantity");}
           
            
@@ -487,7 +518,7 @@ public class ManagerStock extends javax.swing.JFrame {
         // take "quantity" number of blanks from "oldadv" and put them in "advisorID"
         // UPDATE from blanks SET staffid to "advisorID" where blank number is "chosen" and staffID is "oldadv"   DO THIS ALL FOR "CHOSEN TIMES"
         
-        
+         }
         
     }//GEN-LAST:event_reAssignButtonActionPerformed
 
@@ -500,9 +531,17 @@ public class ManagerStock extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_nameWithMaxAMountTextboxActionPerformed
 
-    private void currentAmountTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentAmountTextboxActionPerformed
+    private void selectBlankTypeComboBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectBlankTypeComboBoxMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_currentAmountTextboxActionPerformed
+      
+        
+    }//GEN-LAST:event_selectBlankTypeComboBoxMouseClicked
+
+    private void selectAdvisorButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectAdvisorButtonMouseClicked
+        // TODO add your handling code here:
+        clicked=true;
+       
+    }//GEN-LAST:event_selectAdvisorButtonMouseClicked
 
     /**
      * @param args the command line arguments
@@ -543,7 +582,6 @@ public class ManagerStock extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton assignButton;
     private javax.swing.JButton backButton;
-    private javax.swing.JTextField currentAmountTextbox;
     private javax.swing.JPanel customerRecordsBackground;
     private javax.swing.JPanel customerRecordsBlueBackground;
     private javax.swing.JLabel customerRecordsTitle;
