@@ -32,7 +32,7 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
         
         if(date.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})")) {
             return true;
-        }
+    }
         return false;
     }
     
@@ -60,7 +60,7 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
                         + "    otherTaxes       DOUBLE (10),\n"
                         + "    price            DOUBLE (10),\n"
                         + "    commissionProc   DOUBLE (10),\n"
-                        + "    commission       DOUBLE(10),\n"
+                        + "    commission       DOUBLE(10)\n"
                         + ");");
                 /*List all domestic blanks sold for the given period*/
                 //TODO  substitude staffId
@@ -428,23 +428,13 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PersonalInterlineReport.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PersonalInterlineReport.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PersonalInterlineReport.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(PersonalInterlineReport.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PersonalInterlineReport().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new PersonalInterlineReport().setVisible(true);
         });
     }
 
