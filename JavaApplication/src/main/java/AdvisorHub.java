@@ -40,7 +40,7 @@ public class AdvisorHub extends javax.swing.JFrame {
 
                 PreparedStatement pst = con.prepareStatement("select count(blankNumber) from Blank where blankNumber like '"
                         + sellTicketComboBox.getSelectedItem().toString() + "%' and staffID in (\n"
-                        + "select id from Staff where ID = '"+ id +"')");
+                       + "select id from Staff where ID = '"+ id +"') and isSold = 0");
                 ResultSet rs = pst.executeQuery();
                 rs.next();
                 availableBlanks = rs.getInt("count(blankNumber)");
