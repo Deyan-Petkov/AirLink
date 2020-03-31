@@ -1,3 +1,10 @@
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,12 +16,21 @@
  * @author dhruv
  */
 public class CustomerStatus extends javax.swing.JFrame {
-
+  PreparedStatement pst= null; 
+    ResultSet rs=null; 
+    Connection con=null; 
+    
+    
+    
+    
     /**
      * Creates new form customerStatus
      */
     public CustomerStatus() {
         initComponents();
+            rateLabel1.setVisible(false);
+             discountTypeComboBox.setVisible(false);
+             rateTextbox1.setVisible(false);
     }
 
     /**
@@ -85,7 +101,7 @@ public class CustomerStatus extends javax.swing.JFrame {
         rangeFromLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         rangeFromLabel.setText("Range From:");
 
-        rangeToTextbox.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        rangeToTextbox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         rangeToTextbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rangeToTextboxActionPerformed(evt);
@@ -122,14 +138,20 @@ public class CustomerStatus extends javax.swing.JFrame {
         rangeToLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         rangeToLabel.setText(" To:");
 
-        rateTextbox1.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        rateTextbox1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        rateTextbox1.setText("enter discount rate...");
+        rateTextbox1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rateTextbox1MouseClicked(evt);
+            }
+        });
         rateTextbox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rateTextbox1ActionPerformed(evt);
             }
         });
 
-        rangeFromTextbox1.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        rangeFromTextbox1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         rangeFromTextbox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rangeFromTextbox1ActionPerformed(evt);
@@ -147,49 +169,47 @@ public class CustomerStatus extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
-                        .addGap(63, 63, 63)
+                        .addGap(30, 30, 30)
                         .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(setStatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(discountTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(192, 192, 192)
-                        .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(rangeToLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(rangeFromLabel))
-                            .addComponent(rateLabel1))
-                        .addGap(18, 18, 18)
-                        .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rateTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rangeToTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rangeFromTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
+                                .addComponent(discountTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(224, 224, 224)
+                                .addComponent(rateLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(rateTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
+                                .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(rangeToLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(rangeFromLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(rangeToTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
+                                        .addComponent(rangeFromTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(setStatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(54, 54, 54)))
                 .addContainerGap())
         );
         customerStatusBackgroundLayout.setVerticalGroup(
             customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
                 .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(67, 67, 67)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
                 .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(setStatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rangeFromLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rangeFromTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(setStatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rangeToLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rangeToTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(221, 221, 221)
+                .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(discountTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rateLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(rateTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 157, Short.MAX_VALUE)
-                .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
-                        .addComponent(discountTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(148, 148, 148))
-                    .addGroup(customerStatusBackgroundLayout.createSequentialGroup()
-                        .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rangeFromTextbox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rangeFromLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(25, 25, 25)
-                        .addGroup(customerStatusBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(rangeToLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rangeToTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(121, 121, 121)))
+                    .addComponent(rateTextbox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(89, 89, 89)
                 .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -223,19 +243,93 @@ public class CustomerStatus extends javax.swing.JFrame {
 
     private void setStatusComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setStatusComboBoxActionPerformed
         // TODO add your handling code here:
+         int s= setStatusComboBox.getSelectedIndex();
+         
+              if(s==1){
+                 rateLabel1.setVisible(false);
+                 discountTypeComboBox.setVisible(false);
+                 rateTextbox1.setVisible(false);
+              }
+              else if(s==2){
+              
+               rateLabel1.setVisible(true);
+                 discountTypeComboBox.setVisible(true);
+                 rateTextbox1.setVisible(true);
+              
+              
+              }
     }//GEN-LAST:event_setStatusComboBoxActionPerformed
 
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
-        // TODO add your handling code here:
+             // TODO add your handling code here:
+      int a= setStatusComboBox.getSelectedIndex();
+      
+   
+
+    
+    
+      String fromRange=  rangeFromTextbox1.getText().toString();
+         int from= Integer.parseInt(fromRange);
+       
+       String rangeTo= rangeToTextbox.getText().toString();
+        int to= Integer.parseInt(rangeTo);   
+        
+    try (   Connection con = DbCon.getConnection();) {
+  
+        
+    
+       
+           
+              if(a==1){
+   
+            PreparedStatement rst = null;
+                     rst=con.prepareStatement("UPDATE Customer SET type='regular', discountType =null, discountRate=null WHERE ID IN(SELECT CustomerID FROM Itinerary WHERE FlightNum IN(SELECT number FROM Flights WHERE price>"+from+" and price <"+to+"  ) ) ");
+                     rst.execute();
+                     JOptionPane.showMessageDialog(null,"regular status assigned");
+                     dispose();
+              //  System.out.println("set status to reg and nulled discount type and rate"); 
+              }
+            
+            else if(a==2){
+              String discountType= discountTypeComboBox.getSelectedItem().toString();
+      
+           Double discountrate= Double.parseDouble(rateTextbox1.getText());
+           PreparedStatement pst =con.prepareStatement("UPDATE Customer SET type='valued', discountType ='"+discountType+"', discountRate='"+discountrate+"' WHERE ID IN(SELECT CustomerID FROM Itinerary WHERE FlightNum IN(SELECT number FROM Flights WHERE price>"+from+" and price <"+to+"  ) ) ");
+            pst.execute();
+             JOptionPane.showMessageDialog(null," valued status assigned");
+              dispose();
+              
+              }
+                
+               
+          
+       
+          
+         
+           
+           
+      
+        }catch (SQLException | ClassNotFoundException e) {
+          JOptionPane.showMessageDialog(null,e);
+        }
+          
+ 
+           
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
 
     private void rateTextbox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rateTextbox1ActionPerformed
         // TODO add your handling code here:
+      
     }//GEN-LAST:event_rateTextbox1ActionPerformed
 
     private void rangeFromTextbox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rangeFromTextbox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rangeFromTextbox1ActionPerformed
+
+    private void rateTextbox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rateTextbox1MouseClicked
+        // TODO add your handling code here:
+           rateTextbox1.setText("");
+    }//GEN-LAST:event_rateTextbox1MouseClicked
 
     /**
      * @param args the command line arguments

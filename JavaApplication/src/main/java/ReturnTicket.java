@@ -1,3 +1,13 @@
+
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -149,10 +159,48 @@ public class ReturnTicket extends javax.swing.JFrame {
 
     private void recordReturnLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordReturnLogButtonActionPerformed
         // TODO add your handling code here:
+        try(Connection con = DbCon.getConnection()){
+          int id=AdvisorHub.id;
+          
+                PreparedStatement pst2 = con.prepareStatement("select  name from staff where ID='"+id+"' ");
+                    
+               ResultSet rs2 = pst2.executeQuery();
+               
+           String filename= rs2.getString("name")+" "+"logfile";
+     
+           ProcessBuilder pb = new ProcessBuilder("Notepad.exe", filename);
+        pb.start();
+      
+        
+        }
+        catch(Exception e){  System.out.println("error");}
     }//GEN-LAST:event_recordReturnLogButtonActionPerformed
 
     private void refundButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refundButtonActionPerformed
         // TODO add your handling code here:
+        String blank= ticketIDTextbox.getText().toString();
+       
+              
+         try ( Connection con = DbCon.getConnection()) {
+   
+             
+                PreparedStatement ps = con.prepareStatement("update Payment set isRefunded = '1' where BlankblankNumber = '"+blank+"' and delayed ='0' ");
+                ps.execute();
+                
+               
+                  PreparedStatement rst = null;
+                    rst=con.prepareStatement(" DELETE FROM Itinerary WHERE BlankblankNumber='"+blank+"' ");
+                   
+     
+                
+                
+               JOptionPane.showMessageDialog(null,"Ticket returned successfully");
+
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+        
     }//GEN-LAST:event_refundButtonActionPerformed
 
     /**
