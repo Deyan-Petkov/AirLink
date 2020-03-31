@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author dhruv
  */
-public class AdvisorsList extends javax.swing.JFrame {
+public class AdvisorReportList extends javax.swing.JFrame {
  //Holds copy of the database during the current session
     private DefaultTableModel defTabMod;
     //holds the row number selected by the user
@@ -33,7 +33,7 @@ public class AdvisorsList extends javax.swing.JFrame {
     /**
      * Creates new form advisorsList
      */
-    public AdvisorsList() {
+    public AdvisorReportList() {
         initComponents();
          initAdvisorsList("select * from staff where role='advisor'");
             selectedRow = -1;
@@ -88,11 +88,8 @@ public class AdvisorsList extends javax.swing.JFrame {
         bluePanel = new javax.swing.JPanel();
         advisorsListTitle = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
-        addtButton = new javax.swing.JButton();
         advisorsListPane = new javax.swing.JScrollPane();
         advisorsListTable = new javax.swing.JTable();
-        selectButton = new javax.swing.JButton();
-        updateButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -138,14 +135,6 @@ public class AdvisorsList extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        addtButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        addtButton.setText("ADD");
-        addtButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addtButtonadvisorListActionPerformed(evt);
-            }
-        });
-
         advisorsListTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -169,35 +158,11 @@ public class AdvisorsList extends javax.swing.JFrame {
         });
         advisorsListPane.setViewportView(advisorsListTable);
 
-        selectButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        selectButton.setText("SELECT");
-        selectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                selectButtonActionPerformed(evt);
-            }
-        });
-
-        updateButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        updateButton.setText("UPDATE");
-        updateButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateButtonActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout advisorsListBackgroundLayout = new javax.swing.GroupLayout(advisorsListBackground);
         advisorsListBackground.setLayout(advisorsListBackgroundLayout);
         advisorsListBackgroundLayout.setHorizontalGroup(
             advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(bluePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(advisorsListBackgroundLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(addtButton, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(183, 183, 183)
-                .addComponent(selectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorsListBackgroundLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(advisorsListPane, javax.swing.GroupLayout.PREFERRED_SIZE, 916, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -209,13 +174,7 @@ public class AdvisorsList extends javax.swing.JFrame {
                 .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(advisorsListPane, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
-                .addGroup(advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addtButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorsListBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(selectButton)
-                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(82, 82, 82))
+                .addContainerGap(251, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -241,64 +200,29 @@ public class AdvisorsList extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
    
-    private void addtButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addtButtonadvisorListActionPerformed
-        // TODO add your handling code here:
-        Advisor adv= new Advisor();
-        adv.setVisible(true);
-   
-    }//GEN-LAST:event_addtButtonadvisorListActionPerformed
-
-    private void selectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectButtonActionPerformed
-        // TODO add your handling code here:
-          select=true;
-        
-        dispose();
-    }//GEN-LAST:event_selectButtonActionPerformed
-
     
    
     private void advisorsListTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_advisorsListTableMouseClicked
         // TODO add your handling code here:
           //holds teh row number selected with the mouse
         selectedRow = advisorsListTable.getSelectedRow();
-                 if(ManagerStock.isInstantiated){
+                 if(DomesticSalesReport.isInstantiated){
              //Set custID in BookTicket according to the mouse selected row ID
-             ManagerStock.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
+             DomesticSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
+             DomesticSalesReport.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString();
              
-             ManagerStock.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString();
+             PersonalATSReport personal = new PersonalATSReport();
+             personal.setVisible(true);
+             personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
+         }else if(InterlineSalesReport.isInstantiated){
+             InterlineSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
+             InterlineSalesReport.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString(); 
+             
+             PersonalInterlineReport p = new PersonalInterlineReport();
+             p.setVisible(true);
+             p.setDefaultCloseOperation(p.DISPOSE_ON_CLOSE);
          }
- 
-       
     }//GEN-LAST:event_advisorsListTableMouseClicked
-
-    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-    
-           // Implements the updatate button updating the whole row chosen with the mouse.
-        //By double clicking you can change the entry. After finishing click update.
-        try ( Connection con = DbCon.getConnection()) {
-            PreparedStatement pst = null;
-
-            pst = con.prepareStatement("update staff set role = '"
-                    + defTabMod.getValueAt(selectedRow, 1)
-                    + "', name = '"
-                    + defTabMod.getValueAt(selectedRow, 2)
-                    + "', address= '"
-                    + defTabMod.getValueAt(selectedRow, 3)
-                    + "', email = '"
-                    + defTabMod.getValueAt(selectedRow, 4)
-                    + "', phoneNum = '"
-                    + defTabMod.getValueAt(selectedRow, 5)
-                   
-                    + "' where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
-
-            pst.execute();
-            initAdvisorsList("select * from staff where role='advisor'");
-
-        } catch (SQLException | ClassNotFoundException e) {
-          JOptionPane.showMessageDialog(null,"error");
-        }
-        
-    }//GEN-LAST:event_updateButtonActionPerformed
 
     private void advisorsListBackgroundMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_advisorsListBackgroundMouseMoved
         // TODO add your handling code here:
@@ -346,14 +270,11 @@ public class AdvisorsList extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addtButton;
     private javax.swing.JPanel advisorsListBackground;
     private javax.swing.JScrollPane advisorsListPane;
     private javax.swing.JTable advisorsListTable;
     private javax.swing.JLabel advisorsListTitle;
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bluePanel;
-    private javax.swing.JButton selectButton;
-    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }

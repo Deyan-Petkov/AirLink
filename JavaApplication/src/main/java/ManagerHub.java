@@ -1,3 +1,9 @@
+
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -213,6 +219,17 @@ public class ManagerHub extends javax.swing.JFrame {
 
     private void logsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logsButtonActionPerformed
         // TODO add your handling code here:
+        try{
+              
+               
+           String filename= "manager's"+" "+"logfile";
+     
+           ProcessBuilder pb = new ProcessBuilder("Notepad.exe", filename);
+        pb.start();
+      
+        
+        }
+        catch(Exception e){  System.out.println("error");}
     }//GEN-LAST:event_logsButtonActionPerformed
 
     private void blankStockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blankStockButtonActionPerformed
