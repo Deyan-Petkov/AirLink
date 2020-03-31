@@ -27,20 +27,20 @@ public class AdvisorReportList extends javax.swing.JFrame {
     private DefaultTableModel defTabMod;
     //holds the row number selected by the user
     private int selectedRow;    
-    static boolean select=false;//When is false clicking on CustomerRecords table doesn't assign value to custID
+     static boolean select=false;//When is false clicking on CustomerRecords table doesn't assign value to custID
     
     
     /**
-     * Creates new form advisorReportList
+     * Creates new form advisorsList
      */
     public AdvisorReportList() {
         initComponents();
-         initAdvisorReportList("select * from staff where role='advisor'");
+         initAdvisorsList("select * from staff where role='advisor'");
             selectedRow = -1;
             
     }
  //populates the customerTable table with the relevant data from tha databse
-   private void initAdvisorReportList(String sqlStatement) {
+   private void initAdvisorsList(String sqlStatement) {
         //estabblish connection with the database
         try ( PreparedStatement ps = DbCon.getConnection().prepareStatement(sqlStatement);) {
             ResultSet rs = ps.executeQuery();//contains the data returned from the database quiery
@@ -193,7 +193,9 @@ public class AdvisorReportList extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonadvisorListActionPerformed
-        // TODO add your handling code here:   
+        // TODO add your handling code here:
+        
+   
           dispose(); 
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
@@ -204,32 +206,28 @@ public class AdvisorReportList extends javax.swing.JFrame {
         // TODO add your handling code here:
           //holds teh row number selected with the mouse
         selectedRow = advisorsListTable.getSelectedRow();
-        if(DomesticSalesReport.isInstantiated){
-                     
+                 if(DomesticSalesReport.isInstantiated){
+             //Set custID in BookTicket according to the mouse selected row ID
              DomesticSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
              DomesticSalesReport.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString();
              
-            PersonalATSReport personal = new PersonalATSReport();
-            personal.setVisible(true);
-            personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
-         }
-        else if (InterlineSalesReport.isInstantiated){
+             PersonalATSReport personal = new PersonalATSReport();
+             personal.setVisible(true);
+             personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
+         }else if(InterlineSalesReport.isInstantiated){
+             InterlineSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
+             InterlineSalesReport.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString(); 
              
-            InterlineSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
-            InterlineSalesReport.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString();
-            
-            PersonalInterlineReport personal = new PersonalInterlineReport();
-            personal.setVisible(true);
-            personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
+             PersonalInterlineReport p = new PersonalInterlineReport();
+             p.setVisible(true);
+             p.setDefaultCloseOperation(p.DISPOSE_ON_CLOSE);
          }
- 
-       
     }//GEN-LAST:event_advisorsListTableMouseClicked
 
     private void advisorsListBackgroundMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_advisorsListBackgroundMouseMoved
         // TODO add your handling code here:
             if(Advisor.buttonPressed()==true){
-             initAdvisorReportList("select * from staff where role='advisor'");
+             initAdvisorsList("select * from staff where role='advisor'");
     
              }
     
@@ -266,7 +264,7 @@ public class AdvisorReportList extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdvisorReportList().setVisible(true);
+                new AdvisorsList().setVisible(true);
             }
         });
     }
