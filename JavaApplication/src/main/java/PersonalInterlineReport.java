@@ -18,13 +18,22 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
     //Tables which will contain the result from the database queries
     private DefaultTableModel reportDefTabMod, totalsDeffTabMod;
     private String fromDate, toDate;//dates for the desired period of time for the report
-    private int staffId;
+    private final int advisorID;
 
     /**
      * Creates new form personalInterlineReport
      */
     public PersonalInterlineReport() {
         initComponents();
+        if(LoginForm.role.equals("manager") | LoginForm.role.equals("Manager")){
+            advisorID = AdvisorReportList.addvisorID;
+            jLabel1.setText(AdvisorReportList.advisorName + " ID: " + advisorID);
+        }else{
+            advisorID = AdvisorHub.id;
+            jLabel1.setVisible(false);
+            this.revalidate();
+            this.repaint();
+        }
     }
 
     //check if the input dates are in the correct format
@@ -64,11 +73,11 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
                 statement.addBatch("INSERT INTO PInterline (issuedN)\n"
                         + "SELECT DISTINCT blankNumber\n"
                         + "FROM t\n"
-                        + "WHERE StaffID = 2 AND \n"
-                        + "date >= '" + fromDate + "' AND \n"
-                        + "date <= '" + toDate + "' AND \n"
-                        + "(blankNumber LIKE '444%' OR \n"
-                        + "blankNumber LIKE '420%');");
+                        + "WHERE StaffID = " + advisorID + " AND \n"
+                        + "(date >= '" + fromDate + "' AND \n"
+                        + "date <= '" + toDate + "') AND \n"
+                        + "(blankNumber LIKE '444%' OR blankNumber LIKE \n"
+                        + " '420%');");
                 /*List the price for each blank */
                 statement.addBatch("UPDATE PInterline\n"
                         + "SET fBase = (\n"
@@ -210,7 +219,6 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
         printButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         totalsJTable = new javax.swing.JTable();
-        IDjTextField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         reportJTable = new javax.swing.JTable();
@@ -291,13 +299,6 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(totalsJTable);
 
-        IDjTextField.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        IDjTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                IDjTextFieldActionPerformed(evt);
-            }
-        });
-
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("ID");
 
@@ -320,13 +321,7 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
                 .addGroup(personalInterlineBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(personalInterlineBackgroundLayout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(personalInterlineBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(personalInterlineBackgroundLayout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(IDjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(3, 3, 3))))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(personalInterlineBackgroundLayout.createSequentialGroup()
                         .addGap(829, 829, 829)
                         .addComponent(printButton, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -347,7 +342,10 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(toLabel)
                                 .addGap(18, 18, 18)
-                                .addComponent(toDateTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(toDateTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12)))))
                 .addGap(29, 29, 29))
         );
         personalInterlineBackgroundLayout.setVerticalGroup(
@@ -360,7 +358,6 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
                     .addComponent(toLabel)
                     .addComponent(fromDateTextbox)
                     .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(IDjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -389,25 +386,21 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void generateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateButtonActionPerformed
-        fromDate = fromDateTextbox.getText();
-        toDate = toDateTextbox.getText();
-       // staffId = Integer.valueOf(IDjTextField.getText());
-        initReportTable();
-    }//GEN-LAST:event_generateButtonActionPerformed
-
     private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_printButtonActionPerformed
+
+    private void generateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateButtonActionPerformed
+        fromDate = fromDateTextbox.getText();
+        toDate = toDateTextbox.getText();
+        // staffId = Integer.valueOf(IDjTextField.getText());
+        initReportTable();
+    }//GEN-LAST:event_generateButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_backButtonActionPerformed
-
-    private void IDjTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IDjTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_IDjTextFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -436,7 +429,6 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField IDjTextField;
     private javax.swing.JButton backButton;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JTextField fromDateTextbox;

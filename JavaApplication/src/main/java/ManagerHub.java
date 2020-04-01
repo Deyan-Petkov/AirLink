@@ -119,7 +119,7 @@ public class ManagerHub extends javax.swing.JFrame {
         });
 
         makeATSComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        makeATSComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MAKE ATS", "Interline", "Domestic" }));
+        makeATSComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MAKE ATS", "Interline", "Domestic", "Stock" }));
         makeATSComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 makeATSComboBoxActionPerformed(evt);
@@ -284,6 +284,12 @@ public class ManagerHub extends javax.swing.JFrame {
                     DomesticSalesReport domesticSalesReport = new DomesticSalesReport();
                     domesticSalesReport.setVisible(true);
                     domesticSalesReport.setDefaultCloseOperation(domesticSalesReport.DISPOSE_ON_CLOSE);
+                    break;
+                case "Stock":
+                    StockTurnoverReport stockTurnoverReport = new StockTurnoverReport();
+                    stockTurnoverReport.setVisible(true);
+                    stockTurnoverReport.setDefaultCloseOperation(stockTurnoverReport.DISPOSE_ON_CLOSE);
+                    break;
         }
     }//GEN-LAST:event_makeATSComboBoxActionPerformed
 

@@ -66,7 +66,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         + "from Blank\n"
                         + "left join\n"
                         + "Payment on Payment.BlankblankNumber = blank.blankNumber\n"
-                        + "where datereceived >= '2019-05-03'and datereceived <= '2020-04-30'");
+                        + "where datereceived >= '" + fromDate + "'and datereceived <= '" + toDate + "'");
                 statement.addBatch("create temporary table t1(\n"
                         + "n integer primary key autoincrement,\n"
                         + "ftblank integer (10),\n"

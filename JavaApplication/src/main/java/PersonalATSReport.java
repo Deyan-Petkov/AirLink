@@ -27,29 +27,38 @@ public class PersonalATSReport extends javax.swing.JFrame {
     //Tables which will contain the result from the database queries
     private DefaultTableModel reportDefTabMod, totalsDeffTabMod;
     private String fromDate, toDate;//dates for the desired period of time for the report
-    private int staffId;
+    private final int advisorID;
 
     /**
      * Creates new form personalATSReport
      */
     public PersonalATSReport() {
         initComponents();
+        if (LoginForm.role.equals("manager") | LoginForm.role.equals("Manager")) {
+            advisorID = AdvisorReportList.addvisorID;
+            idjLabel.setText(AdvisorReportList.advisorName + " ID:" + advisorID);
+        } else {
+            advisorID = AdvisorHub.id;
+            idjLabel.setVisible(false);
+            this.revalidate();
+            this.repaint();
+        }
+
     }
 
     //check if the input dates are in the correct format
     static boolean isValidDate(String date) {
-        
+
         if (date.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})")) {
             return true;
         }
         return false;
     }
-    
 
     //Initialises the report
     private void initReportTable() {
         //if date fields are empty prompt a message and don't proceed any further 
-        if (fromDate.length() < 1 | toDate.length() < 1  ) {
+        if (fromDate.length() < 1 | toDate.length() < 1) {
             JOptionPane.showMessageDialog(null, "Please fill in From Date and To Date fields");
         } else if (!isValidDate(fromDate) | !isValidDate(toDate)) {//check if the dates are entered in the correct format
             JOptionPane.showMessageDialog(null, "Date fields must contain date in format \"yyyy-mm-dd\"");
@@ -70,7 +79,7 @@ public class PersonalATSReport extends javax.swing.JFrame {
                         + "    commission      DOUBLE(10),\n"
                         + "    notes            VARCHAR(200)\n"
                         + ");");
-                
+
                 statement.addBatch("create view if not exists t as\n"
                         + "select Blank.blankNumber, Blank.isSold, Blank.StaffID,Blank.dateReceived,\n"
                         + "Itinerary.flightDeparture,Itinerary.flightDestination,Itinerary.flightArrivalTime,Itinerary.flightDepartureTime,Itinerary.FlightNum, Itinerary.CustomerID,Itinerary.ID,\n"
@@ -82,20 +91,19 @@ public class PersonalATSReport extends javax.swing.JFrame {
                         + "left join Payment on Blank.blankNumber = Payment.BlankblankNumber\n"
                         + "left join Flights on Itinerary.FlightNum = Flights.number\n"
                         + "left join commission on Payment.date = commission.date");
-                
-                
+
                 /*List all domestic blanks sold for the given period*/
                 //TODO  substitude staffId
                 statement.addBatch("INSERT INTO IDomestic (\n"
                         + "      issuedN\n"
                         + "  )\n"
                         + "  SELECT DISTINCT blankNumber\n"
-                        + "    FROM t\n"
-                        + "   WHERE StaffID = 2 AND \n"
-                        + "         date >= '" + fromDate + "' AND \n"
-                        + "         date <= '" + toDate + "' AND \n"
-                        + "         (blankNumber LIKE '201%' OR \n"
-                        + "          blankNumber LIKE '101%');");
+                        + "   FROM t\n"
+                        + "  WHERE StaffID = " + advisorID + " AND\n"
+                        + "       ( date >= '" + fromDate + "' AND\n"
+                        + "        date <= '" + toDate + "') AND\n"
+                        + "        (blankNumber LIKE '201%' OR blankNumber LIKE\n"
+                        + "        '101%');");
                 /*List the price for each blank */
                 statement.addBatch("UPDATE IDomestic\n"
                         + "SET fBase = (\n"
@@ -250,8 +258,7 @@ public class PersonalATSReport extends javax.swing.JFrame {
         reportJTable = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         totalsJTable = new javax.swing.JTable();
-        IDjTextField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        idjLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -340,15 +347,8 @@ public class PersonalATSReport extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(totalsJTable);
 
-        IDjTextField.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        IDjTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                IDjTextFieldActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel1.setText("ID");
+        idjLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        idjLabel.setText("ID");
 
         javax.swing.GroupLayout personalATSBackgroundLayout = new javax.swing.GroupLayout(personalATSBackground);
         personalATSBackground.setLayout(personalATSBackgroundLayout);
@@ -361,11 +361,7 @@ public class PersonalATSReport extends javax.swing.JFrame {
                     .addGroup(personalATSBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 907, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(personalATSBackgroundLayout.createSequentialGroup()
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(IDjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(3, 3, 3)))
+                        .addComponent(idjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(personalATSBackgroundLayout.createSequentialGroup()
                         .addGap(659, 659, 659)
                         .addComponent(printButton, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -396,8 +392,7 @@ public class PersonalATSReport extends javax.swing.JFrame {
                     .addComponent(toLabel)
                     .addComponent(fromDateTextbox)
                     .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(IDjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(idjLabel))
                 .addGap(48, 48, 48)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -428,7 +423,6 @@ public class PersonalATSReport extends javax.swing.JFrame {
     private void generateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateButtonActionPerformed
         fromDate = fromDateTextbox.getText();
         toDate = toDateTextbox.getText();
-       // staffId = Integer.valueOf(IDjTextField.getText());
         initReportTable();
     }//GEN-LAST:event_generateButtonActionPerformed
 
@@ -440,10 +434,6 @@ public class PersonalATSReport extends javax.swing.JFrame {
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_backButtonActionPerformed
-
-    private void IDjTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IDjTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_IDjTextFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -482,12 +472,11 @@ public class PersonalATSReport extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField IDjTextField;
     private javax.swing.JButton backButton;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JTextField fromDateTextbox;
     private javax.swing.JButton generateButton;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel idjLabel;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel personalATSBackground;

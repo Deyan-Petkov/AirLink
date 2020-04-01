@@ -6,7 +6,6 @@ import javax.swing.table.DefaultTableModel;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author dhruv
@@ -19,14 +18,14 @@ public class DomesticSalesReport extends javax.swing.JFrame {
     //Holds copy of the database during the current session
     private DefaultTableModel defTabMod;
     //holds the row number selected by the user
-    private int selectedRow;
-    static int advisorID;
-    static String advisorname; 
+    //private int selectedRow;
+    //static int advisorID;
+    //static String advisorname; 
     static boolean isInstantiated;
-    
+
     public DomesticSalesReport() {
         initComponents();
-        isInstantiated=true;
+        isInstantiated = true;
     }
 
     /**
@@ -141,14 +140,39 @@ public class DomesticSalesReport extends javax.swing.JFrame {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
-            isInstantiated=false;
-            dispose();  
+        isInstantiated = false;
+        dispose();
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void IndividualButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IndividualButtonActionPerformed
-        // TODO add your handling code here:
-        AdvisorReportList list = new AdvisorReportList();
-        list.setVisible(true);
+//        if (LoginForm.role.equals("manager")) {
+//            AdvisorReportList list = new AdvisorReportList();
+//            list.setVisible(true);
+//            list.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//        } else {
+//            if (DomesticSalesReport.isInstantiated) {
+//                PersonalATSReport personal = new PersonalATSReport();
+//                personal.setVisible(true);
+//                personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
+//            } else {
+//                PersonalInterlineReport p = new PersonalInterlineReport();
+//                p.setVisible(true);
+//                p.setDefaultCloseOperation(p.DISPOSE_ON_CLOSE);
+//            }
+//        }
+
+
+        if (LoginForm.role.equals("manager") | LoginForm.role.equals("Manager")) {
+            AdvisorReportList list = new AdvisorReportList();
+            list.setVisible(true);
+            list.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        } else {
+            
+                PersonalATSReport personal = new PersonalATSReport();
+                personal.setVisible(true);
+                personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
+            
+        }
     }//GEN-LAST:event_IndividualButtonActionPerformed
 
     private void GlobalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GlobalButtonActionPerformed

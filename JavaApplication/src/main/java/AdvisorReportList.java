@@ -1,6 +1,4 @@
 
-
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,30 +15,32 @@ import javax.swing.table.DefaultTableModel;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author dhruv
  */
 public class AdvisorReportList extends javax.swing.JFrame {
- //Holds copy of the database during the current session
+    //Holds copy of the database during the current session
+
     private DefaultTableModel defTabMod;
     //holds the row number selected by the user
-    private int selectedRow;    
-     static boolean select=false;//When is false clicking on CustomerRecords table doesn't assign value to custID
-    
-    
+    private int selectedRow;
+    static boolean select = false;//When is false clicking on CustomerRecords table doesn't assign value to custID
+    static String advisorName;
+    static int addvisorID;
+
     /**
      * Creates new form advisorsList
      */
     public AdvisorReportList() {
         initComponents();
-         initAdvisorsList("select * from staff where role='advisor'");
-            selectedRow = -1;
-            
+        initAdvisorsList("select * from staff where role='advisor'");
+        selectedRow = -1;
+
     }
- //populates the customerTable table with the relevant data from tha databse
-   private void initAdvisorsList(String sqlStatement) {
+    //populates the customerTable table with the relevant data from tha databse
+
+    private void initAdvisorsList(String sqlStatement) {
         //estabblish connection with the database
         try ( PreparedStatement ps = DbCon.getConnection().prepareStatement(sqlStatement);) {
             ResultSet rs = ps.executeQuery();//contains the data returned from the database quiery
@@ -48,7 +48,7 @@ public class AdvisorReportList extends javax.swing.JFrame {
             //controls the for loop for the assigning of values in the vector
             int column = rsmd.getColumnCount();
             //initialize this form table according to the database structure
-            defTabMod = (DefaultTableModel)  advisorsListTable.getModel();
+            defTabMod = (DefaultTableModel) advisorsListTable.getModel();
             defTabMod.setRowCount(0);
             //loops over each row of the database
             while (rs.next()) {
@@ -56,14 +56,12 @@ public class AdvisorReportList extends javax.swing.JFrame {
 
                 for (int i = 1; i <= column; i++) {
                     v.add(rs.getInt("ID"));
-                  
                     v.add(rs.getString("role"));
                     v.add(rs.getString("name"));
                     v.add(rs.getString("address"));
                     v.add(rs.getString("email"));
                     v.add(rs.getInt("phoneNum"));
-                    
-                    
+
                 }//inserts single row collected data from the databse into this form table
                 defTabMod.addRow(v);
             }
@@ -73,8 +71,7 @@ public class AdvisorReportList extends javax.swing.JFrame {
         }
 
     }
-  
-  
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -194,43 +191,44 @@ public class AdvisorReportList extends javax.swing.JFrame {
 
     private void backButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonadvisorListActionPerformed
         // TODO add your handling code here:
-        
-   
-          dispose(); 
+
+        dispose();
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
-   
-    
-   
+
     private void advisorsListTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_advisorsListTableMouseClicked
         // TODO add your handling code here:
-          //holds teh row number selected with the mouse
+        //holds teh row number selected with the mouse
         selectedRow = advisorsListTable.getSelectedRow();
-                 if(DomesticSalesReport.isInstantiated){
-             //Set custID in BookTicket according to the mouse selected row ID
-             DomesticSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
-             DomesticSalesReport.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString();
-             
-             PersonalATSReport personal = new PersonalATSReport();
-             personal.setVisible(true);
-             personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
-         }else if(InterlineSalesReport.isInstantiated){
-             InterlineSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
-             InterlineSalesReport.advisorname= (String)defTabMod.getValueAt(selectedRow,2 ).toString(); 
-             
-             PersonalInterlineReport p = new PersonalInterlineReport();
-             p.setVisible(true);
-             p.setDefaultCloseOperation(p.DISPOSE_ON_CLOSE);
-         }
+        if (DomesticSalesReport.isInstantiated) {
+            // Set custID in BookTicket according to the mouse selected row ID
+//            DomesticSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
+//            DomesticSalesReport.advisorname = (String) defTabMod.getValueAt(selectedRow, 2).toString();
+            addvisorID = (int) defTabMod.getValueAt(selectedRow, 0);
+            advisorName = (String) defTabMod.getValueAt(selectedRow, 2).toString();
+
+            PersonalATSReport personal = new PersonalATSReport();
+            personal.setVisible(true);
+            personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
+        } else if (InterlineSalesReport.isInstantiated) {
+//            InterlineSalesReport.advisorID = (int) defTabMod.getValueAt(selectedRow, 0);
+//            InterlineSalesReport.advisorname = (String) defTabMod.getValueAt(selectedRow, 2).toString();
+            addvisorID = (int) defTabMod.getValueAt(selectedRow, 0);
+            advisorName = (String) defTabMod.getValueAt(selectedRow, 2).toString();
+
+            PersonalInterlineReport p = new PersonalInterlineReport();
+            p.setVisible(true);
+            p.setDefaultCloseOperation(p.DISPOSE_ON_CLOSE);
+        }
     }//GEN-LAST:event_advisorsListTableMouseClicked
 
     private void advisorsListBackgroundMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_advisorsListBackgroundMouseMoved
         // TODO add your handling code here:
-            if(Advisor.buttonPressed()==true){
-             initAdvisorsList("select * from staff where role='advisor'");
-    
-             }
-    
+        if (Advisor.buttonPressed() == true) {
+            initAdvisorsList("select * from staff where role='advisor'");
+
+        }
+
     }//GEN-LAST:event_advisorsListBackgroundMouseMoved
 
     /**
@@ -249,15 +247,12 @@ public class AdvisorReportList extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AdvisorsList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AdvisorsList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AdvisorsList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AdvisorsList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+
         //</editor-fold>
         //</editor-fold>
 

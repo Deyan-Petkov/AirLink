@@ -6,7 +6,6 @@ import javax.swing.table.DefaultTableModel;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author xahna
@@ -18,14 +17,12 @@ public class InterlineSalesReport extends javax.swing.JFrame {
      */
     //Holds copy of the database during the current session
     private DefaultTableModel defTabMod;
-    //holds the row number selected by the user
-    private int selectedRow;
-    static int advisorID;
-    static String advisorname; 
+    
     static boolean isInstantiated;
+
     public InterlineSalesReport() {
         initComponents();
-        isInstantiated=true;
+        isInstantiated = true;
     }
 
     /**
@@ -139,7 +136,7 @@ public class InterlineSalesReport extends javax.swing.JFrame {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
-        isInstantiated=false;
+        isInstantiated = false;
         dispose();
     }//GEN-LAST:event_backButtonActionPerformed
 
@@ -151,9 +148,16 @@ public class InterlineSalesReport extends javax.swing.JFrame {
     }//GEN-LAST:event_GlobalButtonActionPerformed
 
     private void IndividualButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IndividualButtonActionPerformed
-        // TODO add your handling code here:
-        AdvisorReportList list = new AdvisorReportList();
-        list.setVisible(true);
+
+        if (LoginForm.role.equals("manager") | LoginForm.role.equals("Manager")) {
+            AdvisorReportList list = new AdvisorReportList();
+            list.setVisible(true);
+            list.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        } else {
+            PersonalInterlineReport p = new PersonalInterlineReport();
+            p.setVisible(true);
+            p.setDefaultCloseOperation(p.DISPOSE_ON_CLOSE);
+        }
     }//GEN-LAST:event_IndividualButtonActionPerformed
 
     /**

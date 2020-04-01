@@ -18,6 +18,7 @@ import java.util.logging.Logger;
  */
 public class LoginForm extends javax.swing.JFrame {
 
+    public static String role;
     /**
      * Creates new form loginForm
      */
@@ -207,6 +208,7 @@ public class LoginForm extends javax.swing.JFrame {
             ResultSet rs = ps.executeQuery();
             //Resolves which user logged in and what credentials to be given
             if (rs.next()) {
+                role = rs.getString("role");
                 switch (rs.getString("role")) {
                     case "admin":
                         AdminHub admHub = new AdminHub();
@@ -226,10 +228,17 @@ public class LoginForm extends javax.swing.JFrame {
                         this.dispose();
                         managerHub.setDefaultCloseOperation(ManagerHub.DISPOSE_ON_CLOSE);
                         break;
+                    case "Manager":
+                        ManagerHub mh = new ManagerHub();
+                        mh.setVisible(true);
+                        this.dispose();
+                        mh.setDefaultCloseOperation(mh.DISPOSE_ON_CLOSE);
+                        break;
+                        
                     default:
                         break;
                 }
-
+                
             }
         }
         catch (ClassNotFoundException | SQLException ex) {

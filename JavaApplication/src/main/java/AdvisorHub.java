@@ -268,14 +268,14 @@ public class AdvisorHub extends javax.swing.JFrame {
         // TODO add your handling code here:
         switch (makeATSComboBox.getSelectedItem().toString()) {
                 case "Interline":
-                    InterlineSalesReport interlineSalesReport = new InterlineSalesReport();
-                    interlineSalesReport.setVisible(true);
-                    interlineSalesReport.setDefaultCloseOperation(interlineSalesReport.DISPOSE_ON_CLOSE);
+                    PersonalInterlineReport pir = new PersonalInterlineReport();
+                    pir.setVisible(true);
+                    pir.setDefaultCloseOperation(pir.DISPOSE_ON_CLOSE);
                     break;
                 case "Domestic":
-                    DomesticSalesReport domesticSalesReport = new DomesticSalesReport();
-                    domesticSalesReport.setVisible(true);
-                    domesticSalesReport.setDefaultCloseOperation(domesticSalesReport.DISPOSE_ON_CLOSE);
+                    PersonalATSReport pASTreport = new PersonalATSReport();
+                    pASTreport.setVisible(true);
+                    pASTreport.setDefaultCloseOperation(pASTreport.DISPOSE_ON_CLOSE);
         }
     }//GEN-LAST:event_makeATSComboBoxActionPerformed
 
@@ -287,7 +287,6 @@ public class AdvisorHub extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutButtonlogoutActionPerformed
 
     private void sellTicketComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellTicketComboBoxActionPerformed
-        System.out.println("advisor id: " + id);
         //sets typeBlank and blankAllowance in Blank according to the blank that user chosed if s/he has available 
         if (getAvailabelBlanks() > 0 && Arrays.asList("444", "420", "201", "101").contains(sellTicketComboBox.getSelectedItem().toString())) {
             BookTicket bookTicket = new BookTicket();
