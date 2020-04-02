@@ -1,13 +1,10 @@
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
-
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
@@ -23,6 +20,7 @@ import javax.swing.JOptionPane;
 public class AdvisorHub extends javax.swing.JFrame {
 
     public static int id;
+    private long nextBlankNumber;
 
     /**
      * Creates new form advisorHub
@@ -33,22 +31,24 @@ public class AdvisorHub extends javax.swing.JFrame {
         initComponents();
         this.id = id;
     }
+
     //checks if the advisor using the sysmte has available blanks from chosen type
     private int getAvailabelBlanks() {
         int availableBlanks = 0;
-            try ( Connection con = DbCon.getConnection()) {
+        try (Connection con = DbCon.getConnection()) {
 
-                PreparedStatement pst = con.prepareStatement("select count(blankNumber) from Blank where blankNumber like '"
-                        + sellTicketComboBox.getSelectedItem().toString() + "%' and staffID in (\n"
-                       + "select id from Staff where ID = '"+ id +"') and isSold = 0");
-                ResultSet rs = pst.executeQuery();
-                rs.next();
-                availableBlanks = rs.getInt("count(blankNumber)");
+            PreparedStatement pst = con.prepareStatement("select count(blankNumber),blankNumber from Blank where blankNumber like '"
+                    + sellTicketComboBox.getSelectedItem().toString() + "%' and staffID in (\n"
+                    + "select id from Staff where ID = '" + id + "') and isSold = 0");
+            ResultSet rs = pst.executeQuery();
+            rs.next();
+            availableBlanks = rs.getInt("count(blankNumber)");
+            nextBlankNumber = rs.getLong("blankNumber");
 
-            } catch (ClassNotFoundException | SQLException ex) {
-                Logger.getLogger(AdvisorHub.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        System.out.println("number of available blanks: "+ availableBlanks);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(AdvisorHub.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("number of available blanks: " + availableBlanks);
 
         return availableBlanks;
     }
@@ -239,22 +239,22 @@ public class AdvisorHub extends javax.swing.JFrame {
 
     private void logsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logsButtonActionPerformed
         // TODO add your handling code here:
- 
-        try(Connection con = DbCon.getConnection()){
-                PreparedStatement pst2 = con.prepareStatement("select  name from staff where ID='"+id+"' ");
-                    
-               ResultSet rs2 = pst2.executeQuery();
-               
-           String filename= rs2.getString("name")+" "+"logfile";
-     
-           ProcessBuilder pb = new ProcessBuilder("Notepad.exe", filename);
-        pb.start();
-      
-        
+
+        try (Connection con = DbCon.getConnection()) {
+            PreparedStatement pst2 = con.prepareStatement("select  name from staff where ID='" + id + "' ");
+
+            ResultSet rs2 = pst2.executeQuery();
+
+            String filename = rs2.getString("name") + " " + "logfile";
+
+            ProcessBuilder pb = new ProcessBuilder("Notepad.exe", filename);
+            pb.start();
+
+        } catch (Exception e) {
+            System.out.println("error");
         }
-        catch(Exception e){  System.out.println("error");}
-        
-    
+
+
     }//GEN-LAST:event_logsButtonActionPerformed
 
     private void CustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CustomerButtonActionPerformed
@@ -273,15 +273,15 @@ public class AdvisorHub extends javax.swing.JFrame {
     private void makeATSComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeATSComboBoxActionPerformed
         // TODO add your handling code here:
         switch (makeATSComboBox.getSelectedItem().toString()) {
-                case "Interline":
-                    PersonalInterlineReport pir = new PersonalInterlineReport();
-                    pir.setVisible(true);
-                    pir.setDefaultCloseOperation(pir.DISPOSE_ON_CLOSE);
-                    break;
-                case "Domestic":
-                    PersonalATSReport pASTreport = new PersonalATSReport();
-                    pASTreport.setVisible(true);
-                    pASTreport.setDefaultCloseOperation(pASTreport.DISPOSE_ON_CLOSE);
+            case "Interline":
+                PersonalInterlineReport pir = new PersonalInterlineReport();
+                pir.setVisible(true);
+                pir.setDefaultCloseOperation(pir.DISPOSE_ON_CLOSE);
+                break;
+            case "Domestic":
+                PersonalATSReport pASTreport = new PersonalATSReport();
+                pASTreport.setVisible(true);
+                pASTreport.setDefaultCloseOperation(pASTreport.DISPOSE_ON_CLOSE);
         }
     }//GEN-LAST:event_makeATSComboBoxActionPerformed
 
@@ -294,14 +294,16 @@ public class AdvisorHub extends javax.swing.JFrame {
 
     private void sellTicketComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellTicketComboBoxActionPerformed
         //sets typeBlank and blankAllowance in Blank according to the blank that user chosed if s/he has available 
-        if (getAvailabelBlanks() > 0 && Arrays.asList("444", "420", "201", "101").contains(sellTicketComboBox.getSelectedItem().toString())) {
+        String comboboxVal = sellTicketComboBox.getSelectedItem().toString();
+        if (getAvailabelBlanks() > 0 && Arrays.asList("444", "420", "201", "101")
+                .contains(comboboxVal)) {
             BookTicket bookTicket = new BookTicket();
             bookTicket.setVisible(true);
             bookTicket.setDefaultCloseOperation(bookTicket.DISPOSE_ON_CLOSE);
 
-            switch (sellTicketComboBox.getSelectedItem().toString()) {
+            switch (comboboxVal) {
                 case "444":
-                    bookTicket.setComboBoxIndex(444, 4);
+                    bookTicket.setComboBoxIndex(444, 4);//used in BookTicket
                     break;
                 case "420":
                     bookTicket.setComboBoxIndex(420, 2);
@@ -312,27 +314,48 @@ public class AdvisorHub extends javax.swing.JFrame {
                 case "101":
                     bookTicket.setComboBoxIndex(101, 1);
                     break;
+                default:
+                    break;
             }
         } else {
-            // add code for blanks 451, 
-            
+            // If miscelaneous blanks are chosen
+            if (getAvailabelBlanks() > 0 && Arrays.asList("451", "452").contains(comboboxVal)) {
+                MCO mco = new MCO();
+                mco.setVisible(true);
+                mco.setDefaultCloseOperation(mco.DISPOSE_ON_CLOSE);
+                mco.setBlankNumber(nextBlankNumber);
 
-            JOptionPane.showMessageDialog(null,
-                    "You have no assigned blanks from this type.\n"
-                    + "Please contact your manager. ",
-                    "Warning",
-                    JOptionPane.WARNING_MESSAGE);
-            sellTicketComboBox.setSelectedItem("SELL TICKET");
+                switch (comboboxVal) {
+
+                    case "451"://sets the textfild in MCO with 
+                        //this message is displayed in the text area 
+                        //its purpose is to guide what should be written
+                        mco.setMCO("Please add excess luggage details here...");
+                        break;
+                    case "452":
+                        mco.setMCO("Please provide miscellaneous services details here...");
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "You have no assigned blanks from this type.\n"
+                        + "Please contact your manager. ",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                sellTicketComboBox.setSelectedItem("SELL TICKET");
+            }
         }
 
 
     }//GEN-LAST:event_sellTicketComboBoxActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    Flights flights = new Flights();
-    flights.setVisible(true);
-    flights.setDefaultCloseOperation(flights.DISPOSE_ON_CLOSE);
-        
+        Flights flights = new Flights();
+        flights.setVisible(true);
+        flights.setDefaultCloseOperation(flights.DISPOSE_ON_CLOSE);
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -386,4 +409,3 @@ public class AdvisorHub extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
 }
-

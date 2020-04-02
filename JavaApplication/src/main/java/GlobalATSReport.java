@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
  */
 /**
  *
- * @author dhruv
+ * @author Deyan
  */
 public class GlobalATSReport extends javax.swing.JFrame {
 

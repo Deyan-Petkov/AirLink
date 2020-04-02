@@ -30,7 +30,10 @@ public class Flights extends javax.swing.JFrame {
         initComponents();
         initFlightsTable();
     }
-
+    /**
+     * populates flights table according the 
+     * data in the database
+     */
     private void initFlightsTable() {
         try ( Connection con = DbCon.getConnection()) {
             PreparedStatement pst = con.prepareStatement("select * from Flights");
@@ -191,7 +194,7 @@ public class Flights extends javax.swing.JFrame {
                 .addComponent(exchangeRateBackground, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
                 .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(createCustomerBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -218,7 +221,10 @@ public class Flights extends javax.swing.JFrame {
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_backButtonActionPerformed
-
+    /**
+     * Delete flight 
+     * @param evt 
+     */
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         try ( Connection con = DbCon.getConnection()) {
             selectedRow = flightsTable.getSelectedRow();
@@ -234,12 +240,15 @@ public class Flights extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_deleteButtonActionPerformed
-
+    /**
+     * User is allowed to change the rows values.
+     * Pressing "EDIT" button will save the changes.
+     * @param evt 
+     */
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         try ( Connection con = DbCon.getConnection()) {
             int rowCount = flightsTable.getRowCount();
             selectedRow = flightsTable.getSelectedRow();
-           // String fTableKey = flightsDftTblMdl.getValueAt(selectedRow, 4).toString();
             //if row is chosen
             if (selectedRow >= 0) {
 
@@ -258,7 +267,7 @@ public class Flights extends javax.swing.JFrame {
                         + "' where number = '" + flightsDftTblMdl.getValueAt(selectedRow, 4) + "'");
 
                 pst.execute();
-                initFlightsTable();
+                initFlightsTable();//refresh the table after edit
             } else {
                 JOptionPane.showMessageDialog(null, "Please select row first");
             }
@@ -268,7 +277,12 @@ public class Flights extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_editButtonActionPerformed
-
+    /**
+     * Adds new row to the existing table if the last row is populated.
+     * Clicking "ADD" after populating the last row will save it into
+     * the database instead of adding new row here.
+     * @param evt 
+     */
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
 
         try ( Connection con = DbCon.getConnection()) {

@@ -102,7 +102,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         + ")");
 
                 statement.executeBatch();
-
+                //list all newly received blanks
                 statement.addBatch("insert into t1 (ftblank,amnt)\n"
                         + "\n"
                         + "  select min(bn) || '-' ||  max(bn),count(bn) from trep where bn like '444%'\n"
@@ -116,8 +116,9 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         + "   select min(bn) || '-' ||  max(bn),count(bn) from trep where bn like '451%'\n"
                         + "  union\n"
                         + "   select min(bn) || '-' ||  max(bn),count(bn) from trep where bn like '452%'\n"
-                        + "");
+                        + "");  // amount of new blanks 
                 statement.addBatch("insert into t1 (ftblank,amnt) values ('TOTAL',(select sum(amnt) from t1))");
+                /*How many of each type blanks are newly received and assigned*/
                 statement.addBatch("insert into t2 (code,ft1, amnt1)\n"
                         + "\n"
                         + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,bn from trep  where bn like'444%' and staffid not null) group by staffid\n"
@@ -133,6 +134,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         + "select staffID,min(bn)|| '-' || max(bn), count(bn) from (select distinct staffid,bn from trep  where bn like'452%' and staffid not null) group by staffid\n"
                         + "");
                 statement.addBatch("insert into t2 (ft1,amnt1) values ('TOTAL',(select sum(amnt1) from t2))");
+                /*Existing (not newly received) blanks assigned to advisors (by advisor’s code);   */
                 statement.addBatch("insert into t3 (code1,assigned, amnt2)\n"
                         + "\n"
                         + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'444%' and staffid not null) group by staffid\n"
@@ -148,6 +150,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'452%' and staffid not null) group by staffid");
                 statement.addBatch("insert into t3 (assigned,amnt2) values ('TOTAL',(select sum(amnt2) from t3))\n"
                         + "");
+                /*Blanks used (new or existing) by the agent (no matter the advisor) within the given period;*/
                 statement.addBatch("insert into t4 (used, amnt3)\n"
                         + "\n"
                         + "select min(bn)|| '-' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'444%' and bn in (select bn from trep where pdate is not null))\n"
@@ -163,6 +166,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         + "select min(bn)|| '-' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'452%' and bn in (select bn from trep where pdate is not null))");
                 statement.addBatch("insert into t4 (used,amnt3) values ('TOTAL',(select sum(amnt3) from t4))\n"
                         + "");
+                /* blanks available in Agent’s stock at the end of period;*/
                 statement.addBatch("insert into t5 (ft2, amnt4)\n"
                         + "\n"
                         + "select min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'444%' and isSold = 0 )\n"
@@ -177,6 +181,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         + "union\n"
                         + "select min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'452%' and isSold = 0 )");
                 statement.addBatch("insert into t5 (ft2,amnt4) values ('TOTAL',(select sum(amnt4) from t5))");
+                /*Amount of blanks of a given type assigned to an advisor at the end of period*/
                 statement.addBatch("insert into t6 (code2,ft3, amnt5)\n"
                         + "\n"
                         + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'444%' and staffid not null) group by staffid\n"
@@ -233,7 +238,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         v.add(rs.getString("ft1"));
                         v.add(rs.getInt("amnt1"));
 
-                    }//inserts single row collected data from the databse into this form table
+                    }
                     t2.addRow(v);
                 }
 
@@ -254,7 +259,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         v.add(rs.getString("assigned"));
                         v.add(rs.getInt("amnt2"));
 
-                    }//inserts single row collected data from the databse into this form table
+                    }
                     t3.addRow(v);
                 }
 
@@ -274,7 +279,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         v.add(rs.getString("used"));
                         v.add(rs.getInt("amnt3"));
 
-                    }//inserts single row collected data from the databse into this form table
+                    }
                     t4.addRow(v);
                 }
 
@@ -294,7 +299,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         v.add(rs.getString("ft2"));
                         v.add(rs.getInt("amnt4"));
 
-                    }//inserts single row collected data from the databse into this form table
+                    }
                     t5.addRow(v);
                 }
 
@@ -315,7 +320,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                         v.add(rs.getString("ft3"));
                         v.add(rs.getInt("amnt5"));
 
-                    }//inserts single row collected data from the databse into this form table
+                    }
                     t6.addRow(v);
                 }
 
@@ -590,7 +595,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_backButtonActionPerformed
-
+    //initializes the variables according to user input and populates the tables
     private void generateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateButtonActionPerformed
         fromDate = fromDatetTextbox.getText();
         toDate = toDateTextbox.getText();

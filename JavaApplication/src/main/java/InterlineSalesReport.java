@@ -148,12 +148,14 @@ public class InterlineSalesReport extends javax.swing.JFrame {
     }//GEN-LAST:event_GlobalButtonActionPerformed
 
     private void IndividualButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IndividualButtonActionPerformed
-
+        //if manager want to make report prompt him with advisors list to choose for which advisor
+        //wants to make report
         if (LoginForm.role.equals("manager") | LoginForm.role.equals("Manager")) {
             AdvisorReportList list = new AdvisorReportList();
             list.setVisible(true);
             list.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        } else {
+        } else {//else just open the report page because advisors ID is 
+            //been already captured when login
             PersonalInterlineReport p = new PersonalInterlineReport();
             p.setVisible(true);
             p.setDefaultCloseOperation(p.DISPOSE_ON_CLOSE);

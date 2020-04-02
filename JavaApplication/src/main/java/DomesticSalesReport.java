@@ -141,13 +141,13 @@ public class DomesticSalesReport extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void IndividualButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IndividualButtonActionPerformed
-
+        //If manager wants to make report then first afvisor have to be choosen
         if (LoginForm.role.equals("manager") | LoginForm.role.equals("Manager")) {
             AdvisorReportList list = new AdvisorReportList();
             list.setVisible(true);
             list.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        } else {
-            
+        } else {//otherways go to Personal report page as advisor ID is 
+            //veing capured when login
                 PersonalATSReport personal = new PersonalATSReport();
                 personal.setVisible(true);
                 personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
@@ -156,7 +156,6 @@ public class DomesticSalesReport extends javax.swing.JFrame {
     }//GEN-LAST:event_IndividualButtonActionPerformed
 
     private void GlobalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GlobalButtonActionPerformed
-        // TODO add your handling code here:
         GlobalATSReport global = new GlobalATSReport();
         global.setVisible(true);
         global.setDefaultCloseOperation(global.DISPOSE_ON_CLOSE);

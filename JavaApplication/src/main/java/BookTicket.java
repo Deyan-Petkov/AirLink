@@ -31,7 +31,7 @@ public class BookTicket extends javax.swing.JFrame {
     static boolean isInstantiated;//When is false clicking on CustomerRecords table doesn't assign value to custID
     private int typeBlank;//howds the blank type number chosen from the combobox in Advisor class
     private int blankAllowance;//how many legs can be added to the choosen blank
-    DefaultTableModel flightsDftTblMdl, itinerearyDftTblMdl;
+    private DefaultTableModel flightsDftTblMdl, itinerearyDftTblMdl;
     int fTblSlctdRow;//when mouse clicked on flights table
     int itnrRowCount;// current itinenrary row count
     private long blankNo;//holds unsold blank number
@@ -48,7 +48,7 @@ public class BookTicket extends javax.swing.JFrame {
         delayed = false;
         exchangeRate = 0;
         price = 0;
-
+       
     }
 
     //get the discount of the current customer
