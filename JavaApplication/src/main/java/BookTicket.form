@@ -286,8 +286,8 @@
                   <Table columnCount="7" rowCount="0">
                     <Column editable="true" title="Flight Departure" type="java.lang.String"/>
                     <Column editable="true" title="Flight Destination" type="java.lang.String"/>
-                    <Column editable="true" title="Arrival Time" type="java.lang.String"/>
                     <Column editable="true" title="Departure Time" type="java.lang.String"/>
+                    <Column editable="true" title="Arrival Time" type="java.lang.String"/>
                     <Column editable="true" title="Flight Number" type="java.lang.String"/>
                     <Column editable="true" title="Price" type="java.lang.Double"/>
                     <Column editable="true" title="Customer" type="java.lang.Integer"/>
@@ -425,8 +425,8 @@
                   <Table columnCount="6" rowCount="0">
                     <Column editable="true" title="Flight Departure" type="java.lang.String"/>
                     <Column editable="true" title="Flight Destination" type="java.lang.String"/>
-                    <Column editable="true" title="Arrival TIme" type="java.lang.String"/>
                     <Column editable="true" title="Departure Time" type="java.lang.String"/>
+                    <Column editable="true" title="Arrival TIme" type="java.lang.String"/>
                     <Column editable="true" title="Flight Number" type="java.lang.String"/>
                     <Column editable="true" title="Price" type="java.lang.Double"/>
                   </Table>

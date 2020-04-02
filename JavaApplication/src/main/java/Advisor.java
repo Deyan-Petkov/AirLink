@@ -35,23 +35,7 @@ public class Advisor extends javax.swing.JFrame {
         initComponents();
     }
   
-     public static final String encrypt(String md5) {
-
-        try {//This class provides the encrypting algorithm (MD5) 
-            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
-            //encrypt the input and return it as a array of bytes
-            byte[] array = md.digest(md5.getBytes());
-            StringBuffer sb = new StringBuffer();
-            //convert the byte array to hex value
-            for (int i = 0; i < array.length; i++) {
-                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
-            }//return encrypted password
-            return sb.toString();
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
+     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -307,7 +291,7 @@ public class Advisor extends javax.swing.JFrame {
             finalState += c;
         }
         
-        String md5EncUserInput = encrypt(finalState);//Encrypts the password 
+        String md5EncUserInput = LoginForm.encrypt(finalState);//Encrypts the password 
       
 
 

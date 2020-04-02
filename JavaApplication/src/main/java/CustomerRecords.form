@@ -180,9 +180,9 @@
                     <Column editable="true" title="Last Name" type="java.lang.String"/>
                     <Column editable="true" title="Phone" type="java.lang.Long"/>
                     <Column editable="true" title="Email" type="java.lang.String"/>
-                    <Column editable="true" title="Type" type="java.lang.String"/>
-                    <Column editable="true" title="Discount Type" type="java.lang.String"/>
-                    <Column editable="true" title="Discount Rate" type="java.lang.Double"/>
+                    <Column editable="false" title="Type" type="java.lang.String"/>
+                    <Column editable="false" title="Discount" type="java.lang.String"/>
+                    <Column editable="false" title="Rate" type="java.lang.Double"/>
                     <Column editable="true" title="Address" type="java.lang.String"/>
                   </Table>
                 </Property>

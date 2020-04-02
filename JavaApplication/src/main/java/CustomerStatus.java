@@ -10,27 +10,24 @@ import javax.swing.JOptionPane;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author dhruv
  */
 public class CustomerStatus extends javax.swing.JFrame {
-  PreparedStatement pst= null; 
-    ResultSet rs=null; 
-    Connection con=null; 
-    
-    
-    
-    
+
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+    Connection con = null;
+
     /**
      * Creates new form customerStatus
      */
     public CustomerStatus() {
         initComponents();
-            rateLabel1.setVisible(false);
-             discountTypeComboBox.setVisible(false);
-             rateTextbox1.setVisible(false);
+        rateLabel1.setVisible(false);
+        discountTypeComboBox.setVisible(false);
+        rateTextbox1.setVisible(false);
     }
 
     /**
@@ -230,7 +227,7 @@ public class CustomerStatus extends javax.swing.JFrame {
 
     private void backButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonadvisorListActionPerformed
         // TODO add your handling code here:
-         dispose(); 
+        dispose();
     }//GEN-LAST:event_backButtonadvisorListActionPerformed
 
     private void rangeToTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rangeToTextboxActionPerformed
@@ -243,83 +240,79 @@ public class CustomerStatus extends javax.swing.JFrame {
 
     private void setStatusComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setStatusComboBoxActionPerformed
         // TODO add your handling code here:
-         int s= setStatusComboBox.getSelectedIndex();
-         
-              if(s==1){
-                 rateLabel1.setVisible(false);
-                 discountTypeComboBox.setVisible(false);
-                 rateTextbox1.setVisible(false);
-              }
-              else if(s==2){
-              
-               rateLabel1.setVisible(true);
-                 discountTypeComboBox.setVisible(true);
-                 rateTextbox1.setVisible(true);
-              
-              
-              }
+        int s = setStatusComboBox.getSelectedIndex();
+
+        if (s == 1) {
+            rateLabel1.setVisible(false);
+            discountTypeComboBox.setVisible(false);
+            rateTextbox1.setVisible(false);
+        } else if (s == 2) {
+
+            rateLabel1.setVisible(true);
+            discountTypeComboBox.setVisible(true);
+            rateTextbox1.setVisible(true);
+
+        }
     }//GEN-LAST:event_setStatusComboBoxActionPerformed
 
     private void saveButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonadvisorListActionPerformed
-             // TODO add your handling code here:
-      int a= setStatusComboBox.getSelectedIndex();
-      
-   
+        // TODO add your handling code here:
+        int a = setStatusComboBox.getSelectedIndex();
 
-    
-    
-      String fromRange=  rangeFromTextbox1.getText().toString();
-         int from= Integer.parseInt(fromRange);
-       
-       String rangeTo= rangeToTextbox.getText().toString();
-        int to= Integer.parseInt(rangeTo);   
-        
-    try (   Connection con = DbCon.getConnection();) {
-  
-        
-    
-       
-           
-              if(a==1){
-   
-            PreparedStatement rst = null;
-                     rst=con.prepareStatement("UPDATE Customer SET type='regular', discountType =null, discountRate=null WHERE ID IN(SELECT CustomerID FROM Itinerary WHERE FlightNum IN(SELECT number FROM Flights WHERE price>"+from+" and price <"+to+"  ) ) ");
-                     rst.execute();
-                     JOptionPane.showMessageDialog(null,"regular status assigned");
-                     dispose();
-              //  System.out.println("set status to reg and nulled discount type and rate"); 
-              }
-            
-            else if(a==2){
-              String discountType= discountTypeComboBox.getSelectedItem().toString();
-      
-           Double discountrate= Double.parseDouble(rateTextbox1.getText());
-           PreparedStatement pst =con.prepareStatement("UPDATE Customer SET type='valued', discountType ='"+discountType+"', discountRate='"+discountrate+"' WHERE ID IN(SELECT CustomerID FROM Itinerary WHERE FlightNum IN(SELECT number FROM Flights WHERE price>"+from+" and price <"+to+"  ) ) ");
-            pst.execute();
-             JOptionPane.showMessageDialog(null," valued status assigned");
-              dispose();
-              
-              }
-                
-               
-          
-       
-          
-         
-           
-           
-      
-        }catch (SQLException | ClassNotFoundException e) {
-          JOptionPane.showMessageDialog(null,e);
+        String fromRange = rangeFromTextbox1.getText().toString();
+        int from = Integer.parseInt(fromRange);
+
+        String rangeTo = rangeToTextbox.getText().toString();
+        int to = Integer.parseInt(rangeTo);
+
+        try ( Connection con = DbCon.getConnection();) {
+
+            if (a == 1) {
+
+                PreparedStatement rst = null;
+                rst = con.prepareStatement("UPDATE Customer SET type='regular', discountType =null, discountRate= 1 WHERE ID IN(\n"
+                        + "    select id from\n"
+                        + "        (select  sum(distinct price)as total,id from\n"
+                        + "            (select customerid id, Flights.price as price from itinerary\n"
+                        + "             left join Flights on Itinerary.FlightNum = Flights.number\n"
+                        + "             where customerId in\n"
+                        + "                (select distinct customerID from itinerary)\n"
+                        + "\n"
+                        + "            ) group by id\n"
+                        + "        )where total > " + from + " and total < " + to + "\n"
+                        + "    );");
+                rst.execute();
+                JOptionPane.showMessageDialog(null, "regular status assigned");
+                //  System.out.println("set status to reg and nulled discount type and rate"); 
+            } else if (a == 2) {
+                String discountType = discountTypeComboBox.getSelectedItem().toString();
+
+                Double discountrate = Double.parseDouble(rateTextbox1.getText());
+                PreparedStatement pst = con.prepareStatement("UPDATE Customer SET type='valued', discountType ='"
+                        + discountType + "', discountRate='" + discountrate
+                        + "' WHERE ID IN(select id from\n"
+                        + "        (select  sum(distinct price)as total,id from\n"
+                        + "            (select customerid id, Flights.price as price from itinerary\n"
+                        + "             left join Flights on Itinerary.FlightNum = Flights.number\n"
+                        + "             where customerId in\n"
+                        + "                (select distinct customerID from itinerary)\n"
+                        + "\n"
+                        + "            ) group by id\n"
+                        + "        )where total > " + fromRange + " and total < " + to + ") ");
+                pst.execute();
+                JOptionPane.showMessageDialog(null, " valued status assigned");
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, e);
         }
-          
- 
-           
+
+
     }//GEN-LAST:event_saveButtonadvisorListActionPerformed
 
     private void rateTextbox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rateTextbox1ActionPerformed
         // TODO add your handling code here:
-      
+
     }//GEN-LAST:event_rateTextbox1ActionPerformed
 
     private void rangeFromTextbox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rangeFromTextbox1ActionPerformed
@@ -328,7 +321,7 @@ public class CustomerStatus extends javax.swing.JFrame {
 
     private void rateTextbox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rateTextbox1MouseClicked
         // TODO add your handling code here:
-           rateTextbox1.setText("");
+        rateTextbox1.setText("");
     }//GEN-LAST:event_rateTextbox1MouseClicked
 
     /**

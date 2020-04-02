@@ -17,10 +17,6 @@ public class DomesticSalesReport extends javax.swing.JFrame {
      */
     //Holds copy of the database during the current session
     private DefaultTableModel defTabMod;
-    //holds the row number selected by the user
-    //private int selectedRow;
-    //static int advisorID;
-    //static String advisorname; 
     static boolean isInstantiated;
 
     public DomesticSalesReport() {
@@ -145,22 +141,6 @@ public class DomesticSalesReport extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void IndividualButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IndividualButtonActionPerformed
-//        if (LoginForm.role.equals("manager")) {
-//            AdvisorReportList list = new AdvisorReportList();
-//            list.setVisible(true);
-//            list.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-//        } else {
-//            if (DomesticSalesReport.isInstantiated) {
-//                PersonalATSReport personal = new PersonalATSReport();
-//                personal.setVisible(true);
-//                personal.setDefaultCloseOperation(personal.DISPOSE_ON_CLOSE);
-//            } else {
-//                PersonalInterlineReport p = new PersonalInterlineReport();
-//                p.setVisible(true);
-//                p.setDefaultCloseOperation(p.DISPOSE_ON_CLOSE);
-//            }
-//        }
-
 
         if (LoginForm.role.equals("manager") | LoginForm.role.equals("Manager")) {
             AdvisorReportList list = new AdvisorReportList();

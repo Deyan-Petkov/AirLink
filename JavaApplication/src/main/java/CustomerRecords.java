@@ -157,15 +157,22 @@ public class CustomerRecords extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "First Name", "Last Name", "Phone", "Email", "Type", "Discount Type", "Discount Rate", "Address"
+                "ID", "First Name", "Last Name", "Phone", "Email", "Type", "Discount", "Rate", "Address"
             }
         ) {
             Class[] types = new Class [] {
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                true, true, true, true, true, false, false, false, true
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         customerTable.setColumnSelectionAllowed(true);
@@ -327,12 +334,6 @@ public class CustomerRecords extends javax.swing.JFrame {
                     + defTabMod.getValueAt(selectedRow, 3)
                     + "', email = '"
                     + defTabMod.getValueAt(selectedRow, 4)
-                    + "', type = '"
-                    + defTabMod.getValueAt(selectedRow, 5)
-                    + "', discountType = '"
-                    + defTabMod.getValueAt(selectedRow, 6)
-                    + "', discountRate = '"
-                    + defTabMod.getValueAt(selectedRow, 7)
                     + "', address = '"
                     + defTabMod.getValueAt(selectedRow, 8)
                     + "' where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
@@ -384,7 +385,7 @@ public class CustomerRecords extends javax.swing.JFrame {
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         try ( Connection con = DbCon.getConnection()) {
 
-            PreparedStatement pst = con.prepareStatement("INSERT INTO Customer Values (?,'-','-','-','-','-','-','-','-')");
+            PreparedStatement pst = con.prepareStatement("INSERT INTO Customer Values (?,'?','?','?','?','regular','','0','?')");
             pst.setInt(1, nextID("Customer"));//set ID column
             pst.execute();
             initCustomerRecords("select * from Customer");
