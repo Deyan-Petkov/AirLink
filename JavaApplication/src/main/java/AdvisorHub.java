@@ -158,7 +158,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         });
 
         sellTicketComboBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        sellTicketComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELL TICKET", "444", "420", "201", "101", "451", "452" }));
+        sellTicketComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELL TICKET", "444", "440", "420", "201", "101", "451", "452" }));
         sellTicketComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 sellTicketComboBoxActionPerformed(evt);
@@ -295,7 +295,7 @@ public class AdvisorHub extends javax.swing.JFrame {
     private void sellTicketComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellTicketComboBoxActionPerformed
         //sets typeBlank and blankAllowance in Blank according to the blank that user chosed if s/he has available 
         String comboboxVal = sellTicketComboBox.getSelectedItem().toString();
-        if (getAvailabelBlanks() > 0 && Arrays.asList("444", "420", "201", "101")
+        if (getAvailabelBlanks() > 0 && Arrays.asList("444", "440", "420", "201", "101")
                 .contains(comboboxVal)) {
             BookTicket bookTicket = new BookTicket();
             bookTicket.setVisible(true);
@@ -304,6 +304,9 @@ public class AdvisorHub extends javax.swing.JFrame {
             switch (comboboxVal) {
                 case "444":
                     bookTicket.setComboBoxIndex(444, 4);//used in BookTicket
+                    break;
+                case "440":
+                    bookTicket.setComboBoxIndex(440, 4);
                     break;
                 case "420":
                     bookTicket.setComboBoxIndex(420, 2);

@@ -46,7 +46,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Date fields must contain date in format \"yyyy-mm-dd\"");
         } else {
             //estabblish connection with the database
-            try ( Connection con = DbCon.getConnection()) {
+            try (Connection con = DbCon.getConnection()) {
                 Statement statement = con.createStatement();
 
                 statement.addBatch("create view if not exists t as\n"
@@ -105,96 +105,106 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                 //list all newly received blanks
                 statement.addBatch("insert into t1 (ftblank,amnt)\n"
                         + "\n"
-                        + "  select min(bn) || '-' ||  max(bn),count(bn) from trep where bn like '444%'\n"
+                        + "  select min(bn) || ' - ' ||  max(bn),count(bn) from trep where bn like '444%'\n"
                         + "  union\n"
-                        + " select min(bn) || '-' ||  max(bn),count(bn) from trep where bn like '420%'\n"
+                        + "  select min(bn) || ' - ' ||  max(bn),count(bn) from trep where bn like '440%'\n"
                         + "  union\n"
-                        + "   select min(bn) || '-' ||  max(bn),count(bn) from trep where bn like '201%'\n"
+                        + " select min(bn) || ' - ' ||  max(bn),count(bn) from trep where bn like '420%'\n"
                         + "  union\n"
-                        + "   select min(bn) || '-' ||  max(bn),count(bn) from trep where bn like '101%'\n"
+                        + "   select min(bn) || ' - ' ||  max(bn),count(bn) from trep where bn like '201%'\n"
                         + "  union\n"
-                        + "   select min(bn) || '-' ||  max(bn),count(bn) from trep where bn like '451%'\n"
+                        + "   select min(bn) || ' - ' ||  max(bn),count(bn) from trep where bn like '101%'\n"
                         + "  union\n"
-                        + "   select min(bn) || '-' ||  max(bn),count(bn) from trep where bn like '452%'\n"
-                        + "");  // amount of new blanks 
+                        + "   select min(bn) || ' - ' ||  max(bn),count(bn) from trep where bn like '451%'\n"
+                        + "  union\n"
+                        + "   select min(bn) || ' - ' ||  max(bn),count(bn) from trep where bn like '452%';");  // amount of new blanks 
                 statement.addBatch("insert into t1 (ftblank,amnt) values ('TOTAL',(select sum(amnt) from t1))");
                 /*How many of each type blanks are newly received and assigned*/
                 statement.addBatch("insert into t2 (code,ft1, amnt1)\n"
                         + "\n"
-                        + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,bn from trep  where bn like'444%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,bn from trep  where bn like'444%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,bn from trep  where bn like'420%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,bn from trep  where bn like'440%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn), count(bn) from (select distinct staffid,bn from trep  where bn like'201%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,bn from trep  where bn like'420%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn), count(bn) from (select distinct staffid,bn from trep  where bn like'101%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn), count(bn) from (select distinct staffid,bn from trep  where bn like'201%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn), count(bn) from (select distinct staffid,bn from trep  where bn like'451%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn), count(bn) from (select distinct staffid,bn from trep  where bn like'101%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn), count(bn) from (select distinct staffid,bn from trep  where bn like'452%' and staffid not null) group by staffid\n"
-                        + "");
+                        + "select staffID,min(bn)|| '- ' || max(bn), count(bn) from (select distinct staffid,bn from trep  where bn like'451%' and staffid not null) group by staffid\n"
+                        + "union\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn), count(bn) from (select distinct staffid,bn from trep  where bn like'452%' and staffid not null) group by staffid;");
                 statement.addBatch("insert into t2 (ft1,amnt1) values ('TOTAL',(select sum(amnt1) from t2))");
-                /*Existing (not newly received) blanks assigned to advisors (by advisor’s code);   */
+                /*Existing (NOT newly received) blanks assigned to advisors (by advisor’s code);   */
                 statement.addBatch("insert into t3 (code1,assigned, amnt2)\n"
                         + "\n"
-                        + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'444%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'444%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'420%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'440%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'201%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'420%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'101%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'201%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'451%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'101%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'452%' and staffid not null) group by staffid");
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'451%' and staffid not null) group by staffid\n"
+                        + "union\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from t  where  blankNumber not in(select bn from trep) and bn like'452%' and staffid not null) group by staffid;");
                 statement.addBatch("insert into t3 (assigned,amnt2) values ('TOTAL',(select sum(amnt2) from t3))\n"
                         + "");
                 /*Blanks used (new or existing) by the agent (no matter the advisor) within the given period;*/
                 statement.addBatch("insert into t4 (used, amnt3)\n"
                         + "\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'444%' and bn in (select bn from trep where pdate is not null))\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'444%' and bn in (select BlankBlankNumber from Payment where date >= '" + fromDate + "'and date <= '" + toDate + "'))\n"
                         + "union\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'420%' and bn in (select bn from trep where pdate is not null))\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'440%' and bn in (select BlankBlankNumber from Payment where date >= '" + fromDate + "'and date <= '" + toDate + "'))\n"
                         + "union\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'201%' and bn in (select bn from trep where pdate is not null))\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'420%' and bn in (select BlankBlankNumber from Payment where date >= '" + fromDate + "'and date <= '" + toDate + "'))\n"
                         + "union\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'101%' and bn in (select bn from trep where pdate is not null))\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'201%' and bn in (select BlankBlankNumber from Payment where date >= '" + fromDate + "'and date <= '" + toDate + "'))\n"
                         + "union\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'451%' and bn in (select bn from trep where pdate is not null))\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'101%' and bn in (select BlankBlankNumber from Payment where date >= '" + fromDate + "'and date <= '" + toDate + "'))\n"
                         + "union\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'452%' and bn in (select bn from trep where pdate is not null))");
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'451%' and bn in (select BlankBlankNumber from Payment where date >= '" + fromDate + "'and date <= '" + toDate + "'))\n"
+                        + "union\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select blankNumber as bn from Blank  where blankNumber like'452%' and bn in (select BlankBlankNumber from Payment where date >= '" + fromDate + "'and date <= '" + toDate + "'));");
                 statement.addBatch("insert into t4 (used,amnt3) values ('TOTAL',(select sum(amnt3) from t4))\n"
                         + "");
                 /* blanks available in Agent’s stock at the end of period;*/
                 statement.addBatch("insert into t5 (ft2, amnt4)\n"
                         + "\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'444%' and isSold = 0 )\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'444%' and isSold = 0 )\n"
                         + "union\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'420%' and isSold = 0 )\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'440%' and isSold = 0 )\n"
                         + "union\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'201%' and isSold = 0 )\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'420%' and isSold = 0 )\n"
                         + "union\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'101%' and isSold = 0 )\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'201%' and isSold = 0 )\n"
                         + "union\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'451%' and isSold = 0 )\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'101%' and isSold = 0 )\n"
                         + "union\n"
-                        + "select min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'452%' and isSold = 0 )");
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'451%' and isSold = 0 )\n"
+                        + "union\n"
+                        + "select min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'452%' and isSold = 0 );");
                 statement.addBatch("insert into t5 (ft2,amnt4) values ('TOTAL',(select sum(amnt4) from t5))");
                 /*Amount of blanks of a given type assigned to an advisor at the end of period*/
                 statement.addBatch("insert into t6 (code2,ft3, amnt5)\n"
                         + "\n"
-                        + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'444%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'444%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'420%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'440%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn), count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'201%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn),count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'420%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn), count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'101%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn), count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'201%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn), count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'451%' and staffid not null) group by staffid\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn), count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'101%' and staffid not null) group by staffid\n"
                         + "union\n"
-                        + "select staffID,min(bn)|| '-' || max(bn), count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'452%' and staffid not null) group by staffid");
+                        + "select staffID,min(bn)|| '- ' || max(bn), count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'451%' and staffid not null) group by staffid\n"
+                        + "union\n"
+                        + "select staffID,min(bn)|| '- ' || max(bn), count(bn) from (select distinct staffid,blankNumber as bn from Blank  where blankNumber like'452%' and staffid not null) group by staffid;");
                 statement.addBatch("insert into t6 (ft3,amnt5) values ('TOTAL',(select sum(amnt5) from t6))");
 
                 statement.executeBatch();
@@ -220,7 +230,7 @@ public class StockTurnoverReport extends javax.swing.JFrame {
                     }//inserts single row collected data from the databse into this form table
                     t1.addRow(v);
                 }
-                
+
                 pst = con.prepareStatement("select * from t2");
                 rs = pst.executeQuery();
                 rsmd = rs.getMetaData();
