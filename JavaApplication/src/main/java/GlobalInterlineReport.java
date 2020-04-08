@@ -53,7 +53,7 @@ public class GlobalInterlineReport extends javax.swing.JFrame {
                 statement.addBatch("Create temp view if not exists glbrepI as\n"
                         + "select * from t  WHERE (date >= '"+ fromDate + "' AND \n"
                         + "  date <= '" + toDate + "') AND \n"
-                        + "  (blankNumber LIKE '444%' OR blankNumber LIKE \n"
+                        + "  (blankNumber LIKE '444%' OR blankNumber LIKE '440%' OR blankNumber LIKE \n"
                         + "    '420%');");
 
                 statement.addBatch("CREATE TEMPORARY table GInterline(\n"
@@ -71,7 +71,7 @@ public class GlobalInterlineReport extends javax.swing.JFrame {
                 statement.addBatch("INSERT INTO GInterline(agent) SELECT DISTINCT staffID FROM glbrepI WHERE isSold = 1\n"
                         + "AND (date >= '"+ fromDate + "'\n"
                         + "AND date <= '"+ toDate + "')\n"
-                        + "AND (blankNumber LIKE '444%' OR blankNumber LIKE '420%')\n"
+                        + "AND (blankNumber LIKE '444%' OR blankNumber LIKE '440%' OR blankNumber LIKE '420%')\n"
                         + "ORDER BY staffID;");
                 /*How many blanks each advisor have sold*/
                 statement.addBatch("UPDATE GInterline SET sold = (\n"

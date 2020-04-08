@@ -76,7 +76,7 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
                         + "WHERE StaffID = " + advisorID + " AND \n"
                         + "(date >= '" + fromDate + "' AND \n"
                         + "date <= '" + toDate + "') AND \n"
-                        + "(blankNumber LIKE '444%' OR blankNumber LIKE \n"
+                        + "(blankNumber LIKE '444%' OR blankNumber LIKE '440%' OR blankNumber LIKE \n"
                         + " '420%');");
                 /*List the price for each blank */
                 statement.addBatch("UPDATE PInterline\n"

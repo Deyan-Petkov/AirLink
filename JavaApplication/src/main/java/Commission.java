@@ -86,7 +86,7 @@ public class Commission extends javax.swing.JFrame {
         );
 
         selectBlankTypeComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        selectBlankTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT BLANK TYPE", "444", "420", "201", "101", "451", "452" }));
+        selectBlankTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT BLANK TYPE", "444", "440", "420", "201", "101", "451", "452" }));
         selectBlankTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectBlankTypeComboBoxActionPerformed(evt);

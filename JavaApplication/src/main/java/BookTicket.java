@@ -48,13 +48,13 @@ public class BookTicket extends javax.swing.JFrame {
         delayed = false;
         exchangeRate = 0;
         price = 0;
-       
+
     }
 
     //get the discount of the current customer
     private double getDiscount() {
         double discount = 0;
-        try ( Connection con = DbCon.getConnection()) {
+        try (Connection con = DbCon.getConnection()) {
 
             PreparedStatement pst = con.prepareStatement("select discountrate from customer where id = " + custID + "");
             ResultSet rs = pst.executeQuery();
@@ -69,7 +69,7 @@ public class BookTicket extends javax.swing.JFrame {
 
     //used to assign blank to the current session. Takes the smallest number from the available once
     private long findNextBlankNo() {
-        try ( Connection con = DbCon.getConnection()) {
+        try (Connection con = DbCon.getConnection()) {
             PreparedStatement pst = con.prepareStatement("select min(blankNumber) from Blank where isSold = 0 and StaffID = " + AdvisorHub.id + " and blankNumber like '"
                     + typeBlank + "%'");
             ResultSet rs = pst.executeQuery();
@@ -87,14 +87,14 @@ public class BookTicket extends javax.swing.JFrame {
         if (commissionRate > 0) {
             return commissionRate;
         }
-        try ( Connection con = DbCon.getConnection()) {
+        try (Connection con = DbCon.getConnection()) {
             PreparedStatement pst = con.prepareStatement("select rate from commission where blanktype like '"
                     + typeBlank + "%'and date in ( select max(date) from commission where blanktype like '" + typeBlank + "%')");
             ResultSet rs = pst.executeQuery();
             rs.next();
 
             commissionRate = rs.getDouble("rate");
-            //System.out.println("Commission: " + commissionRate);
+            //  System.out.println("Commission: " + commissionRate);
 
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
@@ -104,7 +104,7 @@ public class BookTicket extends javax.swing.JFrame {
 
     //populates the flight table with available flights from the databse table Flights
     private void initFlightsTable() {
-        try ( Connection con = DbCon.getConnection()) {
+        try (Connection con = DbCon.getConnection()) {
             PreparedStatement pst = con.prepareStatement("select * from Flights");
             ResultSet rs = pst.executeQuery();
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -508,7 +508,7 @@ public class BookTicket extends javax.swing.JFrame {
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         //if the price was calculaated all fields are sent and we can save
         if (amountjLabel.getText().length() > 0) {
-            try ( Connection con = DbCon.getConnection()) {
+            try (Connection con = DbCon.getConnection()) {
                 PreparedStatement pst;
                 //write to itinerary table
                 while (itinerearyDftTblMdl.getRowCount() > 0) {
@@ -552,8 +552,8 @@ public class BookTicket extends javax.swing.JFrame {
                     pst = con.prepareStatement("update payment set type = 'cash' where BlankblankNumber = '" + blankNo + "'");
                     pst.execute();
                 }
-                //if blank is 444 or 420 write to otherTaxes inside payment 
-                if (typeBlank == 444 | typeBlank == 420) {
+                //if blank is 444 or 420 or 440 write to otherTaxes inside payment 
+                if (typeBlank == 444 | typeBlank == 420 | typeBlank == 440) {
                     pst = con.prepareStatement("update payment set otherTaxes = '"
                             + Double.valueOf(otherTextField.getText())
                             + "' where BlankblankNumber = '" + blankNo + "'");
@@ -582,7 +582,7 @@ public class BookTicket extends javax.swing.JFrame {
         int dialogButton = JOptionPane.showConfirmDialog(null, "Do you want to VOID this blank?", "WARNING", JOptionPane.YES_NO_OPTION);
 
         if (dialogButton == JOptionPane.YES_OPTION) {
-            try ( Connection con = DbCon.getConnection()) {
+            try (Connection con = DbCon.getConnection()) {
                 PreparedStatement ps = con.prepareStatement("update blank set isSold = 'VOID' where blankNumber = " + blankNo);
                 ps.execute();
                 this.dispose();
@@ -599,8 +599,8 @@ public class BookTicket extends javax.swing.JFrame {
         cr.setVisible(true);
         cr.setDefaultCloseOperation(cr.DISPOSE_ON_CLOSE);
         blankNojLabel.setText(Long.toString(findNextBlankNo()));
-        //if the blank is not 444 or 440 don't allow writing into "Other" text field
-        if (typeBlank == 444 | typeBlank == 420) {
+        //if the blank is not 444 or 440 or 420 don't allow writing into "Other" text field
+        if (typeBlank == 444 | typeBlank == 420 | typeBlank == 440) {
             otherTextField.setEditable(true);
         } else {
             otherTextField.setEditable(false);
@@ -633,10 +633,10 @@ public class BookTicket extends javax.swing.JFrame {
     }//GEN-LAST:event_paymentjComboBoxActionPerformed
 
     private void currencyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currencyComboBoxActionPerformed
-        //if we work with blank types 420 or 444 and currency combobox is set to USD
-        if ((typeBlank == 444 | typeBlank == 420) & currencyComboBox.getSelectedItem().toString().equals("USD")) {
+        //if we work with blank types 420 or 444 or 440 and currency combobox is set to USD
+        if ((typeBlank == 444 | typeBlank == 420 | typeBlank == 440) & currencyComboBox.getSelectedItem().toString().equals("USD")) {
             //set exchange rate
-            try ( Connection con = DbCon.getConnection()) {
+            try (Connection con = DbCon.getConnection()) {
                 PreparedStatement pst = con.prepareStatement("select rate from ExchangeRates where date =(select max(date) from ExchangeRates)");
                 ResultSet rs = pst.executeQuery();
                 rs.next();
@@ -646,8 +646,8 @@ public class BookTicket extends javax.swing.JFrame {
                 Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        //if the chosen blank is not 444 or 420 don't allow payment in USD
-        if (typeBlank != 444 & typeBlank != 420) {
+        //if the chosen blank is not 444 or 420 or 440 don't allow payment in USD
+        if (typeBlank != 444 & typeBlank != 420 & typeBlank != 440) {
             if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
                 JOptionPane.showMessageDialog(null,
                         "This blank type doesn't allow payments in USD",
@@ -775,16 +775,27 @@ public class BookTicket extends javax.swing.JFrame {
 
                 double taxes = Double.valueOf(taxesTextField.getText());
                 double finalPrice = (price * getCommissionRate()) + taxes;
-                
+
+                //for debugging purposes
+                System.out.println("INSIDE LOCAL");
+                System.out.println("price: " + price);
+                System.out.println("commission: " + getCommissionRate());
+                System.out.println("taxes: " + taxes);
+
                 //if the blank is international add other taxes
-                if (typeBlank == 444 || typeBlank == 420) {
+                if (typeBlank == 444 || typeBlank == 420 || typeBlank == 440) {
                     if (otherTextField.getText().length() > 0) {//if "other" text field is filled get it's value
                         double otherTaxes = Double.valueOf(otherTextField.getText());
                         finalPrice += otherTaxes;
+                        System.out.println("Other Taxes: " + otherTaxes);
+                        System.out.println("Final Price: " + finalPrice);
 
                         if (discount > 0) {
                             discountVal = (finalPrice * discount) / 100;
                             finalPrice -= discountVal;
+                            System.out.println("discountt: " + discount);
+
+                            System.out.println("price after discount: " + finalPrice);
                         }
 
                         amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
@@ -794,33 +805,45 @@ public class BookTicket extends javax.swing.JFrame {
                                 "Warning",
                                 JOptionPane.WARNING_MESSAGE);
                     }
-                } else {
+                } else {//if the blank is not international
                     if (discount > 0) {
                         discountVal = (finalPrice * discount) / 100;
                         finalPrice -= discountVal;
+                        System.out.println("discountt: " + discount);
+                        System.out.println("price after discount: " + finalPrice);
                     }
                     //else add only taxes
                     //the final price is only displayed and not recorded in the DB but all parts of the price 
                     //are recorded which allow us to calculate it later for the reports and other purposes
                     amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
-
+                    //System.out.println("final price: " + finalPrice);
                 }
-//               
-            //If currency set to USD apply esxcange rate to the price
+
+                //If currency set to USD apply esxcange rate to the price
             } else if (currencyComboBox.getSelectedItem().toString().equals("USD")) {
+                //  System.out.println("INSIDE USD");
 
                 double taxes = Double.valueOf(taxesTextField.getText());
                 double otherTaxes = Double.valueOf(otherTextField.getText());
                 double totalTaxes = taxes + otherTaxes;
                 // final price
                 double priceBeforeExchRate = ((price * getCommissionRate()) + totalTaxes);
-               // System.out.println("discount: " + discount + "\nfinalPrice before discount: " + priceBeforeExchRate);
+                // for debugging purposes
+                System.out.println("price: " + price);
+                System.out.println("taxes: " + taxes);
+                System.out.println("other taxes: " + otherTaxes);
+                System.out.println("exchange rate: " + exchangeRate);
+                System.out.println("commission: " + getCommissionRate());
+
                 if (discount > 0) {
                     discountVal = (priceBeforeExchRate * discount) / 100;
                     priceBeforeExchRate -= discountVal;
+                    System.out.println("discountt: " + discount);
+                    System.out.println("price before Exchange rate - discoint: " + priceBeforeExchRate);
                 }
-                
+
                 double finalPrice = priceBeforeExchRate * exchangeRate;
+                System.out.println("final price: " + finalPrice);
                 //the final price is only displayed and not recorded in the DB but all parts of the price 
                 //are recorded which allow us to calculate it later for the reports and other purposes
                 amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
@@ -828,8 +851,6 @@ public class BookTicket extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_PricejButtonMousePressed
 
-    
-    
     /**
      * @param args the command line arguments
      */
