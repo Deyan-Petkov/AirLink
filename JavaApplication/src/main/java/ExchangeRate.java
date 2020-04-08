@@ -39,7 +39,7 @@ public class ExchangeRate extends javax.swing.JFrame {
             Logger.getLogger(ExchangeRate.class.getName()).log(Level.SEVERE, null, ex);
         }
         //sets local date and time variable according to the current date and time
-        localDateTime = LocalDateTime.now().withNano(0);
+     localDateTime = LocalDateTime.now().withNano(0);
     }
     
     /**

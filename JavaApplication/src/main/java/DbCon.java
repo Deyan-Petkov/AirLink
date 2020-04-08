@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class DbCon {
     //path to the database file
-    private static final String SQCONN = "jdbc:sqlite:AirLink.db";
+ static  String SQCONN = "jdbc:sqlite:AirLink.db";
     
     public static Connection getConnection() throws ClassNotFoundException{
         try {
@@ -28,5 +28,5 @@ public class DbCon {
         
         return null;
     }
-    
+  
 }

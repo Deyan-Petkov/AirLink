@@ -398,7 +398,7 @@ Boolean clicked=false;
          
            quantityTextbox.setVisible(true);
           nameWithMaxAMountTextbox.setVisible(true);  
-         
+  selectAdvisorButton.setVisible(true);
            nameTextbox.setVisible(true);
           
           }
@@ -418,10 +418,13 @@ Boolean clicked=false;
        rs=pst.executeQuery();
        while(rs.next()){ 
          advisorID.add(rs.getInt(1)); //adding list of adv in one array 
-         blankamount.add(rs.getInt(2));} //adding quantlty of tickets in naother array
-         
-    oldadv=advisorID.get(0).toString();
+         blankamount.add(rs.getInt(2));
           
+       
+       } //adding quantlty of tickets in naother array
+       
+         oldadv=advisorID.get(0).toString();
+        
        highestblankamount= blankamount.get(0).toString();
           
           String sql2="SELECT name FROM Staff where ID ='"+oldadv +"'";  //all of this is showin g teh first bales of arry (adv who has the most quatity) into the GUI page 

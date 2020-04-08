@@ -84,9 +84,9 @@ PreparedStatement pst= null;
         alertsBackground = new javax.swing.JPanel();
         bluePanel = new javax.swing.JPanel();
         alertsTitle = new javax.swing.JLabel();
-        backButton = new javax.swing.JButton();
         alertsPane = new javax.swing.JScrollPane();
         alertsTable = new javax.swing.JTable();
+        backButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -103,14 +103,6 @@ PreparedStatement pst= null;
         alertsTitle.setFont(new java.awt.Font("Tahoma", 0, 60)); // NOI18N
         alertsTitle.setText("ALERTS");
 
-        backButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        backButton.setText("BACK");
-        backButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backButtonadvisorListActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout bluePanelLayout = new javax.swing.GroupLayout(bluePanel);
         bluePanel.setLayout(bluePanelLayout);
         bluePanelLayout.setHorizontalGroup(
@@ -118,16 +110,10 @@ PreparedStatement pst= null;
             .addGroup(bluePanelLayout.createSequentialGroup()
                 .addContainerGap(457, Short.MAX_VALUE)
                 .addComponent(alertsTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(274, 274, 274)
-                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(424, 424, 424))
         );
         bluePanelLayout.setVerticalGroup(
             bluePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(bluePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bluePanelLayout.createSequentialGroup()
                 .addContainerGap(35, Short.MAX_VALUE)
                 .addComponent(alertsTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -152,6 +138,14 @@ PreparedStatement pst= null;
         });
         alertsPane.setViewportView(alertsTable);
 
+        backButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        backButton.setText("OK");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonadvisorListActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout alertsBackgroundLayout = new javax.swing.GroupLayout(alertsBackground);
         alertsBackground.setLayout(alertsBackgroundLayout);
         alertsBackgroundLayout.setHorizontalGroup(
@@ -161,6 +155,10 @@ PreparedStatement pst= null;
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(alertsPane, javax.swing.GroupLayout.PREFERRED_SIZE, 851, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(123, 123, 123))
+            .addGroup(alertsBackgroundLayout.createSequentialGroup()
+                .addGap(480, 480, 480)
+                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         alertsBackgroundLayout.setVerticalGroup(
             alertsBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -168,7 +166,9 @@ PreparedStatement pst= null;
                 .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61)
                 .addComponent(alertsPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
+                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
