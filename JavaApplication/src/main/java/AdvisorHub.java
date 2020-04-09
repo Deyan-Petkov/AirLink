@@ -48,7 +48,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(AdvisorHub.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("number of available blanks: " + availableBlanks);
+//        System.out.println("number of available blanks: " + availableBlanks);
 
         return availableBlanks;
     }

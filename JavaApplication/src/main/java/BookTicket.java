@@ -95,8 +95,13 @@ public class BookTicket extends javax.swing.JFrame {
             ResultSet rs = pst.executeQuery();
             rs.next();
 
+             try{
             commissionRate = rs.getDouble("rate");
             //  System.out.println("Commission: " + commissionRate);
+            }catch (Exception ex){
+                System.out.println("No rate for this type of blank. Value of 0 will be assigned");
+                commissionRate = 0;
+            }
 
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
