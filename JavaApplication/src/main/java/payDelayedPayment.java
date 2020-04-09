@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -28,10 +29,12 @@ public class payDelayedPayment extends javax.swing.JFrame {
     PreparedStatement pst= null; 
     ResultSet rs=null; 
     Connection con=null;
+  
     /**
      * Creates new form payDelayedPayment
      */
     public payDelayedPayment() {
+        //   paymentjComboBox.setVisible(false);
         initComponents();
      initPaymentRecords("SELECT *  FROM Payment WHERE delayed=1; ");
      
@@ -95,6 +98,7 @@ public class payDelayedPayment extends javax.swing.JFrame {
         paymentjComboBox = new javax.swing.JComboBox<>();
         paymentPane = new javax.swing.JScrollPane();
         paymentTable = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -149,7 +153,7 @@ public class payDelayedPayment extends javax.swing.JFrame {
         });
 
         paymentjComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        paymentjComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CASH", "CARD" }));
+        paymentjComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Type", "CASH", "CARD" }));
         paymentjComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 paymentjComboBoxActionPerformed(evt);
@@ -180,24 +184,27 @@ public class payDelayedPayment extends javax.swing.JFrame {
         });
         paymentPane.setViewportView(paymentTable);
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel1.setText("Select Blank:");
+
         javax.swing.GroupLayout delayedPaymentBackgroundLayout = new javax.swing.GroupLayout(delayedPaymentBackground);
         delayedPaymentBackground.setLayout(delayedPaymentBackgroundLayout);
         delayedPaymentBackgroundLayout.setHorizontalGroup(
             delayedPaymentBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(bluePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, delayedPaymentBackgroundLayout.createSequentialGroup()
-                .addContainerGap(39, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(delayedPaymentBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, delayedPaymentBackgroundLayout.createSequentialGroup()
-                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, delayedPaymentBackgroundLayout.createSequentialGroup()
-                        .addComponent(paymentPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1037, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(24, 24, 24))))
-            .addGroup(delayedPaymentBackgroundLayout.createSequentialGroup()
-                .addGap(390, 390, 390)
-                .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(delayedPaymentBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, delayedPaymentBackgroundLayout.createSequentialGroup()
+                            .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap())
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, delayedPaymentBackgroundLayout.createSequentialGroup()
+                            .addComponent(paymentPane, javax.swing.GroupLayout.PREFERRED_SIZE, 941, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(24, 24, 24)))))
             .addGroup(delayedPaymentBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(delayedPaymentBackgroundLayout.createSequentialGroup()
                     .addGap(358, 358, 358)
@@ -209,10 +216,12 @@ public class payDelayedPayment extends javax.swing.JFrame {
             .addGroup(delayedPaymentBackgroundLayout.createSequentialGroup()
                 .addComponent(bluePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(65, 65, 65)
-                .addComponent(paymentPane, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(105, 105, 105)
+                .addGroup(delayedPaymentBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(paymentPane, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(96, 96, 96)
                 .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 268, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 277, Short.MAX_VALUE)
                 .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(delayedPaymentBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -256,8 +265,8 @@ public class payDelayedPayment extends javax.swing.JFrame {
                 }
          
             
-          
-            
+           JOptionPane.showMessageDialog(null,"Payment made");
+           
             
             
         } catch (ClassNotFoundException | SQLException ex) {
@@ -283,7 +292,7 @@ public class payDelayedPayment extends javax.swing.JFrame {
         // TODO add your handling code here:
           selectedRow = paymentTable.getSelectedRow();
         String blanknumber= defTabMod.getValueAt(selectedRow, 0).toString();
-        
+       // paymentjComboBox.setVisible(true);
         
         
     }//GEN-LAST:event_paymentTableMouseClicked
@@ -318,7 +327,7 @@ public class payDelayedPayment extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new payDelayedPayment().setVisible(true);
+               new payDelayedPayment().setVisible(true);
             }
         });
     }
@@ -329,6 +338,7 @@ public class payDelayedPayment extends javax.swing.JFrame {
     private javax.swing.JLabel cardDetailsTitle;
     private javax.swing.JLabel cardNumberLabel;
     private javax.swing.JPanel delayedPaymentBackground;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane paymentPane;
     private javax.swing.JTable paymentTable;
     private javax.swing.JComboBox<String> paymentjComboBox;
