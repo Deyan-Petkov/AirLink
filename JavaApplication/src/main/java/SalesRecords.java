@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -321,6 +322,7 @@ public class SalesRecords extends javax.swing.JFrame {
                     + "' where ID = '" + defTabMod.getValueAt(selectedRow, 0) + "'");
 
             pst.execute();
+             JOptionPane.showMessageDialog(null,"Ticket details updated");
             initSalesRecords("select * from Itinerary WHERE CustomerID='"+customerID+"'");
 
              PreparedStatement pst2 = null; 
@@ -345,6 +347,9 @@ public class SalesRecords extends javax.swing.JFrame {
             pst2.execute();
             
             
+         
+         JOptionPane.showMessageDialog(null,"Payment details updated");
+           
             
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(CustomerRecords.class.getName()).log(Level.SEVERE, null, ex);

@@ -55,8 +55,8 @@
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="cardNumberTextbox" min="-2" pref="230" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="360" max="-2" attributes="0"/>
+                          <Component id="cardNumberTextbox" min="-2" pref="228" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="362" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -69,9 +69,9 @@
                           <Component id="expDateLabel" alignment="0" min="-2" pref="105" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="expDateTextbox" alignment="0" min="-2" pref="230" max="-2" attributes="0"/>
-                          <Component id="nameTextbox" alignment="0" min="-2" pref="230" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="expDateTextbox" pref="230" max="32767" attributes="0"/>
+                          <Component id="nameTextbox" pref="230" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace pref="359" max="32767" attributes="0"/>
                   </Group>
@@ -83,8 +83,8 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="bluePanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="219" max="-2" attributes="0"/>
-                  <Component id="cardNumberTextbox" min="-2" pref="57" max="-2" attributes="0"/>
-                  <EmptySpace pref="303" max="32767" attributes="0"/>
+                  <Component id="cardNumberTextbox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="296" max="32767" attributes="0"/>
                   <Component id="saveButton" min="-2" pref="54" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -92,17 +92,17 @@
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="250" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="nameTextbox" alignment="0" min="-2" pref="57" max="-2" attributes="0"/>
-                          <Component id="nameLabel" alignment="0" min="-2" pref="45" max="-2" attributes="0"/>
+                          <Component id="nameLabel" min="-2" pref="45" max="-2" attributes="0"/>
+                          <Component id="nameTextbox" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="74" max="32767" attributes="0"/>
+                      <EmptySpace pref="67" max="32767" attributes="0"/>
                       <Component id="cardNumberLabel" min="-2" pref="45" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="expDateTextbox" alignment="0" min="-2" pref="57" max="-2" attributes="0"/>
-                          <Component id="expDateLabel" alignment="0" min="-2" pref="45" max="-2" attributes="0"/>
+                          <Component id="expDateLabel" min="-2" pref="45" max="-2" attributes="0"/>
+                          <Component id="expDateTextbox" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="250" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="243" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
