@@ -12,6 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.text.*;
+import java.awt.print.*;
+import javax.swing.JTable;
 
 public class PersonalInterlineReport extends javax.swing.JFrame {
 
@@ -68,6 +71,18 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
                         + "    commissionProc   DOUBLE (10),\n"
                         + "    commission       DOUBLE(10)\n"
                         + ");");
+                statement.addBatch("create view if not exists t as\n"
+                        + "select Blank.blankNumber, Blank.isSold, Blank.StaffID,Blank.dateReceived,\n"
+                        + "Itinerary.flightDeparture,Itinerary.flightDestination,Itinerary.flightArrivalTime,Itinerary.flightDepartureTime,Itinerary.FlightNum, Itinerary.CustomerID,Itinerary.ID,\n"
+                        + "Payment.date,Payment.exchangeRate,Payment.expDate,Payment.isRefunded, Payment.taxes, Payment.otherTaxes, Payment.type,Payment.commissionRate,\n"
+                        + "Flights.number,Flights.price, Flights.arrTime, Flights.depTime,\n"
+                        + "commission.rate\n"
+                        + "from Blank\n"
+                        + "left join Itinerary on Blank.blankNumber = itinerary.BlankblankNumber\n"
+                        + "left join Payment on Blank.blankNumber = Payment.BlankblankNumber\n"
+                        + "left join Flights on Itinerary.FlightNum = Flights.number\n"
+                        + "left join commission on Payment.date = commission.date");
+
                 /*List all domestic blanks sold for the given period*/
                 //TODO  substitude staffId
                 statement.addBatch("INSERT INTO PInterline (issuedN)\n"
@@ -231,7 +246,7 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
         personalInterlineBlueBackground.setBackground(new java.awt.Color(102, 255, 255));
 
         personalInterlineTitle.setFont(new java.awt.Font("Tahoma", 0, 90)); // NOI18N
-        personalInterlineTitle.setText("PERSONAL INTERLINE REPORT");
+        personalInterlineTitle.setText("  PERSONAL INTERLINE");
 
         backButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         backButton.setText("BACK");
@@ -388,6 +403,16 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
 
     private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
         // TODO add your handling code here:
+        MessageFormat header = new MessageFormat("Report Print");
+        MessageFormat footer = new MessageFormat("Page{0,number,integer}");
+        
+        try{
+            reportJTable.print(JTable.PrintMode.NORMAL, header, footer);
+            totalsJTable.print(JTable.PrintMode.NORMAL, header, footer);
+        
+        }catch(java.awt.print.PrinterException e){
+            System.err.format("Cannot print %s%n", e.getMessage());
+        }
     }//GEN-LAST:event_printButtonActionPerformed
 
     private void generateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateButtonActionPerformed
@@ -418,13 +443,23 @@ public class PersonalInterlineReport extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PersonalInterlineReport.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(PersonalATSReport.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(PersonalATSReport.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(PersonalATSReport.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(PersonalATSReport.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new PersonalInterlineReport().setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new PersonalInterlineReport().setVisible(true);
+            }
         });
     }
 

@@ -292,7 +292,7 @@ public class AdminStockControl extends javax.swing.JFrame {
            
             pst.execute();
            }
-         JOptionPane.showMessageDialog(null,"insterted");
+         JOptionPane.showMessageDialog(null,"inserted");
             
         
             

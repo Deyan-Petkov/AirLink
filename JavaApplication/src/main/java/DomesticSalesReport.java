@@ -48,7 +48,7 @@ public class DomesticSalesReport extends javax.swing.JFrame {
         bluePanel.setBackground(new java.awt.Color(120, 240, 240));
 
         globalATSTitle.setFont(new java.awt.Font("Tahoma", 0, 90)); // NOI18N
-        globalATSTitle.setText("    DOMESTIC SALES REPORT");
+        globalATSTitle.setText("    DOMESTIC SALES ");
 
         backButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         backButton.setText("BACK");

@@ -70,7 +70,7 @@ public class AdvisorHub extends javax.swing.JFrame {
         logsButton = new javax.swing.JButton();
         CustomerButton = new javax.swing.JButton();
         exchangeRateButton = new javax.swing.JButton();
-        makeATSComboBox = new javax.swing.JComboBox<>();
+        viewReportsComboBox = new javax.swing.JComboBox<>();
         sellTicketComboBox = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -150,11 +150,11 @@ public class AdvisorHub extends javax.swing.JFrame {
             }
         });
 
-        makeATSComboBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        makeATSComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MAKE ATS", "Interline", "Domestic" }));
-        makeATSComboBox.addActionListener(new java.awt.event.ActionListener() {
+        viewReportsComboBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        viewReportsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "VIEW REPORTS", "Interline", "Domestic" }));
+        viewReportsComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                makeATSComboBoxActionPerformed(evt);
+                viewReportsComboBoxActionPerformed(evt);
             }
         });
 
@@ -201,7 +201,7 @@ public class AdvisorHub extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advisorBackgroundLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(makeATSComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(viewReportsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18))))
                     .addGroup(advisorBackgroundLayout.createSequentialGroup()
                         .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -225,7 +225,7 @@ public class AdvisorHub extends javax.swing.JFrame {
                 .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(exchangeRateButton)
                     .addComponent(logsButton)
-                    .addComponent(makeATSComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(viewReportsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(56, 56, 56)
                 .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sellTicketComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -289,9 +289,9 @@ public class AdvisorHub extends javax.swing.JFrame {
         s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_exchangeRateButtonActionPerformed
 
-    private void makeATSComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeATSComboBoxActionPerformed
+    private void viewReportsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewReportsComboBoxActionPerformed
         // TODO add your handling code here:
-        switch (makeATSComboBox.getSelectedItem().toString()) {
+        switch (viewReportsComboBox.getSelectedItem().toString()) {
             case "Interline":
                 PersonalInterlineReport pir = new PersonalInterlineReport();
                 pir.setVisible(true);
@@ -302,7 +302,7 @@ public class AdvisorHub extends javax.swing.JFrame {
                 pASTreport.setVisible(true);
                 pASTreport.setDefaultCloseOperation(pASTreport.DISPOSE_ON_CLOSE);
         }
-    }//GEN-LAST:event_makeATSComboBoxActionPerformed
+    }//GEN-LAST:event_viewReportsComboBoxActionPerformed
 
     private void logoutButtonlogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonlogoutActionPerformed
         // TODO add your handling code here:
@@ -434,9 +434,9 @@ public class AdvisorHub extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton logsButton;
-    private javax.swing.JComboBox<String> makeATSComboBox;
     private javax.swing.JButton returnTicketButton;
     private javax.swing.JComboBox<String> sellTicketComboBox;
+    private javax.swing.JComboBox<String> viewReportsComboBox;
     // End of variables declaration//GEN-END:variables
 
 }

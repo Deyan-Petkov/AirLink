@@ -40,7 +40,7 @@ public class ManagerHub extends javax.swing.JFrame {
         logsButton = new javax.swing.JButton();
         blankStockButton = new javax.swing.JButton();
         exchangeRateButton = new javax.swing.JButton();
-        makeATSComboBox = new javax.swing.JComboBox<>();
+        viewReportsComboBox = new javax.swing.JComboBox<>();
         stockTurnoverReportButton = new javax.swing.JButton();
         statusButton = new javax.swing.JButton();
         viewAlerts = new javax.swing.JButton();
@@ -119,11 +119,11 @@ public class ManagerHub extends javax.swing.JFrame {
             }
         });
 
-        makeATSComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        makeATSComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MAKE ATS", "Interline", "Domestic", "Stock" }));
-        makeATSComboBox.addActionListener(new java.awt.event.ActionListener() {
+        viewReportsComboBox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        viewReportsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "VIEW REPORTS", "Interline", "Domestic" }));
+        viewReportsComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                makeATSComboBoxActionPerformed(evt);
+                viewReportsComboBoxActionPerformed(evt);
             }
         });
 
@@ -173,7 +173,7 @@ public class ManagerHub extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(stockTurnoverReportButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(makeATSComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(viewReportsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(customerRecords, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(201, 201, 201)
                 .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -195,7 +195,7 @@ public class ManagerHub extends javax.swing.JFrame {
                 .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(exchangeRateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(commissionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(makeATSComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(viewReportsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(91, 91, 91)
                 .addGroup(advisorBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(viewAlerts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -281,9 +281,9 @@ public class ManagerHub extends javax.swing.JFrame {
         s.setVisible(true);
     }//GEN-LAST:event_logoutButtonlogoutActionPerformed
 
-    private void makeATSComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeATSComboBoxActionPerformed
+    private void viewReportsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewReportsComboBoxActionPerformed
         // TODO add your handling code here:
-     switch (makeATSComboBox.getSelectedItem().toString()) {
+     switch (viewReportsComboBox.getSelectedItem().toString()) {
                 case "Interline":
                     InterlineSalesReport interlineSalesReport = new InterlineSalesReport();
                     interlineSalesReport.setVisible(true);
@@ -294,13 +294,8 @@ public class ManagerHub extends javax.swing.JFrame {
                     domesticSalesReport.setVisible(true);
                     domesticSalesReport.setDefaultCloseOperation(domesticSalesReport.DISPOSE_ON_CLOSE);
                     break;
-                case "Stock":
-                    StockTurnoverReport stockTurnoverReport = new StockTurnoverReport();
-                    stockTurnoverReport.setVisible(true);
-                    stockTurnoverReport.setDefaultCloseOperation(stockTurnoverReport.DISPOSE_ON_CLOSE);
-                    break;
         }
-    }//GEN-LAST:event_makeATSComboBoxActionPerformed
+    }//GEN-LAST:event_viewReportsComboBoxActionPerformed
 
     private void customerRecordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerRecordsActionPerformed
         // TODO add your handling code here:
@@ -357,9 +352,9 @@ public class ManagerHub extends javax.swing.JFrame {
     private javax.swing.JButton exchangeRateButton;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton logsButton;
-    private javax.swing.JComboBox<String> makeATSComboBox;
     private javax.swing.JButton statusButton;
     private javax.swing.JButton stockTurnoverReportButton;
     private javax.swing.JButton viewAlerts;
+    private javax.swing.JComboBox<String> viewReportsComboBox;
     // End of variables declaration//GEN-END:variables
 }

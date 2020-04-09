@@ -11,7 +11,10 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import java.text.*;
+import java.awt.print.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -49,7 +52,18 @@ public class GlobalInterlineReport extends javax.swing.JFrame {
             //estabblish connection with the database
             try ( Connection con = DbCon.getConnection()) {
                 Statement statement = con.createStatement();
-
+                statement.addBatch("create view if not exists t as\n"
+                        + "select Blank.blankNumber, Blank.isSold, Blank.StaffID,Blank.dateReceived,\n"
+                        + "Itinerary.flightDeparture,Itinerary.flightDestination,Itinerary.flightArrivalTime,Itinerary.flightDepartureTime,Itinerary.FlightNum, Itinerary.CustomerID,Itinerary.ID,\n"
+                        + "Payment.date,Payment.exchangeRate,Payment.expDate,Payment.isRefunded, Payment.taxes, Payment.otherTaxes, Payment.type,Payment.commissionRate,\n"
+                        + "Flights.number,Flights.price, Flights.arrTime, Flights.depTime,\n"
+                        + "commission.rate\n"
+                        + "from Blank\n"
+                        + "left join Itinerary on Blank.blankNumber = itinerary.BlankblankNumber\n"
+                        + "left join Payment on Blank.blankNumber = Payment.BlankblankNumber\n"
+                        + "left join Flights on Itinerary.FlightNum = Flights.number\n"
+                        + "left join commission on Payment.date = commission.date");
+                
                 statement.addBatch("Create temp view if not exists glbrepI as\n"
                         + "select * from t  WHERE (date >= '"+ fromDate + "' AND \n"
                         + "  date <= '" + toDate + "') AND \n"
@@ -218,7 +232,7 @@ public class GlobalInterlineReport extends javax.swing.JFrame {
         bluePanel.setBackground(new java.awt.Color(120, 240, 240));
 
         globalInterlineTitle.setFont(new java.awt.Font("Tahoma", 0, 90)); // NOI18N
-        globalInterlineTitle.setText("    GLOBAL INTERLINE REPORT");
+        globalInterlineTitle.setText("     GLOBAL INTERLINE");
 
         backButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         backButton.setText("BACK");
@@ -373,6 +387,16 @@ public class GlobalInterlineReport extends javax.swing.JFrame {
 
     private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
         // TODO add your handling code here:
+        MessageFormat header = new MessageFormat("Report Print");
+        MessageFormat footer = new MessageFormat("Page{0,number,integer}");
+        
+        try{
+            reportjTable.print(JTable.PrintMode.NORMAL, header, footer);
+            totalsjTable.print(JTable.PrintMode.NORMAL, header, footer);
+        
+        }catch(java.awt.print.PrinterException e){
+            System.err.format("Cannot print %s%n", e.getMessage());
+        }
     }//GEN-LAST:event_printButtonActionPerformed
 
     private void generateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateButtonActionPerformed

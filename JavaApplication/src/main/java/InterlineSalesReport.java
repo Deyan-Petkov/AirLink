@@ -49,7 +49,7 @@ public class InterlineSalesReport extends javax.swing.JFrame {
         personalATSBlueBackground.setBackground(new java.awt.Color(102, 255, 255));
 
         personalATSTitle.setFont(new java.awt.Font("Tahoma", 0, 90)); // NOI18N
-        personalATSTitle.setText("INTERLINE SALES REPORT");
+        personalATSTitle.setText("        INTERLINE SALES ");
 
         backButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         backButton.setText("BACK");

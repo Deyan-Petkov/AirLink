@@ -12,6 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.text.*;
+import java.awt.print.*;
+import javax.swing.JTable;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -614,6 +617,20 @@ public class StockTurnoverReport extends javax.swing.JFrame {
 
     private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
         // TODO add your handling code here:
+        MessageFormat header = new MessageFormat("Report Print");
+        MessageFormat footer = new MessageFormat("Page{0,number,integer}");
+        
+        try{
+            table1.print(JTable.PrintMode.NORMAL, header, footer);
+            table2.print(JTable.PrintMode.NORMAL, header, footer);
+            table3.print(JTable.PrintMode.NORMAL, header, footer);
+            table4.print(JTable.PrintMode.NORMAL, header, footer);
+            table5.print(JTable.PrintMode.NORMAL, header, footer);
+            table6.print(JTable.PrintMode.NORMAL, header, footer);
+        
+        }catch(java.awt.print.PrinterException e){
+            System.err.format("Cannot print %s%n", e.getMessage());
+        }
     }//GEN-LAST:event_printButtonActionPerformed
 
     /**

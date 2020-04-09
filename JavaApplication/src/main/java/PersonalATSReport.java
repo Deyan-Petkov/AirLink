@@ -12,6 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.text.*;
+import java.awt.print.*;
+import javax.swing.JTable;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -268,7 +271,7 @@ public class PersonalATSReport extends javax.swing.JFrame {
         personalATSBlueBackground.setBackground(new java.awt.Color(102, 255, 255));
 
         personalATSTitle.setFont(new java.awt.Font("Tahoma", 0, 90)); // NOI18N
-        personalATSTitle.setText("PERSONAL ATS REPORT");
+        personalATSTitle.setText("          PERSONAL ATS");
 
         backButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         backButton.setText("BACK");
@@ -428,6 +431,16 @@ public class PersonalATSReport extends javax.swing.JFrame {
 
     private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
         // TODO add your handling code here:
+        MessageFormat header = new MessageFormat("Report Print");
+        MessageFormat footer = new MessageFormat("Page{0,number,integer}");
+        
+        try{
+            reportJTable.print(JTable.PrintMode.NORMAL, header, footer);
+            totalsJTable.print(JTable.PrintMode.NORMAL, header, footer);
+        
+        }catch(java.awt.print.PrinterException e){
+            System.err.format("Cannot print %s%n", e.getMessage());
+        }
     }//GEN-LAST:event_printButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
