@@ -48,7 +48,9 @@ public class BookTicket extends javax.swing.JFrame {
         delayed = false;
         exchangeRate = 0;
         price = 0;
-
+        //those labels will be visible only if "USD" currency is selected
+        exchangeRatejLabel.setVisible(false);
+        exchangeRateAmmountjLabel.setVisible(false);
     }
 
     //get the discount of the current customer
@@ -169,6 +171,12 @@ public class BookTicket extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         amountjLabel = new javax.swing.JLabel();
         PricejButton = new javax.swing.JButton();
+        commissionLabel = new javax.swing.JLabel();
+        discountjLabel = new javax.swing.JLabel();
+        exchangeRatejLabel = new javax.swing.JLabel();
+        commissionAmountjLabel = new javax.swing.JLabel();
+        discountAmmountjLabel = new javax.swing.JLabel();
+        exchangeRateAmmountjLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -211,7 +219,7 @@ public class BookTicket extends javax.swing.JFrame {
                 .addGap(38, 38, 38))
         );
 
-        saveButton.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        saveButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         saveButton.setText("SAVE");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -219,7 +227,7 @@ public class BookTicket extends javax.swing.JFrame {
             }
         });
 
-        voidBlankButton.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        voidBlankButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         voidBlankButton.setText("VOID BLANK");
         voidBlankButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -227,7 +235,7 @@ public class BookTicket extends javax.swing.JFrame {
             }
         });
 
-        selectCustomerButton.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        selectCustomerButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         selectCustomerButton.setText("SELECT CUSTOMER");
         selectCustomerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -235,7 +243,7 @@ public class BookTicket extends javax.swing.JFrame {
             }
         });
 
-        delayPaymentButton.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        delayPaymentButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         delayPaymentButton.setText("DELAY PAYMENT");
         delayPaymentButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -337,10 +345,10 @@ public class BookTicket extends javax.swing.JFrame {
         flightsLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         flightsLabel.setText("AVAILABLE FLIGHTS");
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel1.setText("TAXES");
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setText("OTHER");
 
         otherTextField.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
@@ -367,7 +375,7 @@ public class BookTicket extends javax.swing.JFrame {
 
         amountjLabel.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
 
-        PricejButton.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
+        PricejButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         PricejButton.setText("PRICE");
         PricejButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -383,54 +391,88 @@ public class BookTicket extends javax.swing.JFrame {
             }
         });
 
+        commissionLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        commissionLabel.setText("COMMISSION");
+
+        discountjLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        discountjLabel.setText("DISCOUNT %");
+
+        exchangeRatejLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        exchangeRatejLabel.setText("EXCHANGE");
+
+        commissionAmountjLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+
+        discountAmmountjLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+
+        exchangeRateAmmountjLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+
         javax.swing.GroupLayout bookTicketBackgroundLayout = new javax.swing.GroupLayout(bookTicketBackground);
         bookTicketBackground.setLayout(bookTicketBackgroundLayout);
         bookTicketBackgroundLayout.setHorizontalGroup(
             bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(bookTicketBlueBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                .addContainerGap(101, Short.MAX_VALUE)
+                .addGap(103, 103, 103)
                 .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                                .addGap(2, 2, 2)
-                                .addComponent(itineraryLabel)
-                                .addGap(337, 337, 337)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(blankNojLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(flightsLabel)
+                    .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
                             .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1112, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
-                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(selectCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(flightsLabel)
-                                    .addComponent(voidBlankButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(delayPaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(currencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(95, 95, 95)
-                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(PricejButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(34, 34, 34)
-                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(taxesTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                                    .addComponent(otherTextField)
-                                    .addComponent(amountjLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addContainerGap(110, Short.MAX_VALUE))
-                    .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(amountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10))))
+                                .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                                    .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                                            .addComponent(itineraryLabel)
+                                            .addGap(339, 339, 339)
+                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel5)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(blankNojLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1112, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGap(4, 4, 4))
+                                .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                                    .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(selectCustomerButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(delayPaymentButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(voidBlankButton, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(60, 60, 60)
+                                    .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(exchangeRatejLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(currencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(52, 52, 52)
+                                    .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
+                                        .addComponent(exchangeRateAmmountjLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGap(26, 26, 26)
+                                    .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(PricejButton, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                                        .addComponent(taxesTextField)
+                                        .addComponent(otherTextField))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                                            .addComponent(amountjLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGap(35, 35, 35)
+                                            .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                                                .addComponent(commissionLabel)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(commissionAmountjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
+                                                .addComponent(discountjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(discountAmmountjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                            .addGap(104, 104, 104))
+                        .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                            .addGap(0, 0, Short.MAX_VALUE)
+                            .addComponent(amountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(10, 10, 10)))))
         );
         bookTicketBackgroundLayout.setVerticalGroup(
             bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -449,39 +491,51 @@ public class BookTicket extends javax.swing.JFrame {
                 .addComponent(flightsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                        .addGap(47, 47, 47)
+                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(commissionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(commissionAmountjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(discountAmmountjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15))
+                    .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(selectCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(taxesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(delayPaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
+                                    .addGap(3, 3, 3)
+                                    .addComponent(discountjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel2)
+                                    .addComponent(otherTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(currencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
+                        .addGap(43, 43, 43)
+                        .addComponent(jLabel1)))
+                .addGap(18, 18, 18)
                 .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
                         .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                                .addGap(39, 39, 39)
-                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel1)
-                                    .addComponent(currencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bookTicketBackgroundLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(taxesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(33, 33, 33)
-                        .addComponent(otherTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(116, 116, 116)
+                            .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(voidBlankButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(amountjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(exchangeRateAmmountjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(PricejButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(40, 40, 40)
                         .addComponent(amountTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(selectCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                                .addComponent(delayPaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(voidBlankButton)
-                                    .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(PricejButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(bookTicketBackgroundLayout.createSequentialGroup()
-                                .addGroup(bookTicketBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(paymentjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2))
-                                .addGap(29, 29, 29)
-                                .addComponent(amountjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addGap(7, 7, 7)
+                        .addComponent(exchangeRatejLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -509,6 +563,8 @@ public class BookTicket extends javax.swing.JFrame {
         //if the price was calculaated all fields are sent and we can save
         if (amountjLabel.getText().length() > 0) {
             try (Connection con = DbCon.getConnection()) {
+                //All statements will be commited as a transaction when commit() is called
+                con.setAutoCommit(false);
                 PreparedStatement pst;
                 //write to itinerary table
                 while (itinerearyDftTblMdl.getRowCount() > 0) {
@@ -563,11 +619,19 @@ public class BookTicket extends javax.swing.JFrame {
                 pst = con.prepareStatement("update Blank set isSold = 1 where blankNumber = '" + blankNo + "'");
                 pst.execute();
 
+                con.commit();
+                con.setAutoCommit(true);
+                 JOptionPane.showMessageDialog(null,
+                    "Ticket successfully booked",
+                    "Info",
+                    JOptionPane.INFORMATION_MESSAGE);
             } catch (ClassNotFoundException | SQLException ex) {
                 Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+                 JOptionPane.showMessageDialog(null,
+                    "This booking was not successful");
             }
             custID = 0;
-
+            
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(null,
@@ -641,10 +705,18 @@ public class BookTicket extends javax.swing.JFrame {
                 ResultSet rs = pst.executeQuery();
                 rs.next();
                 exchangeRate = rs.getDouble("rate");
+                //set to visible labels related to exchange rate  
+                exchangeRatejLabel.setVisible(true);
+                exchangeRateAmmountjLabel.setVisible(true);
+                //set exchange rate label
+                exchangeRateAmmountjLabel.setText(String.valueOf(exchangeRate));
 
             } catch (ClassNotFoundException | SQLException ex) {
                 Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else {//hide exchange rate labels if user switched to "local" again
+            exchangeRatejLabel.setVisible(false);
+            exchangeRateAmmountjLabel.setVisible(false);
         }
         //if the chosen blank is not 444 or 420 or 440 don't allow payment in USD
         if (typeBlank != 444 & typeBlank != 420 & typeBlank != 440) {
@@ -670,7 +742,7 @@ public class BookTicket extends javax.swing.JFrame {
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
         } else {//else allow to add more flights
-            if (custID == 0) {
+            if (custID == 0) {//if customer was not chosen yet
                 JOptionPane.showMessageDialog(null,
                         "To add flights, please first \"SELECT CUSTOMER\"",
                         "ERROR",
@@ -689,6 +761,8 @@ public class BookTicket extends javax.swing.JFrame {
                 itinerearyDftTblMdl.setValueAt((double) flightsjTable.getValueAt(fTblSlctdRow, 5), itnrRowCount - 1, 5);//Price
                 itinerearyDftTblMdl.setValueAt(custID, itnrRowCount - 1, 6);//Customer
 
+                commissionAmountjLabel.setText(String.valueOf(getCommissionRate()));//set commissionRate label according to the chosen blank
+                discountAmmountjLabel.setText(String.valueOf(getDiscount()));//set discount label according to the chosen customer
             }
         }
 
@@ -777,25 +851,23 @@ public class BookTicket extends javax.swing.JFrame {
                 double finalPrice = (price * getCommissionRate()) + taxes;
 
                 //for debugging purposes
-                System.out.println("INSIDE LOCAL");
-                System.out.println("price: " + price);
-                System.out.println("commission: " + getCommissionRate());
-                System.out.println("taxes: " + taxes);
-
+//                System.out.println("INSIDE LOCAL");
+//                System.out.println("price: " + price);
+//                System.out.println("commission: " + getCommissionRate());
+//                System.out.println("taxes: " + taxes);
                 //if the blank is international add other taxes
                 if (typeBlank == 444 || typeBlank == 420 || typeBlank == 440) {
                     if (otherTextField.getText().length() > 0) {//if "other" text field is filled get it's value
                         double otherTaxes = Double.valueOf(otherTextField.getText());
                         finalPrice += otherTaxes;
-                        System.out.println("Other Taxes: " + otherTaxes);
-                        System.out.println("Final Price: " + finalPrice);
+//                        System.out.println("Other Taxes: " + otherTaxes);
+//                        System.out.println("Final Price: " + finalPrice);
 
                         if (discount > 0) {
                             discountVal = (finalPrice * discount) / 100;
                             finalPrice -= discountVal;
-                            System.out.println("discountt: " + discount);
-
-                            System.out.println("price after discount: " + finalPrice);
+//                            System.out.println("discountt: " + discount);
+//                            System.out.println("price after discount: " + finalPrice);
                         }
 
                         amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
@@ -809,8 +881,8 @@ public class BookTicket extends javax.swing.JFrame {
                     if (discount > 0) {
                         discountVal = (finalPrice * discount) / 100;
                         finalPrice -= discountVal;
-                        System.out.println("discountt: " + discount);
-                        System.out.println("price after discount: " + finalPrice);
+//                        System.out.println("discountt: " + discount);
+//                        System.out.println("price after discount: " + finalPrice);
                     }
                     //else add only taxes
                     //the final price is only displayed and not recorded in the DB but all parts of the price 
@@ -829,21 +901,21 @@ public class BookTicket extends javax.swing.JFrame {
                 // final price
                 double priceBeforeExchRate = ((price * getCommissionRate()) + totalTaxes);
                 // for debugging purposes
-                System.out.println("price: " + price);
-                System.out.println("taxes: " + taxes);
-                System.out.println("other taxes: " + otherTaxes);
-                System.out.println("exchange rate: " + exchangeRate);
-                System.out.println("commission: " + getCommissionRate());
+//                System.out.println("price: " + price);
+//                System.out.println("taxes: " + taxes);
+//                System.out.println("other taxes: " + otherTaxes);
+//                System.out.println("exchange rate: " + exchangeRate);
+//                System.out.println("commission: " + getCommissionRate());
 
                 if (discount > 0) {
                     discountVal = (priceBeforeExchRate * discount) / 100;
                     priceBeforeExchRate -= discountVal;
-                    System.out.println("discountt: " + discount);
-                    System.out.println("price before Exchange rate - discoint: " + priceBeforeExchRate);
+//                    System.out.println("discountt: " + discount);
+//                    System.out.println("price before Exchange rate - discoint: " + priceBeforeExchRate);
                 }
 
                 double finalPrice = priceBeforeExchRate * exchangeRate;
-                System.out.println("final price: " + finalPrice);
+//                System.out.println("final price: " + finalPrice);
                 //the final price is only displayed and not recorded in the DB but all parts of the price 
                 //are recorded which allow us to calculate it later for the reports and other purposes
                 amountjLabel.setText(String.valueOf(new BigDecimal(finalPrice).setScale(2, RoundingMode.HALF_UP)));
@@ -910,8 +982,14 @@ public class BookTicket extends javax.swing.JFrame {
     private javax.swing.JPanel bookTicketBackground;
     private javax.swing.JPanel bookTicketBlueBackground;
     private javax.swing.JLabel bookTicketTitle;
+    private javax.swing.JLabel commissionAmountjLabel;
+    private javax.swing.JLabel commissionLabel;
     private javax.swing.JComboBox<String> currencyComboBox;
     private javax.swing.JButton delayPaymentButton;
+    private javax.swing.JLabel discountAmmountjLabel;
+    private javax.swing.JLabel discountjLabel;
+    private javax.swing.JLabel exchangeRateAmmountjLabel;
+    private javax.swing.JLabel exchangeRatejLabel;
     private javax.swing.JLabel flightsLabel;
     private javax.swing.JTable flightsjTable;
     private javax.swing.JLabel itineraryLabel;

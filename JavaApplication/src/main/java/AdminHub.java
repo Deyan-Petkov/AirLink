@@ -20,13 +20,14 @@ import javax.swing.JOptionPane;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author dhruv
  */
 public class AdminHub extends javax.swing.JFrame {
-String path;
+
+    String path;
+
     /**
      * Creates new form adminHub
      */
@@ -208,103 +209,91 @@ String path;
         LoginForm s = new LoginForm();
         s.setVisible(true);
         s.setDefaultCloseOperation(s.DISPOSE_ON_CLOSE);
-        
+
     }//GEN-LAST:event_logoutButtonlogoutActionPerformed
 
     private void stockTurnoverReportButtonstockTurnoverReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stockTurnoverReportButtonstockTurnoverReportActionPerformed
         // TODO add your handling code here:
-        StockTurnoverReport str= new StockTurnoverReport();
+        StockTurnoverReport str = new StockTurnoverReport();
         str.setVisible(true);
         str.setDefaultCloseOperation(str.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_stockTurnoverReportButtonstockTurnoverReportActionPerformed
 
     private void restoreButtonrestoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restoreButtonrestoreActionPerformed
-      
-               JFileChooser fc=new JFileChooser();
+
+        JFileChooser fc = new JFileChooser();
         fc.showOpenDialog(this);
-          LocalDate date = LocalDate.now();
-        
-        try{
-        File f=fc.getSelectedFile();
-        path =f.getName();
-   
-      
-       
-           DbCon.SQCONN =   "jdbc:sqlite:"+path+"";
-    JOptionPane.showMessageDialog(null,"System Restored");
-    
-        
-        } 
-        
-        
-        catch(Exception e){
+        LocalDate date = LocalDate.now();
+
+        try {
+            File f = fc.getSelectedFile();
+            path = f.getName();
+
+            DbCon.SQCONN = "jdbc:sqlite:" + path + "";
+            JOptionPane.showMessageDialog(null, "System Restored");
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        
-        
-        
-     
+
+
     }//GEN-LAST:event_restoreButtonrestoreActionPerformed
- 
+
     private void backupButtonbackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backupButtonbackupActionPerformed
         // TODO add your handling code here:
-      
-         String path=System.getProperty("user.dir");
-           LocalDate localDate = LocalDate.now();
-  
-         
-       
-         String pathname=path+"\\Db backup"+localDate+" " ;   //add backup counter 
-        //    String pathname=path+"\\Db backup" ;
-         try {
-            // TODO add your handling code here:
-            InputStream input=new FileInputStream(""+path+"\\AirLink.db");
-  
-             
-        try {
-            OutputStream output = new FileOutputStream(pathname);
-             byte[] buffer = new byte[1024];
-     int length;
-    while ((length = input.read(buffer))>0) {
-        output.write(buffer, 0, length);
-    }
 
-    output.flush();
-    output.close();
-    input.close();
-            
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(AdminHub.class.getName()).log(Level.SEVERE, null, ex);
-        }   catch (IOException ex) {
+        String path = System.getProperty("user.dir");
+        LocalDate localDate = LocalDate.now();
+
+        String pathname = path + "\\Db backup" + localDate + " ";   //add backup counter 
+        //    String pathname=path+"\\Db backup" ;
+        try {
+            // TODO add your handling code here:
+            InputStream input = new FileInputStream("" + path + "\\AirLink.db");
+
+            try {
+                OutputStream output = new FileOutputStream(pathname);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = input.read(buffer)) > 0) {
+                    output.write(buffer, 0, length);
+                }
+
+                output.flush();
+                output.close();
+                input.close();
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(AdminHub.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(AdminHub.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(AdminHub.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-          JOptionPane.showMessageDialog(null,"Backup created");
-         
-        
+
+        JOptionPane.showMessageDialog(null, "Backup created");
+
+
     }//GEN-LAST:event_backupButtonbackupActionPerformed
 
     private void agencyInfoButtonagencyInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agencyInfoButtonagencyInfoActionPerformed
         // TODO add your handling code here:
-        AgencyDetails agencydetails= new AgencyDetails();
+        AgencyDetails agencydetails = new AgencyDetails();
         agencydetails.setVisible(true);
         agencydetails.setDefaultCloseOperation(agencydetails.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_agencyInfoButtonagencyInfoActionPerformed
 
     private void blankStockButtonblankStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blankStockButtonblankStockActionPerformed
         // TODO add your handling code here:
-        AdminStockControl asc= new AdminStockControl();
+        AdminStockControl asc = new AdminStockControl();
         asc.setVisible(true);
         asc.setDefaultCloseOperation(asc.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_blankStockButtonblankStockActionPerformed
 
     private void advisorListButtonadvisorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advisorListButtonadvisorListActionPerformed
         // TODO add your handling code here:
-        AdvisorsList advlist= new AdvisorsList();
+        AdvisorsList advlist = new AdvisorsList();
         advlist.setVisible(true);
         advlist.setDefaultCloseOperation(advlist.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_advisorListButtonadvisorListActionPerformed
