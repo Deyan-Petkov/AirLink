@@ -570,8 +570,7 @@ public class BookTicket extends javax.swing.JFrame {
         //if the price was calculaated all fields are sent and we can save
         if (amountjLabel.getText().length() > 0) {
             try (Connection con = DbCon.getConnection()) {
-                //All statements will be commited as a transaction when commit() is called
-                con.setAutoCommit(false);
+                
                 PreparedStatement pst;
                 //write to itinerary table
                 while (itinerearyDftTblMdl.getRowCount() > 0) {
@@ -590,6 +589,10 @@ public class BookTicket extends javax.swing.JFrame {
                     pst.execute();
 
                 }
+                
+                //All statements will be commited as a transaction when commit() is called
+                con.setAutoCommit(false);
+                
                 //write to payment table
                 pst = con.prepareStatement("insert into payment (BlankblankNumber,delayed,exchangeRate,"
                         + "commissionRate,date,taxes,isRefunded) values(?,?,?,?,?,?,?)");
