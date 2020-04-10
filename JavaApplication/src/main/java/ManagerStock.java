@@ -297,7 +297,7 @@ Boolean clicked=false;
         
      try (   Connection con = DbCon.getConnection();) {
                      PreparedStatement rst = null;
-                     rst=con.prepareStatement(" DELETE FROM Blank WHERE blankNumber IN(select blankNUmber from(select blankNumber FROM Blank where blankNumber like '"+s+"%' AND isSold = 0 LIMIT "+blanks+")x)");
+                     rst=con.prepareStatement(" DELETE FROM Blank WHERE blankNumber IN(select blankNumber from(select blankNumber FROM Blank where blankNumber like '"+s+"%' AND isSold = 0 LIMIT "+blanks+")x)");
                      rst.execute();
      
           
@@ -418,11 +418,12 @@ Boolean clicked=false;
        rs=pst.executeQuery();
        while(rs.next()){ 
          advisorID.add(rs.getInt(1)); //adding list of adv in one array 
+            System.out.println(rs.getInt(2));
          blankamount.add(rs.getInt(2));
           
        
        } //adding quantlty of tickets in naother array
-       
+    
          oldadv=advisorID.get(0).toString();
         
        highestblankamount= blankamount.get(0).toString();
@@ -481,7 +482,7 @@ Boolean clicked=false;
        int chosen=  Integer.parseInt(s);
        String quantity= quantityTextbox.getText(); //input of quantity of blanks
         int blanks=  Integer.parseInt(quantity);  
-       
+     
         
         try (   Connection con = DbCon.getConnection();) {
         String sql ="select * from Blank where  StaffID ='"+oldadv+"'  and  blankNumber like '"+s+"%' and isSold = 0;  ";      //getting all the unsold blanks where where adv ID is same as the id of adv whoe has the most amount of thay tupe of blanks 
@@ -489,15 +490,20 @@ Boolean clicked=false;
         rs=pst.executeQuery();
         
            
-        while(rs.next() ){   //reassigning the number of blanks specified by the user
-           if(blanks!=0){
+        while(rs.next() ){    //reassigning the number of blanks specified by the user
+           
+           if(blanks!=0){ 
+               String blank= rs.getString(1);   
+          
                 PreparedStatement rst2 = null;
-                 rst2=con.prepareStatement("UPDATE Blank SET StaffID = '"+advisorID+"' where  StaffID ='"+oldadv+"'  and  blankNumber like '"+s+"%' and isSold = 0;  ");
+                 rst2=con.prepareStatement("UPDATE Blank SET StaffID = '"+advisorID+"' where  StaffID ='"+oldadv+"'  and  blankNumber like '"+blank+"' and isSold = 0 ;  ");
                   rst2.execute();
                   blanks--;
             
            }
+           
        }
+       if(blanks==0) JOptionPane.showMessageDialog(null,"Blanks reassigned");
            int x = Integer.parseInt(    highestblankamount); //use rs. get here
            if(blanks>x){JOptionPane.showMessageDialog(null,"Quantity entered must be lower than available quantity");}
           
