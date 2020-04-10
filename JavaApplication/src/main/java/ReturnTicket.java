@@ -1,5 +1,4 @@
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +12,6 @@ import javax.swing.JOptionPane;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author xahna
@@ -154,53 +152,48 @@ public class ReturnTicket extends javax.swing.JFrame {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
-            dispose(); 
+        dispose();
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void recordReturnLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordReturnLogButtonActionPerformed
         // TODO add your handling code here:
-        try(Connection con = DbCon.getConnection()){
-          int id=AdvisorHub.id;
-          
-                PreparedStatement pst2 = con.prepareStatement("select  name from staff where ID='"+id+"' ");
-                    
-               ResultSet rs2 = pst2.executeQuery();
-               
-           String filename= rs2.getString("name")+" "+"logfile";
-     
-           ProcessBuilder pb = new ProcessBuilder("Notepad.exe", filename);
-        pb.start();
-      
-        
+        try (Connection con = DbCon.getConnection()) {
+            int id = AdvisorHub.id;
+
+            PreparedStatement pst2 = con.prepareStatement("select  name from staff where ID='" + id + "' ");
+
+            ResultSet rs2 = pst2.executeQuery();
+
+            String filename = rs2.getString("name") + " " + "logfile";
+
+            ProcessBuilder pb = new ProcessBuilder("Notepad.exe", filename);
+            pb.start();
+
+        } catch (Exception e) {
+            System.out.println("error");
         }
-        catch(Exception e){  System.out.println("error");}
     }//GEN-LAST:event_recordReturnLogButtonActionPerformed
 
     private void refundButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refundButtonActionPerformed
         // TODO add your handling code here:
-        String blank= ticketIDTextbox.getText().toString();
-       
-              
-         try ( Connection con = DbCon.getConnection()) {
-   
-             
-                PreparedStatement ps = con.prepareStatement("update Payment set isRefunded = '1' where BlankblankNumber = '"+blank+"' and delayed ='0' ");
-                ps.execute();
-                
-               
-                  PreparedStatement rst = null;
-                    rst=con.prepareStatement(" DELETE FROM Itinerary WHERE BlankblankNumber='"+blank+"' ");
-                   
-     
-                
-                
-               JOptionPane.showMessageDialog(null,"Ticket returned successfully");
+        String blank = ticketIDTextbox.getText().toString();
 
-            } catch (ClassNotFoundException | SQLException ex) {
-                Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        
-        
+        try (Connection con = DbCon.getConnection()) {
+
+            PreparedStatement ps = con.prepareStatement("update Payment set isRefunded = '1' where BlankblankNumber = '" + blank + "'");
+            ps.execute();
+
+            PreparedStatement rst = null;
+            rst = con.prepareStatement(" DELETE FROM Itinerary WHERE BlankblankNumber='" + blank + "' ");
+            rst.execute();
+
+            JOptionPane.showMessageDialog(null, "Ticket returned successfully");
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
     }//GEN-LAST:event_refundButtonActionPerformed
 
     /**

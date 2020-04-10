@@ -87,8 +87,7 @@ public class GlobalATSReport extends javax.swing.JFrame {
                         + "   blankNumber LIKE '101%')");
 
                 /*select all id's which sold domestic blanks during the selected period*/
-                statement.addBatch("/*select all id's which sold domestic blanks during the selected period*/\n"
-                        + "insert into gsr(agent) select distinct staffId from t where isSold = 1\n"
+                statement.addBatch("insert into gsr(agent) select distinct staffId from t where isSold = 1\n"
                         + "and (date >= '" + fromDate + "'\n"
                         + "and date <= '" + toDate + "')\n"
                         + "and (blankNumber like '101%' or blankNumber like '201%')\n"

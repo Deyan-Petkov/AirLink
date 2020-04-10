@@ -40,6 +40,7 @@ public class BookTicket extends javax.swing.JFrame {
     private double exchangeRate;//last captured exchange rate - 1Local = ?USD
     private double commissionRate;//the commision rate for the chosen blank
     private CardInfo cardInfo;
+    private String discountType;
 
     public BookTicket() {
         initComponents();
@@ -58,10 +59,11 @@ public class BookTicket extends javax.swing.JFrame {
         double discount = 0;
         try (Connection con = DbCon.getConnection()) {
 
-            PreparedStatement pst = con.prepareStatement("select discountrate from customer where id = " + custID + "");
+            PreparedStatement pst = con.prepareStatement("select discountrate, discountType from customer where id = " + custID + "");
             ResultSet rs = pst.executeQuery();
             rs.next();
             discount = rs.getDouble("discountrate");
+            discountType = rs.getString("discountType");
 
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(BookTicket.class.getName()).log(Level.SEVERE, null, ex);
@@ -568,8 +570,7 @@ public class BookTicket extends javax.swing.JFrame {
         //if the price was calculaated all fields are sent and we can save
         if (amountjLabel.getText().length() > 0) {
             try (Connection con = DbCon.getConnection()) {
-                //All statements will be commited as a transaction when commit() is called
-                con.setAutoCommit(false);
+                
                 PreparedStatement pst;
                 //write to itinerary table
                 while (itinerearyDftTblMdl.getRowCount() > 0) {
@@ -588,6 +589,10 @@ public class BookTicket extends javax.swing.JFrame {
                     pst.execute();
 
                 }
+                
+                //All statements will be commited as a transaction when commit() is called
+                con.setAutoCommit(false);
+                
                 //write to payment table
                 pst = con.prepareStatement("insert into payment (BlankblankNumber,delayed,exchangeRate,"
                         + "commissionRate,date,taxes,isRefunded) values(?,?,?,?,?,?,?)");
@@ -623,6 +628,12 @@ public class BookTicket extends javax.swing.JFrame {
                 //change this blank to sold in Blank
                 pst = con.prepareStatement("update Blank set isSold = 1 where blankNumber = '" + blankNo + "'");
                 pst.execute();
+                
+                //If customer has flexible discount and is under 20% rise it with 0.01% for each sell
+                if(discountType.equals("Flexible") & getDiscount() < 20){
+                    pst = con.prepareStatement("update Customer set discountRate = " + (getDiscount()+ 0.01) + " where ID = " + custID + "");
+                    pst.execute();
+                }
 
                 con.commit();
                 con.setAutoCommit(true);
