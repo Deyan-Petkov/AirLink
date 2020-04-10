@@ -75,6 +75,8 @@ public class AdminStockControl extends javax.swing.JFrame {
         orderTextField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        quantityTextbox = new javax.swing.JTextField();
+        returnButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -171,6 +173,27 @@ public class AdminStockControl extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setText("Current Quantity:");
 
+        quantityTextbox.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        quantityTextbox.setText("Enter return Quantity...");
+        quantityTextbox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                quantityTextboxMouseClicked(evt);
+            }
+        });
+        quantityTextbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quantityTextboxActionPerformed(evt);
+            }
+        });
+
+        returnButton.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        returnButton.setText("DELETE");
+        returnButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                returnButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout adminStockControlBackgroundLayout = new javax.swing.GroupLayout(adminStockControlBackground);
         adminStockControlBackground.setLayout(adminStockControlBackgroundLayout);
         adminStockControlBackgroundLayout.setHorizontalGroup(
@@ -188,12 +211,16 @@ public class AdminStockControl extends javax.swing.JFrame {
                                 .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(orderTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(quantityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(131, 131, 131)
+                        .addComponent(quantityTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1)
                             .addComponent(addtButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(143, 143, 143)
+                        .addComponent(returnButton, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -210,7 +237,9 @@ public class AdminStockControl extends javax.swing.JFrame {
                 .addGap(54, 54, 54)
                 .addComponent(blankComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(72, 72, 72)
-                .addComponent(quantityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(quantityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(quantityTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
                 .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(orderTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -218,7 +247,8 @@ public class AdminStockControl extends javax.swing.JFrame {
                 .addGap(158, 158, 158)
                 .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addtButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(addtButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(returnButton))
                 .addContainerGap())
             .addGroup(adminStockControlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(adminStockControlBackgroundLayout.createSequentialGroup()
@@ -398,6 +428,40 @@ public class AdminStockControl extends javax.swing.JFrame {
         // TODO add your handling code here:
         orderTextField.setText("");//clears the textField once you click on it
     }//GEN-LAST:event_orderTextFieldMouseClicked
+
+    private void quantityTextboxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_quantityTextboxMouseClicked
+        // TODO add your handling code here:
+        quantityTextbox.setText("");//clears the textField once you click on it
+    }//GEN-LAST:event_quantityTextboxMouseClicked
+
+    private void quantityTextboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantityTextboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_quantityTextboxActionPerformed
+
+    private void returnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnButtonActionPerformed
+        // TODO add your handling code here:
+        String s=blankComboBox.getSelectedItem().toString();  //choosen blanks
+
+        String quantity= quantityTextbox.getText(); //input of quantity of blanks
+        int blanks=  Integer.parseInt(quantity);
+
+        try (   Connection con = DbCon.getConnection();) {
+            PreparedStatement rst = null;
+            rst=con.prepareStatement(" DELETE FROM Blank WHERE blankNumber IN(select blankNumber from(select blankNumber FROM Blank where blankNumber like '"+s+"%' AND isSold = 0 LIMIT "+blanks+")x)");
+            rst.execute();
+
+        //    JOptionPane.showMessageDialog(null,"Deleted successfully"); //comment this when u are deleting 101 
+
+            dispose();
+
+        }catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null,"error");
+        }
+
+        //get blanks where isSOld is false and staffID is null and blankID==combobox
+        //delete that row and do it untill the quantity.
+
+    }//GEN-LAST:event_returnButtonActionPerformed
         
      
     /**
@@ -447,6 +511,8 @@ public class AdminStockControl extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField orderTextField;
     private javax.swing.JTextField quantityTextField;
+    private javax.swing.JTextField quantityTextbox;
+    private javax.swing.JButton returnButton;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
 }

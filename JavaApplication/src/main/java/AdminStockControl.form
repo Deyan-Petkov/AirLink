@@ -63,6 +63,8 @@
                                   </Group>
                               </Group>
                           </Group>
+                          <EmptySpace min="-2" pref="131" max="-2" attributes="0"/>
+                          <Component id="quantityTextbox" min="-2" pref="277" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -71,6 +73,8 @@
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <Component id="addtButton1" min="-2" pref="296" max="-2" attributes="0"/>
                           </Group>
+                          <EmptySpace min="-2" pref="143" max="-2" attributes="0"/>
+                          <Component id="returnButton" min="-2" pref="300" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="saveButton" min="-2" pref="296" max="-2" attributes="0"/>
                       </Group>
@@ -93,7 +97,10 @@
                   <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
                   <Component id="blankComboBox" min="-2" pref="81" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
-                  <Component id="quantityTextField" min="-2" pref="81" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="quantityTextField" min="-2" pref="81" max="-2" attributes="0"/>
+                      <Component id="quantityTextbox" min="-2" pref="62" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace pref="121" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="orderTextField" alignment="3" min="-2" pref="81" max="-2" attributes="0"/>
@@ -103,6 +110,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="saveButton" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
                       <Component id="addtButton1" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
+                      <Component id="returnButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -258,6 +266,29 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Current Quantity:"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="quantityTextbox">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="24" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Enter return Quantity..."/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="quantityTextboxMouseClicked"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="quantityTextboxActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="returnButton">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="36" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="DELETE"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="returnButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
