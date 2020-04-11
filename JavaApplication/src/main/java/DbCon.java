@@ -23,6 +23,8 @@ public class DbCon {
         try {
             // return DriverManager.getConnection(SQCONN);//Allocates the appropriate driver for the database and creates connection
             Connection con = DriverManager.getConnection(SQCONN);
+             //permit modifyingg a row only if there are not ongoing modification 
+            //the  the same row from another connection
             con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             return con;
 

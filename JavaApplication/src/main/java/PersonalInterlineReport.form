@@ -82,7 +82,7 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="toDateTextbox" min="-2" pref="104" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="jLabel1" min="-2" pref="177" max="-2" attributes="0"/>
+                                  <Component id="jLabel1" min="-2" pref="308" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                               </Group>
                           </Group>
